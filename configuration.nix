@@ -151,7 +151,6 @@ console = {
   font = "Lat2-Terminus16";
   keyMap = "jp106";
 };
-
 # ============================================
 # HARDWARE
 # ============================================
@@ -404,18 +403,29 @@ fonts = {
 # ENVIRONMENT
 # ============================================
 
+lib.mkForce = {
+  environment.variables = {
+    GTK_IM_MODULE = "wayland";
+    QT_IM_MODULE = "fcitx";
+    XMODIFIERS = "@im=fcitx";
+    SDL_IM_MODULE = "fcitx";
+    GLFW_IM_MODULE = "ibus";
+  };
+};
+
 environment.variables = {
   QT_QPA_PLATFORMTHEME = "qt5ct";
   XDG_ICON_FALLBACK = "/etc/nixos/dotfiles/images/blankicon.png";
 };
 
-#environment.sessionVariables = {
+environment.sessionVariables = {
 #  WLR_RENDERER = "vulkan";
 #  WLR_NO_HARDWARE_CURSORS = "1";
 #  __GLX_VENDOR_LIBRARY_NAME = "nvidia";
 #  LIBVA_DRIVER_NAME = "nvidia";
 #  GBM_BACKENDS_PATH = "/run/opengl-driver/lib/gbm";
-#};
+  FCITX_NO_PREEDIT_ON_PASSWORD = "1";
+};
 
 # ============================================
 # XDG
@@ -476,12 +486,14 @@ environment.systemPackages = with pkgs; [
   cpufrequtils # cpu frequency control/query
   curl # download web stuff
   dislocker # unlock Bitlocker encryption
+  fcitx5 # input method framework
   file # determines file type/info
   git # distributed version control system
   htop # view resource usage
   id3v2 # view/edit mp3 metadata
   inetutils # network tools such as telnet
   iotop # view disk usage/processes
+  kdePackages.audex # CD ripper for videos
   killall # allows for killing processes by name
   moreutils # useful UNIX tools: ts, sponge, vidir, etc.
   neovim # vim with more goodness
