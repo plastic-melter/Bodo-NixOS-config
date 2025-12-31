@@ -420,6 +420,7 @@ home.packages = with pkgs; [
   moonlight-qt # desktop steaming / remote access
   mpv # simple video player
   obsidian # cross-platform notes program
+  obs-studio # desktop recording
   picoscope # pocket oscilloscope
   platformio # arduino TUI + utils
   prusa-slicer # 3DP slicer
@@ -492,6 +493,11 @@ home.packages = with pkgs; [
   wineWowPackages.waylandFull # wine for wayland
   winetricks # install DLLs/etc into wine prefixes
 
+  # PROGRAMMING
+  (python3.withPackages (ps: with ps; [
+    requests # HTTP client
+    rich # fancy terminal output
+  ]))
 ];
 
 ################################################

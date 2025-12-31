@@ -88,7 +88,8 @@ boot = {
     systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
   };
-  kernelModules = [ "zenpower" ];
+  kernelModules = [ "zenpower" "ntsync" ]; # ntsync for CoD WaW
+  kernelPackages = pkgs.linuxPackages_xanmod_latest; # ePiC gAmInG kErNel
   blacklistedKernelModules = [ "k10temp" ];
 };
 
@@ -361,7 +362,10 @@ programs = {
   gamescope.enable = true;
   xwayland.enable = true;
   ydotool.enable = true;
-  steam.enable = true;
+  steam = {
+    enable = true;
+      extraCompatPackages = [ pkgs.proton-ge-bin ];
+  };
   hyprland = {
     enable = true;
     portalPackage = pkgs.xdg-desktop-portal-hyprland;
@@ -500,6 +504,7 @@ environment.systemPackages = with pkgs; [
   nixos-option # query NixOS module options
   ntfs3g # allows to read/write NTFS
   p7zip # 7z/rar/zip compression tool
+  radeontop # AMD iGPU monitor
   ranger # TUI file browser
   s-tui # terminal TUI for CPU temp/power/freq
   stress # hardware stress tool
