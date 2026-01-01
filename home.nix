@@ -456,6 +456,7 @@ home.packages = with pkgs; [
   poppler # PDF previews in TUi file manager
   resvg # yazi: SVG image preview
   ripgrep # nvim: required for telescope live_grep
+  unrar # extract .rar files
   wofi # app launcher
   xfce.tumbler # image previews in file manager
   zsh-powerlevel10k # fancy ZSH PS1

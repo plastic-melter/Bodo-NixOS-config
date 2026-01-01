@@ -322,6 +322,8 @@ services = {
     SUBSYSTEMS=="usb", ATTRS{idVendor}=="1fc9", ATTRS{idProduct}=="013*", MODE:="0666"
     # PicoScope
     SUBSYSTEM=="usb", ATTR{idVendor}=="0ce9", MODE="0666"
+    # STM32 flashing in DFU mode
+    SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE="0666"
   '';
 };
 
@@ -475,6 +477,7 @@ environment.systemPackages = with pkgs; [
   alsa-utils # sound utils
   android-tools # contains ADB, fastboot, etc
   brightnessctl # control laptop display backlight
+  dfu-util # flash STM32s in DFU mode
   jmtpfs # allows for Android MTP; use instead of mtpfs
   lm_sensors # tons of hardware sensors
   lshw # list hardware inventory
@@ -520,6 +523,7 @@ environment.systemPackages = with pkgs; [
   libarchive # tools for tar, zip, etc.
   libguestfs-with-appliance # view/modify VM disk images
   libnotify # desktop notification library
+  libusb1 # various; flash STM32s
   libsForQt5.qtstyleplugin-kvantum # kvantum = qt config tool
   libsForQt5.qt5ct # qt config tool
 
