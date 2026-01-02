@@ -429,7 +429,7 @@ home.packages = with pkgs; [
   spotify # music streaming
   tagainijisho # japanese dictionary
   vlc # video player
-  webcord # webkit app for discord, less insecure
+  #webcord # webkit app for discord, less insecure
   wezterm # dope-ass terminal emulator
   xfce.thunar # GUI file manager
   yazi # TUI file manager
