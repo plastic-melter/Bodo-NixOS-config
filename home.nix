@@ -428,10 +428,10 @@ home.packages = with pkgs; [
   qalculate-gtk # GUI calculator
   spotify # music streaming
   tagainijisho # japanese dictionary
+  thunar # GUI file manager
   vlc # video player
   #webcord # webkit app for discord, less insecure
   wezterm # dope-ass terminal emulator
-  xfce.thunar # GUI file manager
   yazi # TUI file manager
   zoom-us # video chat software
 
@@ -456,9 +456,9 @@ home.packages = with pkgs; [
   poppler # PDF previews in TUi file manager
   resvg # yazi: SVG image preview
   ripgrep # nvim: required for telescope live_grep
+  tumbler # image previews in file manager
   unrar # extract .rar files
   wofi # app launcher
-  xfce.tumbler # image previews in file manager
   zsh-powerlevel10k # fancy ZSH PS1
 
   # WAYLAND, HYPRLAND, RICE

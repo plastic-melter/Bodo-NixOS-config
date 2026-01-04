@@ -45,6 +45,7 @@
     EDITOR = "vi";
   };
   shellAliases = {
+    rm = "trash-put";
     yazi = "y";
     r = "y";
     ranger = "y";

@@ -289,6 +289,7 @@ services = {
   openssh.enable = true;
   blueman.enable = true;
   gnome.gnome-keyring.enable = true;
+  gvfs.enable = true; # required for Thunar to use .local/share/Trash
 
   # Power Management
   tlp = {
@@ -357,7 +358,18 @@ systemd.user.timers.fwupd-check = {
 # ============================================
 
 programs = {
-  zsh.enable = true;
+  bash = {
+    enable = true;
+    shellAliases = {
+      rm = "trash-put"; # system-wide safety
+    };
+  };
+  zsh = {
+    enable = true;
+    shellAliases = {
+      rm = "trash-put"; # system-wide safety
+    };
+  };
   dconf.enable = true;
   seahorse.enable = true;
   adb.enable = true;
@@ -366,7 +378,12 @@ programs = {
   ydotool.enable = true;
   steam = {
     enable = true;
-      extraCompatPackages = [ pkgs.proton-ge-bin ];
+    extraCompatPackages = [ pkgs.proton-ge-bin ];
+    package = pkgs.steam.override {
+      extraEnv = {
+        SDL_KEYBOARD_LAYOUT = "jp";
+      };
+    };
   };
   hyprland = {
     enable = true;
@@ -486,7 +503,6 @@ environment.systemPackages = with pkgs; [
   udisks2 # for mounting disks from userland
 
   # UTILS
-  bash # shell
   bc # calculations
   btop # like htop but nicer
   cachix # binary cache
@@ -513,6 +529,7 @@ environment.systemPackages = with pkgs; [
   stress # hardware stress tool
   tmux # terminal multiplexer
   traceroute # traces network hops
+  trash-cli # alias rm -> similar to Recycle Bin
   unzip # extracting .zip files
   usbutils # handy USB utils like lsusb
   vim # the best text editor
