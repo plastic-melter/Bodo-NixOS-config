@@ -471,6 +471,7 @@ users = {
       "adbusers"	# access to android debug stuff
       "dialout"		# access to serial ports
 #      "libvirtd"	# access to libvirt VM management
+      "plugdev" # access to USB devices such as rpi flashing
       "audio"		# access to audio devices
       "disk"		# access to raw disk devices
       "video"		# access to video devices
@@ -525,6 +526,7 @@ environment.systemPackages = with pkgs; [
   p7zip # 7z/rar/zip compression tool
   radeontop # AMD iGPU monitor
   ranger # TUI file browser
+  rpiboot # tool to boot Pis over USB
   s-tui # terminal TUI for CPU temp/power/freq
   stress # hardware stress tool
   tmux # terminal multiplexer
