@@ -372,7 +372,6 @@ programs = {
   };
   dconf.enable = true;
   seahorse.enable = true;
-  adb.enable = true;
   gamescope.enable = true;
   xwayland.enable = true;
   ydotool.enable = true;
