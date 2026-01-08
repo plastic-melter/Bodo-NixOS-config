@@ -188,22 +188,16 @@ programs = {
     vimAlias = true;
     defaultEditor = true;
     plugins = with pkgs.vimPlugins; [
-      {
-        plugin = nvim-treesitter.withAllGrammars;
-        type = "lua";
-        config = ''
-          require('nvim-treesitter.configs').setup{}
-        '';
-      }
-      catppuccin-nvim
-      telescope-nvim
-      plenary-nvim
-      lualine-nvim
-      nvim-web-devicons
-      gitsigns-nvim
-      indent-blankline-nvim
-      neoscroll-nvim
-      toggleterm-nvim
+      nvim-treesitter.withAllGrammars  # Syntax highlighting and parsing
+      catppuccin-nvim                   # Mocha colorscheme
+      telescope-nvim                    # Fuzzy finder for files/buffers/grep
+      plenary-nvim                      # Lua utility library (telescope dependency)
+      lualine-nvim                      # Statusline
+      nvim-web-devicons                 # File icons
+      gitsigns-nvim                     # Git diff indicators in sign column
+      indent-blankline-nvim             # Indent guide lines
+      neoscroll-nvim                    # Smooth scrolling
+      toggleterm-nvim                   # Floating terminal
     ];
     extraLuaConfig = builtins.readFile ./dotfiles/neovim/init.lua;
   };
