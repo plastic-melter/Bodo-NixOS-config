@@ -188,8 +188,14 @@ programs = {
     vimAlias = true;
     defaultEditor = true;
     plugins = with pkgs.vimPlugins; [
+      {
+        plugin = nvim-treesitter.withAllGrammars;
+        type = "lua";
+        config = ''
+          require('nvim-treesitter.configs').setup{}
+        '';
+      }
       catppuccin-nvim
-      nvim-treesitter.withAllGrammars
       telescope-nvim
       plenary-nvim
       lualine-nvim
