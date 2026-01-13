@@ -496,6 +496,7 @@ home.packages = with pkgs; [
 
   # PROGRAMMING
   (python3.withPackages (ps: with ps; [
+    matplotlib # lib for creating great visualizations
     requests # HTTP client
     rich # fancy terminal output
   ]))
