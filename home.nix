@@ -394,6 +394,8 @@ xdg.mimeApps = {
     "video/x-msvideo"  = [ "vlc.desktop" ]; # avi
     "video/webm"       = [ "vlc.desktop" ];
     "video/quicktime"  = [ "vlc.desktop" ];
+    # Others
+    "application/pdf" = "firefox.desktop";
   };
 };
 
