@@ -146,6 +146,7 @@ i18n = {
       fcitx5-gtk
       fcitx5-nord
     ];
+    fcitx5.waylandFrontend = true;
   };
 };
 console = {
@@ -427,8 +428,8 @@ fonts = {
 
 lib.mkForce = {
   environment.variables = {
-    GTK_IM_MODULE = "wayland";
-    QT_IM_MODULE = "fcitx";
+    GTK_IM_MODULE = "wayland";  # Not ideal but w/e... 
+    QT_IM_MODULE = "fcitx";     # https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland
     XMODIFIERS = "@im=fcitx";
     SDL_IM_MODULE = "fcitx";
     GLFW_IM_MODULE = "ibus";
@@ -440,17 +441,17 @@ environment.variables = {
   XDG_ICON_FALLBACK = "/etc/nixos/dotfiles/images/blankicon.png";
 };
 
-environment.sessionVariables = {
+#environment.sessionVariables = {
 #  WLR_RENDERER = "vulkan";
 #  WLR_NO_HARDWARE_CURSORS = "1";
 #  __GLX_VENDOR_LIBRARY_NAME = "nvidia";
 #  LIBVA_DRIVER_NAME = "nvidia";
 #  GBM_BACKENDS_PATH = "/run/opengl-driver/lib/gbm";
-  FCITX_NO_PREEDIT_ON_PASSWORD = "1";
-};
+#  FCITX_NO_PREEDIT_ON_PASSWORD = "1";
+#};
 
 # ============================================
-# XDG
+# XDG PORTAL
 # ============================================
 
 xdg.portal = {
@@ -459,7 +460,7 @@ xdg.portal = {
 };
 
 # ============================================
-# USERS
+# USER STUFF
 # ============================================
 
 users = {
