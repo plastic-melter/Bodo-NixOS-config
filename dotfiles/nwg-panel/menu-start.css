@@ -1,37 +1,147 @@
+/* ~/.config/nwg-panel/style.css */
+
+/* Nord-inspired pastel palette */
+@define-color background #2e3440;
+@define-color background-alt #3b4252;
+@define-color foreground #d8dee9;
+@define-color accent #88c0d0;
+@define-color accent-alt #81a1c1;
+@define-color urgent #bf616a;
+@define-color success #a3be8c;
+@define-color warning #ebcb8b;
+
+/* Panel background */
 window {
-  background-color: rgba(12, 14, 15, 0.95);
-  border: 2px solid #5D4A78;
+  background-color: alpha(@background, 0.95);
   border-radius: 12px;
+  margin: 8px;
 }
 
-#outer-box {
-  background-color: transparent;
-  margin: 10px;
-}
-
-#search-entry {
-  background-color: #181b28;
-  color: #cdd6f4;
-  border: 2px solid #89b4fa;
-  border-radius: 8px;
-  padding: 8px;
-  margin: 10px;
-  font-size: 16px;
-}
-
+/* Buttons */
 button {
   background-color: transparent;
-  color: #cdd6f4;
   border: none;
-  padding: 10px;
+  border-radius: 8px;
+  padding: 4px 8px;
   margin: 2px;
-  border-radius: 6px;
+  color: @foreground;
+  transition: all 200ms ease;
 }
 
 button:hover {
-  background-color: #313244;
+  background-color: alpha(@accent, 0.2);
+  color: @accent;
 }
 
-button:selected {
-  background-color: #45475a;
+button:active {
+  background-color: alpha(@accent, 0.3);
+}
+
+/* Workspaces */
+button#workspace {
+  background-color: alpha(@background-alt, 0.5);
+  min-width: 32px;
+  margin: 4px 2px;
+}
+
+button#workspace:hover {
+  background-color: alpha(@accent-alt, 0.3);
+}
+
+button#workspace.focused {
+  background-color: @accent;
+  color: @background;
+}
+
+/* Clock */
+label#clock {
+  color: @foreground;
+  padding: 0 12px;
+  font-weight: 500;
+}
+
+/* Tray */
+#tray {
+  padding: 0 8px;
+}
+
+#tray button {
+  border-radius: 6px;
+  padding: 4px;
+}
+
+/* Controls (volume, brightness, etc) */
+button#control {
+  background-color: alpha(@background-alt, 0.6);
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin: 2px;
+}
+
+button#control:hover {
+  background-color: alpha(@accent, 0.25);
+}
+
+/* Sliders */
+scale {
+  background-color: transparent;
+  padding: 4px;
+}
+
+scale trough {
+  background-color: alpha(@background-alt, 0.8);
+  border-radius: 12px;
+  min-height: 8px;
+  min-width: 100px;
+}
+
+scale highlight {
+  background-color: @accent;
+  border-radius: 12px;
+}
+
+scale slider {
+  background-color: @foreground;
+  border-radius: 50%;
+  min-height: 16px;
+  min-width: 16px;
+  margin: -4px;
+}
+
+/* Launcher */
+button#launcher {
+  background-color: alpha(@accent, 0.2);
+  color: @accent;
+  font-weight: bold;
+  padding: 6px 12px;
+}
+
+button#launcher:hover {
+  background-color: alpha(@accent, 0.35);
+}
+
+/* Executor (custom modules) */
+#executor-label {
+  color: @foreground;
+  padding: 0 8px;
+}
+
+/* Tooltips */
+tooltip {
+  background-color: @background;
+  border: 1px solid alpha(@accent, 0.3);
+  border-radius: 8px;
+  color: @foreground;
+  padding: 8px;
+}
+
+tooltip label {
+  color: @foreground;
+}
+
+/* Separator */
+separator {
+  background-color: alpha(@foreground, 0.1);
+  min-width: 1px;
+  margin: 8px 6px;
 }

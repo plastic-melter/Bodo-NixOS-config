@@ -26,7 +26,6 @@ home.file = {
   ".config/foot".source = ./dotfiles/foot;
   ".config/hypr".source = ./dotfiles/hypr;
   ".config/nwg-drawer".source = ./dotfiles/nwg-drawer;
-  ".config/nwg-panel".source = ./dotfiles/nwg-panel;
   ".config/plutonium".source = ./dotfiles/plutonium;
   ".config/scripts".source = ./dotfiles/scripts;
   ".config/waybar".source = ./dotfiles/waybar;
@@ -479,6 +478,7 @@ home.packages = with pkgs; [
   nwg-launchers # lightweight program launchers
   nwg-look # GUI theme/config tool
   nwg-menu # basically a start menu
+  nwg-panel # like a settings panel with sliders etc.
   waybar # wayland status bar
   wdisplays # wayland display settings GUI
   wev # identify keystrokes in wayland

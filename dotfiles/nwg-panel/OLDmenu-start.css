@@ -1,0 +1,37 @@
+window {
+  background-color: rgba(12, 14, 15, 0.95);
+  border: 2px solid #5D4A78;
+  border-radius: 12px;
+}
+
+#outer-box {
+  background-color: transparent;
+  margin: 10px;
+}
+
+#search-entry {
+  background-color: #181b28;
+  color: #cdd6f4;
+  border: 2px solid #89b4fa;
+  border-radius: 8px;
+  padding: 8px;
+  margin: 10px;
+  font-size: 16px;
+}
+
+button {
+  background-color: transparent;
+  color: #cdd6f4;
+  border: none;
+  padding: 10px;
+  margin: 2px;
+  border-radius: 6px;
+}
+
+button:hover {
+  background-color: #313244;
+}
+
+button:selected {
+  background-color: #45475a;
+}
