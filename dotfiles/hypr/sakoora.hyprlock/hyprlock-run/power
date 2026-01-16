@@ -9,8 +9,8 @@ percentage() {
 	total_max=0
 	total_current=0
 	for battery in /sys/class/power_supply/BAT*; do
-		current=$(cat "$battery"/charge_now)
-		max=$(cat "$battery"/charge_full)
+		current=$(cat "$battery"/energy_now)
+		max=$(cat "$battery"/energy_full)
 
 		total_max=$((total_max+max))
 		total_current=$((total_current+current))
