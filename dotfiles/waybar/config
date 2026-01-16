@@ -10,6 +10,7 @@
     "custom/launcher",
     "tray",
     "custom/playerctl",
+    "custom/playerlabel",
     "clock",
     "pulseaudio",
     "backlight",
