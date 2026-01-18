@@ -13,8 +13,7 @@ Config files for:
 - [Yazi](https://yazi-rs.github.io), an awesome TUI file browser.
 - [AGS](https://aylur.github.io/ags/), a great way to ruin your sleep schedule. **⚠️ WIP**
 - [EWW](https://elkowar.github.io/eww/), an easier way to ruin your sleep schedule **⚠️ WIP**
-- [wlogout](https://github.com/ArtsyMacaw/wlogout), a stylish way to take a break from the computer.
-...among others, along with various useful scripts. 
+...and more, along with some useful scripts. 
 
 Personal to-do list: 
 - explore AGS and EWW
