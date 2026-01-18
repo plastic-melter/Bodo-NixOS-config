@@ -46,7 +46,7 @@ git diff flake.lock | grep -E '(Updated input|→)' | head -10
 
 echo -e "${PURPLE}Committing flake changes to Git...${NC}"
 git add .
-git commit -m "routine full system upgrade auto-commit" 2>/dev/null
+git commit -m "flake update: $(date '+%Y-%m-%d %H:%M:%S')" 2>/dev/null
 
 echo -e "${PURPLE}Syncing with GitHub...${NC}"
 git pull --rebase origin main || true
