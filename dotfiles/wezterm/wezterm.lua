@@ -31,7 +31,7 @@ config = {
   background = {
     {
       source = {
-         File = "/etc/nixos/dotfiles/images/greetings/utau.jpg",
+         File = "/etc/nixos/dotfiles/images/utau.jpg",
       },
       hsb = {
         hue = 1.0,

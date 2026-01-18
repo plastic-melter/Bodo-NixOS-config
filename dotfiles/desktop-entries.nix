@@ -277,7 +277,7 @@
     name = "東方12.3";
     genericName = "th12.3";
     exec = "wine /home/joe/Backups/Games/quick-access/th12.3/th12.3/th123.exe";
-    icon = "/etc/nixos/dotfiles/images/th12.3.png";
+    icon = "/etc/nixos/dotfiles/images/th12.3.jpg";
     terminal = false;
     categories = [ "Game" ];
     comment = "Hisoutensoku";
@@ -321,7 +321,7 @@
     name = "東方14";
     genericName = "th14";
     exec = "wine /home/joe/Backups/Games/quick-access/th14/th14/th14.exe";
-    icon = "/etc/nixos/dotfiles/images/th14.png";
+    icon = "/etc/nixos/dotfiles/images/th14.jpg";
     terminal = false;
     categories = [ "Game" ];
     comment = "Double Dealing Character";
@@ -332,7 +332,7 @@
     name = "東方14.3";
     genericName = "th14.3";
     exec = "wine /home/joe/Backups/Games/quick-access/th14.3/th14.3/th143.exe";
-    icon = "/etc/nixos/dotfiles/images/th14.3.png";
+    icon = "/etc/nixos/dotfiles/images/th14.3.jpg";
     terminal = false;
     categories = [ "Game" ];
     comment = "Impossible Spell Card";
@@ -365,7 +365,7 @@
     name = "東方16.5";
     genericName = "th16.5";
     exec = "wine /home/joe/Backups/Games/quick-access/th16.5/th16.5/th165.exe";
-    icon = "/etc/nixos/dotfiles/images/th16.5.png";
+    icon = "/etc/nixos/dotfiles/images/th16.5.jpg";
     terminal = false;
     categories = [ "Game" ];
     comment = "Violet Detector";
@@ -387,7 +387,7 @@
     name = "東方18";
     genericName = "th18";
     exec = "wine /home/joe/Backups/Games/quick-access/th18/th18/th18.exe";
-    icon = "/etc/nixos/dotfiles/images/th18.png";
+    icon = "/etc/nixos/dotfiles/images/th18.jpg";
     terminal = false;
     categories = [ "Game" ];
     comment = "Unconnected Marketeers";
