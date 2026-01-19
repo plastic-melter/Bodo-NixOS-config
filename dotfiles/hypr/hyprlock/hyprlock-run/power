@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. "$HOME"/.config/hypr/sakoora.hyprlock/colors-hyprlock.sh
+. "$HOME"/.config/hypr/hyprlock/colors-hyprlock.sh
 percentage() {
 	if [ "$desktop" -eq "1" ]; then
 		echo "<span>  </span>"
