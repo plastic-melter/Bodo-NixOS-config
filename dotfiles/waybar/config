@@ -126,7 +126,7 @@
     "interval": 1
   },
   "network": {
-    "format-wifi": "󰤨 {essid}",
+    "format-wifi": "󰤨  {essid}",
     "format-ethernet": "󰈀  {ifname}",
     "format-linked": "󰈀  {ifname} (No IP)",
     "format-disconnected": "󰤭",
@@ -138,7 +138,7 @@
     "spacing": 5
   },
   "backlight": {
-    "format": " {percent}%",
+    "format": "  {percent}%",
     "format-icons": ["", "", "", "", "", "", "", "", ""],
     "tooltip-format": ""
   },

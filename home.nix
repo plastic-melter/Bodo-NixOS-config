@@ -11,7 +11,7 @@ home = {
 };
 
 # ============================================
-# DOTFILES TO PULL INTO ~/.config
+# DOTFILE SOURCING
 # ============================================
 
 home.file = {
@@ -32,6 +32,7 @@ home.file = {
   ".config/wezterm".source = ./dotfiles/wezterm;
   ".config/wlogout".source = ./dotfiles/wlogout;
   ".config/wofi".source = ./dotfiles/wofi;
+  ".config/xdg-desktop-portal".source = ./dotfiles/xdg-desktop-portal;
   ".config/yazi".source = ./dotfiles/yazi;
 };
 

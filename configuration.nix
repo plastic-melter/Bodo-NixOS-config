@@ -410,6 +410,7 @@ fonts = {
     ipafont
     kochi-substitute
     liberation_ttf
+    nerd-fonts.fira-code
     nerd-fonts.symbols-only
     noto-fonts-cjk-sans
     source-code-pro
@@ -457,6 +458,12 @@ environment.variables = {
 xdg.portal = {
   enable = true;
   extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
+  config = {
+    common = {
+      default = "hyprland";
+      "org.freedesktop.impl.portal.FileChooser" = "gtk";
+    };
+  };
 };
 
 # ============================================
