@@ -16,6 +16,7 @@ Config files for:
 ...and more, along with some useful scripts. 
 
 Personal to-do list: 
+- wayfire config
 - explore AGS and EWW
 - make things look nicer (skill issue)
 

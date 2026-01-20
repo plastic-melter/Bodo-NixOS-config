@@ -224,6 +224,10 @@ wayland.windowManager = {
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
   };
 
+  # wayfire? already installed via conf.nix, and wayfire.ini is written to .config...
+
+};
+
 # ============================================
 # SERVICES
 # ============================================
