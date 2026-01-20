@@ -29,6 +29,7 @@ home.file = {
   ".config/plutonium".source = ./dotfiles/plutonium;
   ".config/scripts".source = ./dotfiles/scripts;
   ".config/waybar".source = ./dotfiles/waybar;
+  ".config/wayfire".source = ./dotfiles/wayfire;
   ".config/wezterm".source = ./dotfiles/wezterm;
   ".config/wlogout".source = ./dotfiles/wlogout;
   ".config/wofi".source = ./dotfiles/wofi;
@@ -488,6 +489,7 @@ home.packages = with pkgs; [
   nwg-look # GUI theme/config tool
   nwg-menu # basically a start menu
   nwg-panel # like a settings panel with sliders etc.
+  swaybg # set desktop wallpaper; hyprpaper not work w/ wayfire
   waybar # wayland status bar
   wdisplays # wayland display settings GUI
   wev # identify keystrokes in wayland

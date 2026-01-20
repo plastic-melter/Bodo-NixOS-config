@@ -23,7 +23,9 @@ nix = {
       "https://nix-community.cachix.org"
     ];
     require-sigs = true;
-    trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+    trusted-public-keys = [
+      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+    ];
     accept-flake-config = true;
   };
 };
@@ -85,7 +87,23 @@ nixpkgs.config = {
 
 boot = {
   loader = {
-    systemd-boot.enable = true;
+    systemd-boot {
+      enable = true;
+      configurationLimit = 25;
+      editor = false; # prevent root access by passing kernel param int=/bin/sh
+      extraEntries = {
+        "reboot.conf" = ''
+          title Reboot
+          efi /EFI/systemd/systemd-bootx64.efi
+          options systemd.unit=reboot.target
+        '';
+        "poweroff.conf" = ''
+          title Power Off
+          efi /EFI/systemd/systemd-bootx64.efi
+          options systemd.unit=poweroff.target
+        '';
+      };
+    };
     efi.canTouchEfiVariables = true;
   };
   kernelModules = [ "zenpower" "ntsync" ]; # ntsync for CoD WaW
