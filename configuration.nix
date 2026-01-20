@@ -9,7 +9,7 @@ imports = [
 ];
 
 # ============================================
-# NIX CONFIGURATION
+# NIXPKGS CONFIGURATION
 # ============================================
 
 nix = {
@@ -149,10 +149,12 @@ i18n = {
     fcitx5.waylandFrontend = true;
   };
 };
+
 console = {
   font = "Lat2-Terminus16";
   keyMap = "jp106";
 };
+
 # ============================================
 # HARDWARE
 # ============================================
@@ -218,8 +220,8 @@ security = {
 # SERVICES
 # ============================================
 
+# Display and Desktop
 services = {
-  # Display and Desktop
   xserver = {
     enable = true;
     videoDrivers = [ "radeon" ];
@@ -329,7 +331,7 @@ services = {
   '';
 };
 
-# Firmware update checker (runs after boot to avoid slowdown)
+# Firmware update checker (runs AFTER boot to avoid slowdown)
 systemd.user.services.fwupd-check = {
   description = "Check for firmware updates";
   script = ''
@@ -355,7 +357,7 @@ systemd.user.timers.fwupd-check = {
 };
 
 # ============================================
-# PROGRAMS
+# SYSTEM-WIDE PROGRAM CONFIG
 # ============================================
 
 programs = {
@@ -393,7 +395,7 @@ programs = {
     enable = true;
     xwayland.enable = true;
     plugins = with pkgs.wayfirePlugins; [
-      wcm
+      wcm # wayfire config manager: GTK app
       wayfire-plugins-extra
     ];
   };
@@ -424,7 +426,7 @@ fonts = {
 };
 
 # ============================================
-# ENVIRONMENT
+# ENVIRONMENT VARIABLES
 # ============================================
 
 lib.mkForce = {
@@ -467,7 +469,7 @@ xdg.portal = {
 };
 
 # ============================================
-# USER STUFF
+# USER ACCOUNT
 # ============================================
 
 users = {
@@ -497,6 +499,7 @@ users = {
 # ============================================
 
 environment.systemPackages = with pkgs; [
+
   # HARDWARE + DRIVERS + EXTERNAL DEVICES
   acpid # watch ACPI events
   alsa-utils # sound utils

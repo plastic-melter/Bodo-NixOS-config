@@ -164,7 +164,7 @@ xdg.configFile = {
 # ============================================
 
 programs = {
-#  obs-studio.enable = true;
+
   direnv = {
     enable = true;
     nix-direnv.enable = true;
@@ -212,15 +212,17 @@ manual = {
 };
 
 # ============================================
-# WAYLAND & HYPRLAND
+# WAYLAND COMPOSITOR
 # ============================================
 
-wayland.windowManager.hyprland = {
-  enable = true;
-  xwayland.enable = true;
-  systemd.enable = false;
-  package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-};
+wayland.windowManager = {
+
+  hyprland = {
+    enable = true;
+    xwayland.enable = true;
+    systemd.enable = false;
+    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+  };
 
 # ============================================
 # SERVICES
@@ -402,7 +404,7 @@ xdg.mimeApps = {
 
 
 # ============================================
-# HOME PACKAGES
+# USER PACKAGES
 # ============================================
 
 home.packages = with pkgs; [
