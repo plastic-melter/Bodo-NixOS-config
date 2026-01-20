@@ -87,7 +87,7 @@ nixpkgs.config = {
 
 boot = {
   loader = {
-    systemd-boot {
+    systemd-boot = {
       enable = true;
       configurationLimit = 25;
       editor = false; # prevent root access by passing kernel param int=/bin/sh
