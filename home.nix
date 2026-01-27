@@ -200,7 +200,7 @@ programs = {
       neoscroll-nvim                    # Smooth scrolling
       toggleterm-nvim                   # Floating terminal
     ];
-    extraLuaConfig = builtins.readFile ./dotfiles/neovim/init.lua;
+    initLua = builtins.readFile ./dotfiles/neovim/init.lua;
   };
 
   zsh = import ./dotfiles/zsh/zshrc.nix { inherit pkgs lib; };
@@ -425,7 +425,7 @@ home.packages = with pkgs; [
   gimp # GNU image manipulation program
   grayjay # youtube frontend
   kdePackages.kcolorchooser # hex color tool GUI
-  kdePackages.kdenlive # GUI video editor
+  #kdePackages.kdenlive # GUI video editor NOT BUILDING JAN 26
   libreoffice-fresh # office app suite
   moonlight-qt # desktop steaming / remote access
   mpv # simple video player
@@ -440,7 +440,7 @@ home.packages = with pkgs; [
   tagainijisho # japanese dictionary
   thunar # GUI file manager
   vlc # video player
-  webcord # webkit app for discord, DOESN'T BUILD JAN 12 2026
+  webcord # webkit app for discord
   wezterm # dope-ass terminal emulator
   yazi # TUI file manager
   zoom-us # video chat software
