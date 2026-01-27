@@ -33,9 +33,8 @@ sleep 0.3
 # --- UPDATE FLAKE -------------------------------------------------------------
 echo -e "${PURPLE}Updating flake inputs...${NC}"
 cd /etc/nixos
-
 doas nix flake update
-# Proper fail check
+
 if [ $? -ne 0 ]; then
     echo -e "${RED}flake update failed.${NC}"
     exit 1
@@ -44,15 +43,9 @@ fi
 echo -e "${CYAN}Updated packages:${NC}"
 git diff flake.lock | grep -E '(Updated input|→)' | head -10
 
-echo -e "${PURPLE}Committing flake changes to Git...${NC}"
+# Stage changes but don't commit yet
 git add .
-git commit -m "flake update: $(date '+%Y-%m-%d %H:%M:%S')" 2>/dev/null
 
-echo -e "${PURPLE}Syncing with GitHub...${NC}"
-git pull --rebase origin main || true
-git push -u origin main
-
-echo -e "${CYAN}Git push complete. Repo is clean for rebuild.${NC}"
 echo -e "\e[3m~ Flake updated successfully ~\e[0m"
 sleep 0.3
 
@@ -72,18 +65,19 @@ doas nix-env --list-generations --profile /nix/var/nix/profiles/system | wc -l
 echo -e "${CYAN}Disk usage summary:${NC}"
 df -h | grep -v 'tmpfs' | grep -v 'efi'
 
-# --- OPTIONAL SECOND GIT SYNC -------------------------------------------------
-echo -e "${PURPLE}Syncing /etc/nixos to GitHub...${NC}"
-git add .
-git commit -m "update: $(date '+%Y-%m-%d %H:%M:%S')" 2>/dev/null
-
-git pull --rebase origin main || true
-git push -u origin main
-
-if [ $? -eq 0 ]; then
-    echo -e "${CYAN}Git push successful.${NC}"
+# --- GIT SYNC (only after successful rebuild) ---------------------------------
+if ping -c 1 -W 2 github.com >/dev/null 2>&1; then
+    echo -e "${PURPLE}Syncing /etc/nixos to GitHub...${NC}"
+    git commit -m "system update: $(date '+%Y-%m-%d %H:%M:%S')" 2>/dev/null || true
+    git pull --rebase origin main 2>/dev/null || true
+    
+    if git push -u origin main 2>/dev/null; then
+        echo -e "${CYAN}Git sync complete.${NC}"
+    else
+        echo -e "${CYAN}Git sync failed (check connection).${NC}"
+    fi
 else
-    echo -e "${RED}Git push failed.${NC}"
+    echo -e "${CYAN}Git sync skipped (GitHub unreachable).${NC}"
 fi
 
 # --- DONE ---------------------------------------------------------------------
