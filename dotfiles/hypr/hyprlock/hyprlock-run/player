@@ -45,11 +45,11 @@ process() {
 		name="No media playing"
 		artist="No media playing"
 	fi
-	if [ "${#name}" -gt "23" ]; then
-		name="$(echo "$name" | cut -c1-20)..."
+	if [ "${#name}" -gt "28" ]; then
+		name="$(echo "$name" | cut -c1-25)..."
 	fi
-	if [ "${#artist}" -gt "23" ]; then
-		artist="$(echo "$artist" | cut -c1-20)..."
+	if [ "${#artist}" -gt "28" ]; then
+		artist="$(echo "$artist" | cut -c1-25)..."
 	fi
 	artist="<span style=\"italic\" weight=\"light\"> $artist </span>"
 }
