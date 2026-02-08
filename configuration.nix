@@ -111,6 +111,9 @@ boot = {
   kernelModules = [ "zenpower" "ntsync" ]; # ntsync for CoD WaW
   kernelPackages = pkgs.linuxPackages_xanmod_latest; # ePiC gAmInG kErNel
   blacklistedKernelModules = [ "k10temp" ];
+  extraModprobeConfig = ''
+    options cfg80211 ieee80211_regdom=US
+  ''; # above: JP/US IR flag mismatch
 };
 
 swapDevices = [{device = "/swapfile"; size = 16000;}];
@@ -558,6 +561,7 @@ environment.systemPackages = with pkgs; [
   ranger # TUI file browser
   rpiboot # tool to boot Pis over USB
   s-tui # terminal TUI for CPU temp/power/freq
+  scanmem # reverse engineering LoT2 lol
   stress # hardware stress tool
   tmux # terminal multiplexer
   traceroute # traces network hops
@@ -596,6 +600,9 @@ environment.systemPackages = with pkgs; [
   astal.battery
   astal.wireplumber
   astal.network
+
+  qmk # temporary
+dos2unix
 ];
 
 ################################################

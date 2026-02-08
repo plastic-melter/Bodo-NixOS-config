@@ -425,7 +425,7 @@ home.packages = with pkgs; [
   gimp # GNU image manipulation program
   grayjay # youtube frontend
   kdePackages.kcolorchooser # hex color tool GUI
-  #kdePackages.kdenlive # GUI video editor NOT BUILDING JAN 26
+  #kdePackages.kdenlive # video editing suite
   libreoffice-fresh # office app suite
   moonlight-qt # desktop steaming / remote access
   mpv # simple video player
