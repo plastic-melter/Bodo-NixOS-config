@@ -177,8 +177,6 @@ programs = {
     settings = {
       user.name = "plastic-melter";
       user.email = "140357149+plastic-melter@users.noreply.github.com";
-    };
-    settings = {
       safe.directory = "/etc/nixos";
     };
   };
@@ -377,6 +375,11 @@ qt = {
   style.name = "kvantum";
 };
 
+xresources.properties = {
+  "Nsxiv.window.background" = "#1e1e1e";
+  "Nsxiv.window.foreground" = "#d4d4d4";
+};
+
 # ============================================
 # DESKTOP ENTRIES
 # ============================================
@@ -391,11 +394,11 @@ xdg.mimeApps = {
   enable = true;
   defaultApplications = {
     # Images → imv
-    "image/png"  = [ "imv.desktop" ];
-    "image/jpeg" = [ "imv.desktop" ];
-    "image/jpg"  = [ "imv.desktop" ];
-    "image/webp" = [ "imv.desktop" ];
-    "image/gif"  = [ "imv.desktop" ];
+    "image/png"  = [ "nsxiv.desktop" ];
+    "image/jpeg" = [ "nsxiv.desktop" ];
+    "image/jpg"  = [ "nsxiv.desktop" ];
+    "image/webp" = [ "nsxiv.desktop" ];
+    "image/gif"  = [ "nsxiv.desktop" ];
     # Video → VLC
     "video/mp4"        = [ "vlc.desktop" ];
     "video/x-matroska" = [ "vlc.desktop" ]; # mkv
@@ -461,11 +464,13 @@ home.packages = with pkgs; [
   jq # JSON preview in TUI file manager
   mission-center # system monitoring GUI
   networkmanagerapplet # nm-applet tray utility
+  nsxiv # image viewer, more features than imv
   pavucontrol # audio control GUI
   playerctl # audio playback control utility
   poppler # PDF previews in TUi file manager
   resvg # yazi: SVG image preview
   ripgrep # nvim: required for telescope live_grep
+  synology-drive-client # desktop client for Synology NAS
   tumbler # image previews in file manager
   unrar # extract .rar files
   wofi # app launcher
@@ -504,7 +509,7 @@ home.packages = with pkgs; [
   mame # arcade emulator
   nsnake # terminal snake game
   protontricks # allows for Steam proton prefixes
-  wineWowPackages.waylandFull # wine for wayland
+  wineWow64Packages.waylandFull # wine for wayland
   winetricks # install DLLs/etc into wine prefixes
 
   # PROGRAMMING

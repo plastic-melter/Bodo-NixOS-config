@@ -124,19 +124,11 @@ swapDevices = [{device = "/swapfile"; size = 16000;}];
 
 networking = {
   hostName = "X13G3";
-#  firewall = {
-#    allowedTCPPorts = [ ];  # Don't expose 22000 globally
-#    interfaces.wlp0s20f3.allowedTCPPorts = [ 22000 ];  # Only on WiFi interface
-#  };
   useDHCP = false;
   networkmanager = {
     enable = true;
-#    unmanaged = [ "enp177s0" "enp177s0u1c2" ];
   };
-#  interfaces = {
-#    wlp0s20f3.useDHCP = true;
-#  };
-}; 
+};
 
 # Disable network wait services for faster boot
 systemd.network.wait-online.enable = false;
@@ -317,6 +309,11 @@ services = {
   gnome.gnome-keyring.enable = true;
   gvfs.enable = true; # required for Thunar to use .local/share/Trash
 
+  syncthing = {
+    enable = true;
+    openDefaultPorts = true;
+  };
+
   # Power Management
   tlp = {
     enable = true;
@@ -324,14 +321,6 @@ services = {
       START_CHARGE_THRESH_BAT0 = 90; 
       STOP_CHARGE_THRESH_BAT0 = 95; 
     };
-  };
-
-  # Syncthing
-  syncthing = {
-    enable = true;
-    user = "joe";
-    group = "users";
-    dataDir = "/home/joe/.local/share/syncthing";
   };
 
   # USB Device Rules

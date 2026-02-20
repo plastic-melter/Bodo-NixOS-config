@@ -25,7 +25,6 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Stage files
-git config --global --add safe.directory /etc/nixos
 echo -e "${CYAN}Staging new files...${NC}"
 git -C /etc/nixos add -A
 

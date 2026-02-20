@@ -144,7 +144,7 @@
     "scroll-step": 5
   },
   "custom/launcher": {
-    "format": "󱄅",
+    "format": "󱄅 ",
     "on-click": "nwg-menu -va \"top\" ",
     "tooltip": false
   },
