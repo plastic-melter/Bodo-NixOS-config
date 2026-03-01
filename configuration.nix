@@ -303,7 +303,10 @@ services = {
   udisks2.enable = true;
   fstrim.enable = true;
   fwupd.enable = true;
-  printing.enable = true;
+  printing = {
+    enable = true;
+    drivers = [ pkgs.brlaser ];
+  };
   openssh.enable = true;
   blueman.enable = true;
   gnome.gnome-keyring.enable = true;

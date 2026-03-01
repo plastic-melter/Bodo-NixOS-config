@@ -422,7 +422,6 @@ home.packages = with pkgs; [
   arduino-cli # CLI arduino tools
   audacious # music player
   bolt-launcher # OSRS RuneLite launcher
-  chromium # ...in case Teams/etc doesn't play nice with Firefox
   drawio # flowchart/diagram tool
   firefox # the best web browser
   gimp # GNU image manipulation program
