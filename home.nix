@@ -323,6 +323,7 @@ home.sessionVariables = {
   GI_TYPELIB_PATH = "/run/current-system/sw/lib/girepository-1.0";
   EDITOR = "nvim";
   VISUAL = "nvim";
+  SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/keyring/ssh";
 };
 
 systemd.user.sessionVariables = {
@@ -406,7 +407,12 @@ xdg.mimeApps = {
     "video/webm"       = [ "vlc.desktop" ];
     "video/quicktime"  = [ "vlc.desktop" ];
     # Others
-    "application/pdf" = "firefox.desktop";
+    "application/pdf"           = "firefox.desktop";
+    "text/html"                 = "firefox.desktop";
+    "x-scheme-handler/http"     = "firefox.desktop";
+    "x-scheme-handler/https"    = "firefox.desktop";
+    "x-scheme-handler/about"    = "firefox.desktop";
+    "x-scheme-handler/unknown"  = "firefox.desktop";
   };
 };
 
@@ -512,6 +518,8 @@ home.packages = with pkgs; [
   winetricks # install DLLs/etc into wine prefixes
 
   # PROGRAMMING
+  rpiboot # flash RPi EEPROM over USB
+  rpi-imager # convenient GUI to flash RPi OSes
   (python3.withPackages (ps: with ps; [
     matplotlib # self-explanatory
     pandas # data structures

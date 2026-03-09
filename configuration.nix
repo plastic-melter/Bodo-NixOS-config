@@ -309,7 +309,9 @@ services = {
   };
   openssh.enable = true;
   blueman.enable = true;
-  gnome.gnome-keyring.enable = true;
+  gnome.gnome-keyring = {
+    enable = true;
+  };
   gvfs.enable = true; # required for Thunar to use .local/share/Trash
 
   syncthing = {
