@@ -417,43 +417,6 @@
   };
 
   # ============================================
-  # GAMES - SEIHOU
-  # ============================================
-  
-  seihou1 = {
-    name = "西方1";
-    genericName = "seihou1";
-    exec = "wine /home/joe/Backups/Games/quick-access/Seihou1/seihou1.exe";
-    icon = "/etc/nixos/dotfiles/images/seihou1.jpg";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "秋霜玉 (Shuusou Gyoku)";
-    type = "Application";
-  };
-  
-  seihou2 = {
-    name = "西方2";
-    genericName = "seihou2";
-    exec = "wine /home/joe/Backups/Games/quick-access/Seihou2/seihou2.exe";
-    icon = "/etc/nixos/dotfiles/images/seihou2.jpg";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "稀翁玉 (Kioh Gyoku)";
-    type = "Application";
-  };
-  
-  seihou3 = {
-    name = "西方3";
-    genericName = "seihou3";
-    exec = "wine /home/joe/Backups/Games/quick-access/Seihou3/seihou3.exe";
-    icon = "/etc/nixos/dotfiles/images/seihou3.jpg";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "幡紫竜 (Banshiryuu)";
-    type = "Application";
-  };
-
-  # ============================================
   # GAMES - OTHER
   # ============================================
   
@@ -476,6 +439,17 @@
     terminal = false;
     categories = [ "Game" ];
     comment = "DRM-free copy!";
+    type = "Application";
+  };
+
+  slippi = {
+    name = "Slippi";
+    genericName = "Slippi";
+    exec = "appimage-run /home/joe/Backups/Games/Slippi-Launcher-2.13.3-x86_64.AppImage";
+    icon = "/etc/nixos/dotfiles/images/shine.png";
+    terminal = false;
+    categories = [ "Game" ];
+    comment = "Melee netplay!";
     type = "Application";
   };
 

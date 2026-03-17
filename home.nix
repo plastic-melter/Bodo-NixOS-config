@@ -448,7 +448,7 @@ home.packages = with pkgs; [
   tagainijisho # japanese dictionary
   thunar # GUI file manager
   vlc # video player
-  webcord # webkit app for discord
+  #webcord # webkit app for discord
   wezterm # dope-ass terminal emulator
   yazi # TUI file manager
   zoom-us # video chat software
@@ -509,6 +509,7 @@ home.packages = with pkgs; [
   wl-clipboard # enable copy-paste in wayland
 
   # GAMING
+  appimage-run # slippi is the only reason to use appimages
   dolphin-emu # GameCube/Wii emulator
   lutris # game manager like steam
   mame # arcade emulator

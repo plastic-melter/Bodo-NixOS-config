@@ -31,12 +31,12 @@ config = {
   background = {
     {
       source = {
-         File = "/etc/nixos/dotfiles/images/greetings/utau.jpg",
+        File = "/etc/nixos/wallpapers/Sky_or_Space/976156small.png",
       },
       hsb = {
         hue = 1.0,
-       saturation = 1.0,
-        brightness = 0.005,
+        saturation = 1.0,
+        brightness = 0.4,
       },
     },
     {
@@ -46,7 +46,7 @@ config = {
       },
       width = "100%",
       height = "100%",
-      opacity = 0.9,
+      opacity = 0.8,
     },
   },
 }
