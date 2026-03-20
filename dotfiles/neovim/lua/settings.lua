@@ -9,6 +9,7 @@ vim.filetype.add({
 -- General settings
 vim.keymap.set('i', '<ScrollWheelUp>', '<Nop>') -- Disable scroll up in insert mode (prevents "2222" spam)
 vim.keymap.set('i', '<ScrollWheelDown>', '<Nop>') -- Disable scroll down in insert mode (prevents "2222" spam)
+vim.opt.undofile = true -- Persistent undo's across reboots, etc: uses ~/.vim/undodir
 vim.opt.autoindent = true -- Copy indent from current line when starting new line
 vim.opt.smartindent = false -- Disable automatic indenting for C-like syntax
 vim.opt.number = true -- Show absolute line numbers

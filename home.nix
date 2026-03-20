@@ -35,6 +35,8 @@ home.file = {
   ".config/wofi".source = ./dotfiles/wofi;
   ".config/xdg-desktop-portal".source = ./dotfiles/xdg-desktop-portal;
   ".config/yazi".source = ./dotfiles/yazi;
+
+  ".vim/undodir/.keep".text = ""; # creates ~/.vim/undodir
 };
 
 # ============================================
@@ -349,7 +351,7 @@ dconf.settings = {
   };
   "org/gnome/desktop/interface" = {
     color-scheme = "prefer-dark";
-    gtk-theme = "Arc-Dark"; 
+    gtk-theme = "Adwaita-dark"; 
     icon-theme = "Papirus-Dark";
   };
 };
@@ -361,8 +363,7 @@ dconf.settings = {
 gtk = {
   enable = true;
   theme = {
-    name = "Arc-Dark";
-    package = pkgs.arc-theme;
+    name = "Adwaita-dark";
   };
   iconTheme = {
     name = "Papirus-Dark";
@@ -509,7 +510,7 @@ home.packages = with pkgs; [
   wl-clipboard # enable copy-paste in wayland
 
   # GAMING
-  appimage-run # slippi is the only reason to use appimages
+  appimage-run # just for Slippi
   dolphin-emu # GameCube/Wii emulator
   lutris # game manager like steam
   mame # arcade emulator

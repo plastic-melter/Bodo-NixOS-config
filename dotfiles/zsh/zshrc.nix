@@ -64,5 +64,6 @@
     kms = "/etc/nixos/dotfiles/scripts/kms.sh";
     notes = "vim ~/.notes.md";
     homeclean = "env --chdir=/home/joe /etc/nixos/dotfiles/scripts/homeclean.sh";
+    gc = "git add -A && git commit -m";
   };
 }
