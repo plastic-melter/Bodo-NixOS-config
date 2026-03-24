@@ -218,7 +218,6 @@ security = {
   rtkit.enable = true;
   polkit.enable = true;
   sudo.enable = false;
-  pam.services.hyprland.enableGnomeKeyring = true;
   doas = {
     enable = true;
     wheelNeedsPassword = false;
@@ -309,9 +308,6 @@ services = {
   };
   openssh.enable = true;
   blueman.enable = true;
-  gnome.gnome-keyring = {
-    enable = true;
-  };
   gvfs.enable = true; # required for Thunar to use .local/share/Trash
 
   syncthing = {
