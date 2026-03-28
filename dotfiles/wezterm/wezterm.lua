@@ -31,18 +31,17 @@ config = {
   background = {
     {
       source = {
-        File = "/etc/nixos/wallpapers/Sky_or_Space/976156small.png",
+        File = "/etc/nixos/wallpapers/watercaustic.jpeg",
       },
       hsb = {
         hue = 1.0,
         saturation = 1.0,
-        brightness = 0.1,
+        brightness = 0.0,
       },
     },
     {
       source = {
-        --Color = "#2e3440",
-        Color = "131728",
+        Color = "100e1a",
       },
       width = "100%",
       height = "100%",

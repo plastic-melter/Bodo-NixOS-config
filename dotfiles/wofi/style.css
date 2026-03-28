@@ -2,57 +2,59 @@
     all: unset;
     font-family: "NotoSansCJK:style=Bold";
     font-size: 32px;
-    color: #ffffd8;
+    color: #d4cfe8;
 }
 
 #window {
-    background-color: rgba(1, 1, 1, 0);
+    background-color: rgba(0, 0, 0, 0);
     border-radius: 20px;
-    border: 2px solid #aaaab0;
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5);
+    border: 2px solid #7a5a6a;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
 }
 
 #outer-box {
-    background-color: rgba(1, 1, 1, 0.85);
-    border: 2px solid #999999;
+    background-color: rgba(13, 15, 28, 0.92);
+    border: 2px solid #5a3a4a;
     border-radius: 20px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
     overflow: hidden;
 }
 
 #scroll {
-    border: 4px solid #ccc2ff;
+    border: 2px solid #4a3050;
     margin: 1rem;
     border-radius: 12px;
-    background-color: #181b28;
+    background-color: rgba(20, 18, 35, 0.85);
     box-shadow: inset 0px 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 #input {
     margin: 1rem 8rem;
-    border: 4px solid #ccc2ff;
+    border: 2px solid #7a5a6a;
     border-radius: 12px;
     padding: 0.5rem 1rem;
-    background-color: #181b28;
+    background-color: rgba(20, 18, 35, 0.85);
     box-shadow: inset 0px 2px 6px rgba(0, 0, 0, 0.4);
-    color: #ffffd8;
+    color: #d4cfe8;
 }
 
 #entry {
     margin: 0.25rem 0.75rem;
     padding: 0.5rem 1rem;
-    color: #ffffd8;
-    background-color: rgba(255, 255, 255, 0.05);
+    color: #8a8098;
+    background-color: rgba(255, 255, 255, 0.03);
     border-radius: 12px;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #entry:hover {
-    background-color: #33334d;
+    background-color: rgba(140, 96, 112, 0.15);
+    color: #d4cfe8;
 }
 
 #entry:selected {
-    color: #89fc00;
+    color: #d4cfe8;
     font-weight: bold;
-    background-color: #222238;
+    background-color: rgba(140, 96, 112, 0.3);
+    border-radius: 12px;
 }

@@ -519,6 +519,7 @@ environment.systemPackages = with pkgs; [
   android-tools # contains ADB, fastboot, etc
   brightnessctl # control laptop display backlight
   dfu-util # flash STM32s in DFU mode
+  exfatprogs # format stuff as exfat
   jmtpfs # allows for Android MTP; use instead of mtpfs
   lm_sensors # tons of hardware sensors
   lshw # list hardware inventory
@@ -557,6 +558,7 @@ environment.systemPackages = with pkgs; [
   traceroute # traces network hops
   trash-cli # alias rm -> similar to Recycle Bin
   unzip # extracting .zip files
+  upower #dbus service for power management
   usbutils # handy USB utils like lsusb
   vim # the best text editor
   wget # network downloader

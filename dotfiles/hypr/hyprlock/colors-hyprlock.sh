@@ -1,5 +1,5 @@
-background='#181926'
-foreground='#cad3f5'
+background='#0d0f1c'
+foreground='#8c6070'
 
-color1='#8aadf4'
-color2='#c6a0f6'
+color1='#7a5a6a'
+color2='#d4cfe8'

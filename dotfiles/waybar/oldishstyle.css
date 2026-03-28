@@ -1,11 +1,13 @@
-/* Koi palette (revised - cool lavender/purple):
-   bg:        #0d0f1c
-   surface:   #14162a
-   border:    #7a6a9a  (cool lavender)
-   text:      #d4cfe8
-   subtext:   #8a8098
-   inactive:  #2a2640
-   highlight: #6a5a8a
+/* Koi palette:
+   bg:        #0d0f1c  (deep navy)
+   surface:   #141625  (slightly lighter navy)
+   border:    #7a5a6a  (muted mauve)
+   text:      #d4cfe8  (pale lavender-white)
+   subtext:   #8a8098  (muted lavender)
+   inactive:  #3a3450  (dark purple-grey)
+   active-bg: #8c6070  (dusty rose, from fish patches)
+   launcher:  #b08898  (lighter mauve)
+   recorder:  #9a7080  (rose)
 */
 
 * {
@@ -29,7 +31,7 @@ window#waybar {
     padding: 3px 12px;
     margin: 0px 3px;
     border-radius: 8px;
-    border-bottom: 2px solid #7a6a9a;
+    border-bottom: 2px solid #7a5a6a;
 }
 
 #workspaces button {
@@ -39,107 +41,55 @@ window#waybar {
     color: #8a8098;
     background-color: transparent;
     transition: all 0.2s ease;
-    border: 1px solid #2a2640;
+    border: 1px solid #3a3450;
 }
 
 #workspaces button.active { 
     color: #0d0f1c;
-    background: linear-gradient(135deg, #a99ac8, #7a6a9a);
-    border: 1px solid #9a8ab8;
+    background: linear-gradient(135deg, #b09aae, #8c6070);
+    border: 1px solid #9a7888;
 }
 
 #workspaces button:hover {
     background-color: #2a2640;
 }
 
-/* Per-module pastel icon colors */
-#clock {
-    color: #a8e8b8;  /* soft green */
-}
-
-#battery {
-    color: #a8d8b8;  /* soft mint green */
-}
-
-#battery.warning:not(.charging) {
-    color: #e8d8a0;  /* soft amber */
-}
-
-#battery.critical:not(.charging) {
-    color: #e8a0a8;  /* soft red */
-}
-
-#battery.charging {
-    color: #a8c8e8;  /* soft sky blue */
-    padding: 0px 15px;
-}
-
-#network {
-    color: #a8c8e8;  /* soft sky blue */
-}
-
-#network.disconnected {
-    color: #e8a0a8;
-}
-
-#pulseaudio {
-    color: #e8b8d8;  /* soft pink */
-}
-
-#pulseaudio.muted {
-    color: #8a8098;
-}
-
-#cpu {
-    color: #e8c8a8;  /* soft peach */
-}
-
-#memory {
-    color: #c8a8e8;  /* soft violet */
-}
-
-#temperature {
-    color: #e8b8d8;  /* soft teal */
-}
-
-#temperature.critical {
-    color: #e8a0a8;
-}
-
-#backlight {
-    color: #e8e8a8;  /* soft yellow */
-}
-
-#custom-diskuse {
-    color: #a8c8e8;  /* soft blue */
-}
-
-/* Shared background/border for all modules */
 #clock, #battery, #network, #pulseaudio, #temperature, #cpu, #memory,
 #custom-diskuse, #custom-p1g8power, #custom-energy, #custom-cooling,
 #tray, #backlight, #custom-playerctl, #custom-playerlabel {
+    color: #d4cfe8;
     background-color: rgba(13, 15, 28, 0.9);
     border-radius: 8px;
     padding: 0px 15px;
     margin: 0px 3px;
-    border-bottom: 2px solid #7a6a9a;
+    border-bottom: 2px solid #7a5a6a;
 }
 
 #custom-playerctl {
     font-size: 24px;
     padding: 0px 10px 0px 17px;
-    color: #e8b8d8;
+}
+
+#battery.warning:not(.charging) {
+    color: #c9a87a;
+}
+
+#battery.critical:not(.charging) {
+    color: #c07878;
+}
+
+#battery.charging {
+    padding: 0px 15px;
 }
 
 #custom-launcher {
-    color: #7ad4f0;
+    color: #b08898;
     background-color: rgba(13, 15, 28, 0.9);
     border-radius: 8px;
     margin: 0px 3px;
-    padding: 0px 12px 0px 7px;
-    min-width: 40px;
+    padding: 0px 10px 0px 6px;
     font-size: 24px;
-    border-bottom: 2px solid #7a6a9a;
+    border-bottom: 2px solid #7a5a6a;
 }
 
 #window {
@@ -150,17 +100,16 @@ window#waybar {
     margin-bottom: 2px;
     font-weight: normal;
     font-style: normal;
-    border-bottom: 2px solid #7a6a9a;
-    color: #d4cfe8;
+    border-bottom: 2px solid #7a5a6a;
 }
 
 #custom-wf-recorder {
     padding: 0px 15px;
-    color: #e8a0a8;
+    color: #9a7080;
     background-color: rgba(13, 15, 28, 0.9);
     border-radius: 8px;
     margin: 0px 3px;
-    border-bottom: 2px solid #7a6a9a;
+    border-bottom: 2px solid #7a5a6a;
 }
 
 #custom-hyprpicker {
@@ -169,8 +118,7 @@ window#waybar {
     margin: 0px 3px;
     padding: 0px 15px;
     font-weight: bold;
-    border-bottom: 2px solid #7a6a9a;
-    color: #d4cfe8;
+    border-bottom: 2px solid #7a5a6a;
 }
 
 #taskbar {
@@ -178,5 +126,5 @@ window#waybar {
     margin: 0px 15px;
     border-radius: 10px;
     background: rgba(13, 15, 28, 0.9);
-    border: 1px solid #7a6a9a;
+    border: 1px solid #7a5a6a;
 }

@@ -1,147 +1,125 @@
-/* ~/.config/nwg-panel/style.css */
+* {
+    font-family: "NotoSansCJK";
+    font-size: 14px;
+    color: #d4cfe8;
+}
 
-/* Nord-inspired pastel palette */
-@define-color background #2e3440;
-@define-color background-alt #3b4252;
-@define-color foreground #d8dee9;
-@define-color accent #88c0d0;
-@define-color accent-alt #81a1c1;
-@define-color urgent #bf616a;
-@define-color success #a3be8c;
-@define-color warning #ebcb8b;
-
-/* Panel background */
 window {
-  background-color: alpha(@background, 0.95);
-  border-radius: 12px;
-  margin: 8px;
+    background-color: rgba(13, 15, 28, 0.95);
+    border: 1px solid #5a3a4a;
+    border-radius: 12px;
 }
 
-/* Buttons */
-button {
-  background-color: transparent;
-  border: none;
-  border-radius: 8px;
-  padding: 4px 8px;
-  margin: 2px;
-  color: @foreground;
-  transition: all 200ms ease;
+#menu-box {
+    background-color: transparent;
+    padding: 4px;
 }
 
-button:hover {
-  background-color: alpha(@accent, 0.2);
-  color: @accent;
+/* Search */
+entry {
+    background-color: rgba(20, 18, 35, 0.85);
+    border: 2px solid #7a5a6a;
+    border-radius: 10px;
+    color: #d4cfe8;
+    padding: 4px 12px;
+    margin: 6px;
 }
 
-button:active {
-  background-color: alpha(@accent, 0.3);
+entry:focus {
+    border-color: #8c6070;
 }
 
-/* Workspaces */
-button#workspace {
-  background-color: alpha(@background-alt, 0.5);
-  min-width: 32px;
-  margin: 4px 2px;
+/* Floating menu panel */
+menu {
+    background-color: rgba(13, 15, 28, 0.95);
+    border: 1px solid #5a3a4a;
+    border-radius: 10px;
+    padding: 4px;
 }
 
-button#workspace:hover {
-  background-color: alpha(@accent-alt, 0.3);
+menuitem {
+    border-radius: 6px;
+    padding: 4px 12px;
+    color: #8a8098;
+    transition: background-color 0.2s ease;
 }
 
-button#workspace.focused {
-  background-color: @accent;
-  color: @background;
+menuitem:hover {
+    background-color: rgba(140, 96, 112, 0.22);
+    color: #d4cfe8;
 }
 
-/* Clock */
-label#clock {
-  color: @foreground;
-  padding: 0 12px;
-  font-weight: 500;
+menuitem:selected {
+    background-color: rgba(140, 96, 112, 0.3);
+    color: #d4cfe8;
 }
 
-/* Tray */
-#tray {
-  padding: 0 8px;
+/* Category list */
+#category-list {
+    background-color: rgba(20, 18, 35, 0.6);
+    border-right: 1px solid #3a2a3a;
+    padding: 4px;
 }
 
-#tray button {
-  border-radius: 6px;
-  padding: 4px;
+#category-list row {
+    border-radius: 8px;
+    padding: 4px 12px;
+    color: #8a8098;
+    transition: background-color 0.2s ease;
 }
 
-/* Controls (volume, brightness, etc) */
-button#control {
-  background-color: alpha(@background-alt, 0.6);
-  border-radius: 8px;
-  padding: 6px 10px;
-  margin: 2px;
+#category-list row:hover {
+    background-color: rgba(140, 96, 112, 0.18);
+    color: #d4cfe8;
 }
 
-button#control:hover {
-  background-color: alpha(@accent, 0.25);
+#category-list row:selected {
+    background-color: rgba(140, 96, 112, 0.3);
+    color: #d4cfe8;
 }
 
-/* Sliders */
-scale {
-  background-color: transparent;
-  padding: 4px;
+/* App list */
+#app-list {
+    background-color: transparent;
+    padding: 4px;
 }
 
-scale trough {
-  background-color: alpha(@background-alt, 0.8);
-  border-radius: 12px;
-  min-height: 8px;
-  min-width: 100px;
+#app-list row {
+    border-radius: 8px;
+    padding: 4px 12px;
+    color: #8a8098;
+    background-color: transparent;
+    transition: background-color 0.2s ease;
 }
 
-scale highlight {
-  background-color: @accent;
-  border-radius: 12px;
+#app-list row:hover {
+    background-color: rgba(140, 96, 112, 0.18);
+    color: #d4cfe8;
 }
 
-scale slider {
-  background-color: @foreground;
-  border-radius: 50%;
-  min-height: 16px;
-  min-width: 16px;
-  margin: -4px;
+#app-list row:selected,
+#app-list row:active {
+    background-color: rgba(140, 96, 112, 0.3);
+    color: #d4cfe8;
 }
 
-/* Launcher */
-button#launcher {
-  background-color: alpha(@accent, 0.2);
-  color: @accent;
-  font-weight: bold;
-  padding: 6px 12px;
+/* Bottom buttons bar */
+#buttons-box button {
+    border-radius: 8px;
+    background-color: rgba(106, 90, 138, 0.15);
+    border: 1px solid #5a3a4a;
+    padding: 4px 8px;
+    transition: background-color 0.2s ease;
 }
 
-button#launcher:hover {
-  background-color: alpha(@accent, 0.35);
-}
-
-/* Executor (custom modules) */
-#executor-label {
-  color: @foreground;
-  padding: 0 8px;
-}
-
-/* Tooltips */
-tooltip {
-  background-color: @background;
-  border: 1px solid alpha(@accent, 0.3);
-  border-radius: 8px;
-  color: @foreground;
-  padding: 8px;
-}
-
-tooltip label {
-  color: @foreground;
+#buttons-box button:hover {
+    background-color: rgba(140, 96, 112, 0.3);
+    border-color: #7a5a6a;
 }
 
 /* Separator */
 separator {
-  background-color: alpha(@foreground, 0.1);
-  min-width: 1px;
-  margin: 8px 6px;
+    background-color: #3a2a3a;
+    min-height: 1px;
+    margin: 4px 8px;
 }

@@ -26,6 +26,7 @@ home.file = {
   ".config/foot".source = ./dotfiles/foot;
   ".config/hypr".source = ./dotfiles/hypr;
   ".config/nwg-drawer".source = ./dotfiles/nwg-drawer;
+  ".config/nwg-panel".source = ./dotfiles/nwg-panel;
   ".config/plutonium".source = ./dotfiles/plutonium;
   ".config/scripts".source = ./dotfiles/scripts;
   ".config/waybar".source = ./dotfiles/waybar;
@@ -217,16 +218,12 @@ manual = {
 # ============================================
 
 wayland.windowManager = {
-
   hyprland = {
     enable = true;
     xwayland.enable = true;
     systemd.enable = false;
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
   };
-
-  # wayfire? already installed via conf.nix, and wayfire.ini is written to .config...
-
 };
 
 # ============================================
@@ -303,15 +300,47 @@ systemd.user = {
         ExecStart = "/etc/nixos/dotfiles/scripts/hourly-chime.sh";
       };
     };
+
+    battery-notify = {
+       Unit.Description = "Battery low notification";
+       Service = {
+         Type = "oneshot";
+         ExecStart = let
+           script = pkgs.writeShellScript "battery-notify" ''
+             BAT=$(cat /sys/class/power_supply/BAT0/capacity)
+             STATUS=$(cat /sys/class/power_supply/BAT0/status)
+             if [ "$STATUS" != "Charging" ] && [ "$BAT" -le 20 ]; then
+               ${pkgs.libnotify}/bin/notify-send \
+                 -u critical \
+                 -i battery-low \
+                 "Battery Low" "Battery at ''${BAT}%"
+            fi
+          '';
+        in "${script}";
+      };
+    };
   };
 
-  timers.hourly-chime = {
-    Unit.Description = "Hourly chime timer";
-    Timer = {
-      OnCalendar = "hourly";
-      Persistent = true;
+  timers = {
+    
+    hourly-chime = {
+      Unit.Description = "Hourly chime timer";
+      Timer = {
+        OnCalendar = "hourly";
+        Persistent = true;
+      };
+      Install.WantedBy = [ "timers.target" ];
     };
-    Install.WantedBy = [ "timers.target" ];
+
+    battery-notify = {
+      Unit.Description = "Battery low notification timer";
+      Timer = {
+        OnBootSec = "1min";
+        OnUnitActiveSec = "2min";
+        Unit = "battery-notify.service";
+      };
+      Install.WantedBy = [ "timers.target" ];
+    };
   };
 };
 
