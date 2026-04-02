@@ -13,8 +13,8 @@
   };
   
   firefox-work = {
-    name = "Firefox (Odin)";
-    exec = "firefox --no-remote -P Ofin";
+    name = "Firefox (Work)";
+    exec = "firefox --no-remote -P Odin";
     terminal = false;
     icon = "firefox";
     categories = [ "Network" "WebBrowser" ];

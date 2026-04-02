@@ -1,0 +1,20 @@
+[status]
+separator_open  = ""
+separator_close = ""
+
+[status.overall]
+bg = "#1e1e2e"  # base (catppuccin mocha)
+
+[status.mode_normal]
+bg = "#cba6f7"  # mauve
+fg = "#1e1e2e"
+
+[status.mode_select]
+bg = "#a6e3a1"  # green
+fg = "#1e1e2e"
+
+[status.mode_unset]
+bg = "#f38ba8"  # red
+fg = "#1e1e2e"
+
+# nice colors: 7c6f9f (darker) and b4a0e5 (lighter) purples

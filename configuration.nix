@@ -108,8 +108,15 @@ boot = {
     };
     efi.canTouchEfiVariables = true;
   };
-  kernelModules = [ "zenpower" "ntsync" ]; # ntsync for CoD WaW
-  kernelPackages = pkgs.linuxPackages_xanmod_latest; # ePiC gAmInG kErNel
+  kernelModules = [ 
+    "zenpower" # read AMD CPU V/i/P
+    "ntsync" # CoD WaW performance
+    ];
+  kernelPackages = pkgs.linuxPackages_xanmod_latest; # gaming
+  kernelParams = [
+    "usbcore.autosuspend=-1" # prevent eth adapters from suspending
+  ];
+  kernel.sysctl."net.ipv4.ip_forward" = 1; # IP forwarding
   blacklistedKernelModules = [ "k10temp" ];
   extraModprobeConfig = ''
     options cfg80211 ieee80211_regdom=US
@@ -127,11 +134,29 @@ networking = {
   useDHCP = false;
   networkmanager = {
     enable = true;
+    unmanaged = [ "enp116s0f3u1u3" ];
+  };
+  nat = {
+    enable = true;
+    externalInterface = "wlp1s0";
+    internalInterfaces = [ "enp116s0f3u1u3" ];
   };
 };
 
-# Disable network wait services for faster boot
-systemd.network.wait-online.enable = false;
+systemd.network = {
+  enable = true;
+  wait-online.enable = false;
+  networks."10-eth-pi" = {
+    matchConfig.Name = "enp116s0f3u1u3";
+    networkConfig = {
+      Address = "192.168.100.1/24";
+      LinkLocalAddressing = "no";
+      DHCP = "no";
+    };
+    linkConfig.RequiredForOnline = "no";
+  };
+};
+
 systemd.services = {
   dhcpcd.enable = false;
   NetworkManager-wait-online.enable = false;

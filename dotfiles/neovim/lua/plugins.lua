@@ -3,8 +3,16 @@ require('lualine').setup({
   options = {
     theme = 'catppuccin-mocha',
     component_separators = { left = " ", right = " " },
-    section_separators = { left = " ", right = " " },
+    section_separators = { left = "", right = "" },
     globalstatus = true,  -- Single statusline across all windows
+  },
+  sections = {
+    lualine_a = {{ 'mode', color = { bg = '#cba6f7', fg = '#1e1e2e', gui = 'bold' } }},
+    lualine_b = {{ 'branch', color = { bg = '#313244', fg = '#cba6f7' } }},
+    lualine_c = {{ 'filename', color = { bg = '#1e1e2e', fg = '#cdd6f4' } }},
+    lualine_x = {{ 'filetype', color = { bg = '#1e1e2e', fg = '#b4befe' } }},
+    lualine_y = {{ 'progress', color = { bg = '#313244', fg = '#cdd6f4' } }},
+    lualine_z = {{ 'location', color = { bg = '#cba6f7', fg = '#1e1e2e' } }},
   },
 })
 -- Add separator line above statusline

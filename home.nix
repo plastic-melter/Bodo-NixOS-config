@@ -358,7 +358,7 @@ home.sessionVariables = {
 };
 
 systemd.user.sessionVariables = {
-  GTK_THEME = "Arc-Dark";
+  GTK_THEME = "Adwaita-dark";
   XDG_ICON_FALLBACK = "/etc/nixos/dotfiles/images/blankicon.png";
   QT_QPA_PLATFORM = "wayland";
   QT_QPA_PLATFORMTHEME = "qt5ct";

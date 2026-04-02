@@ -41,7 +41,7 @@ config = {
     },
     {
       source = {
-        Color = "100e1a",
+        Color = "19172B",
       },
       width = "100%",
       height = "100%",
