@@ -116,7 +116,7 @@ window#waybar {
 
 /* Shared background/border for all modules */
 #clock, #battery, #network, #pulseaudio, #temperature, #cpu, #memory,
-#custom-diskuse, #custom-p1g8power, #custom-energy, #custom-cooling,
+#custom-diskuse, #custom-p1g8power, #custom-power, #custom-cooling,
 #tray, #backlight, #custom-playerctl, #custom-playerlabel {
     background-color: rgba(13, 15, 28, 0.9);
     border-radius: 8px;

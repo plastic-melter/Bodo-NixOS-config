@@ -189,6 +189,8 @@ programs = {
     viAlias = true;
     vimAlias = true;
     defaultEditor = true;
+    withRuby = false;
+    withPython3 = false;
     plugins = with pkgs.vimPlugins; [
       nvim-treesitter.withAllGrammars  # Syntax highlighting and parsing
       catppuccin-nvim                   # Mocha colorscheme

@@ -1,47 +1,32 @@
 #!/bin/sh
-
-# The laptop's display is always eDP-1
 laptop_display="eDP-1"
 
-# Define target resolutions
-laptop_resolution_full="2560x1600"
-laptop_resolution_1080="1920x1080"
-laptop_resolution_touhou="1680x1050"
-laptop_resolution_mid="1280x800"
-laptop_resolution_VGA="640x480"
+# Resolutions (with refresh rates where applicable)
+res_4k_120="3072x1920@120"
+res_4k_60="3072x1920@60"
+res_1920="1920x1200"
+res_touhou="1680x1050"
+res_mid="1280x800"
+res_vga="640x480"
 
-# Get the current resolution of the laptop display
-current_resolution=$(hyprctl monitors | grep -A 1 "$laptop_display" | tail -n 1 | cut -d '@' -f 1 | xargs)
+current=$(hyprctl monitors | grep -A 2 "$laptop_display" | grep -oP '\d+x\d+' | head -1)
+current_hz=$(hyprctl monitors | grep -A 2 "$laptop_display" | grep -oP '\d+\.\d+Hz' | head -1)
 
-# Function to set resolution
 set_resolution() {
-    resolution=$1
-    # Set resolution for the laptop display
-    hyprctl keyword monitor "$laptop_display,$resolution,0x0,1"
-    # Send notification with the new resolution
-    notify-send "Screen Resolution" "Resolution set to $resolution"
+    hyprctl keyword monitor "$laptop_display,$1,0x0,1"
+    notify-send "Screen Resolution" "Resolution set to $1"
 }
 
-# Toggle between different resolutions based on current laptop resolution
-case "$current_resolution" in
-    "$laptop_resolution_full")
-        set_resolution "$laptop_resolution_1080"
+case "$current" in
+    "3072x1920")
+        case "$current_hz" in
+            "120"*) set_resolution "$res_4k_60" ;;
+            *)      set_resolution "$res_1920" ;;
+        esac
         ;;
-    "$laptop_resolution_1080")
-        set_resolution "$laptop_resolution_touhou"
-        ;;
-    "$laptop_resolution_touhou")
-        set_resolution "$laptop_resolution_mid"
-        ;;
-    "$laptop_resolution_mid")
-        set_resolution "$laptop_resolution_VGA"
-        ;;
-    "$laptop_resolution_VGA")
-        set_resolution "$laptop_resolution_full"
-        ;;
-    *)
-        # Default to high resolution if none match
-        set_resolution "$laptop_resolution_full"
-        ;;
+    "1920x1200") set_resolution "$res_touhou" ;;
+    "1680x1050") set_resolution "$res_mid" ;;
+    "1280x800")  set_resolution "$res_vga" ;;
+    "640x480")   set_resolution "$res_4k_120" ;;
+    *)           set_resolution "$res_4k_120" ;;
 esac
-

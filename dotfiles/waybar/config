@@ -23,7 +23,7 @@
     "custom/cooling",
     "memory",
     "custom/diskuse",
-    "custom/energy",
+    "custom/power",
     "battery"
   ],
   "clock": {
@@ -104,8 +104,8 @@
   },
   "memory": {
     "format": "󰍛  {percentage}%",
-    "tooltip-format": " {used} / {total} GiB | SWAP: {swapUsed} / {swapTotal} GiB",
-    "format-alt": "{used} / {total} GiB | {swapUsed} / {swapTotal} GiB",
+    "tooltip-format": " {used} / {total} GiB",
+    "format-alt": "{used} / {total} GiB",
     "tooltip": "true",
     "interval": 5
   },
@@ -148,7 +148,7 @@
     "on-click": "nwg-menu -va \"top\" ",
     "tooltip": false
   },
-  "custom/energy": {
+  "custom/power": {
     "format": "{}",
     "exec": "/etc/nixos/dotfiles/scripts/watts.sh",
     "interval": 1
@@ -156,11 +156,6 @@
   "custom/cooling": {
     "format": "󰏈  {}",
     "exec": "/etc/nixos/dotfiles/scripts/cooling.sh",
-    "interval": 1
-  },
-  "custom/power": {
-    "format": "{}",
-    "exec": "/etc/nixos/dotfiles/scripts/power.sh",
     "interval": 1
   },
   "custom/hyprpicker": {

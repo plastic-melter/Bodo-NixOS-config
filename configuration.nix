@@ -77,7 +77,6 @@ boot = {
   ];
   kernelPackages = pkgs.linuxPackages_xanmod_latest; # gaming
   kernelParams = [
-    "usbcore.autosuspend=-1" # prevent eth adapters from suspending
     "mem_sleep_default=s2idle" # Arrow Lake has no S3, forces the only working sleep state
     "intel_iommu=on" # enable IOMMU for VFIO passthrough
     "iommu=pt" # passthrough mode, tells IOMMU to only translate for devices that need it (VMs)
@@ -164,6 +163,10 @@ hardware = {
   graphics = {
     enable = true;
     enable32Bit = true; # for steam/wine/32-bit GL
+      extraPackages = with pkgs; [ # drivers not auto-installed
+      intel-media-driver  # iHD, for Gen 8+
+      intel-vaapi-driver  # i965 fallback
+    ];
   };
   cpu.intel.updateMicrocode = true;
   uinput.enable = true; # B0XX native USB
@@ -432,14 +435,16 @@ environment.variables = {
   XDG_ICON_FALLBACK = "/etc/nixos/dotfiles/images/blankicon.png";
 };
 
-#environment.sessionVariables = {
+environment.sessionVariables = {
+  LIBVA_DRIVER_NAME = "iHD";
+  MOZ_ENABLE_WAYLAND = "1";
 #  WLR_RENDERER = "vulkan";
 #  WLR_NO_HARDWARE_CURSORS = "1";
 #  __GLX_VENDOR_LIBRARY_NAME = "nvidia";
 #  LIBVA_DRIVER_NAME = "nvidia";
 #  GBM_BACKENDS_PATH = "/run/opengl-driver/lib/gbm";
 #  FCITX_NO_PREEDIT_ON_PASSWORD = "1";
-#};
+};
 
 # ============================================
 # XDG PORTAL
@@ -488,12 +493,16 @@ users = {
 
 environment.systemPackages = with pkgs; [
 
+  # P14sG6-specific stuff
+  linuxKernel.packages.linux_xanmod.turbostat
+
   # HARDWARE + DRIVERS + EXTERNAL DEVICES
   acpid # watch ACPI events
   alsa-utils # sound utils
   android-tools # contains ADB, fastboot, etc
   brightnessctl # control laptop display backlight
   dfu-util # flash STM32s in DFU mode
+  efibootmgr # manage boot entries on EUFI NVRAM
   exfatprogs # format stuff as exfat
   jmtpfs # allows for Android MTP; use instead of mtpfs
   lm_sensors # tons of hardware sensors
@@ -543,6 +552,7 @@ environment.systemPackages = with pkgs; [
   libguestfs-with-appliance # view/modify VM disk images
   libnotify # desktop notification library
   libusb1 # various; flash STM32s
+  libva-utils # power management stuff
   libsForQt5.qtstyleplugin-kvantum # kvantum = qt config tool
   libsForQt5.qt5ct # qt config tool
 
