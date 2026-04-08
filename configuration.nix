@@ -1,7 +1,7 @@
 { inputs, outputs, lib, config, pkgs, ... }: {
 
 #############################################
-############## X13G3 CONFIG #################
+############# P14sG6 CONFIG #################
 #############################################
 
 imports = [
@@ -46,47 +46,6 @@ nixpkgs.config = {
   };
 };
 
-# ============================================
-# BOOT CONFIGURATION
-# ============================================
-
-#boot = {
-#  kernelPackages = pkgs.linuxPackages_latest;
-#  loader = {
-#    timeout = 1;
-#    efi.canTouchEfiVariables = true;
-#    grub = {
-#      enable = true;
-#      device = "nodev";
-#      useOSProber = false;
-#      enableCryptodisk = true;
-#      efiSupport = true;
-#      default = "2";
-#      extraConfig = ''
-#        timeout=-1
-#        GRUB_GFXMODE=2560x1600x128,auto
-#        menuentry "Reboot" {
-#          reboot
-#        }
-#        menuentry "Poweroff" {
-#          halt
-#        }
-#      '';
-#      theme = pkgs.stdenv.mkDerivation {
-#        pname = "distro-grub-themes";
-#        version = "3.1";
-#        src = pkgs.fetchFromGitHub {
-#          owner = "AdisonCavani";
-#          repo = "distro-grub-themes";
-#          rev = "v3.1";
-#          hash = "sha256-ZcoGbbOMDDwjLhsvs77C7G7vINQnprdfI37a9ccrmPs=";
-#        };
-#        installPhase = "cp -r customize/thinkpad $out";
-#      };
-#    };
-#  };
-#};
-
 boot = {
   loader = {
     systemd-boot = {
@@ -109,12 +68,19 @@ boot = {
     efi.canTouchEfiVariables = true;
   };
   kernelModules = [ 
-    "zenpower" # read AMD CPU V/i/P
     "ntsync" # CoD WaW performance
+    "uinput" # B0XX native USB
+    "kvm-intel" # enables hardware-accelerated virtualization (VMX)
+    "vfio" # VFIO subsystem: allows QEMU to access hardware directly
+    "vfio_iommu_type1" # IOMMU backend for VFIO: handles addr trans/isolation between VM and hardware
+    "vfio_pci" # allows binding specific PCI devices (ex: GPU) to VFIO driver isntead of host driver
     ];
   kernelPackages = pkgs.linuxPackages_xanmod_latest; # gaming
   kernelParams = [
     "usbcore.autosuspend=-1" # prevent eth adapters from suspending
+    "mem_sleep_default=s2idle" # Arrow Lake has no S3, forces the only working sleep state
+    "intel_iommu=on" # enable IOMMU for VFIO passthrough
+    "iommu=pt" # passthrough mode, tells IOMMU to only translate for devices that need it (VMs)
   ];
   kernel.sysctl."net.ipv4.ip_forward" = 1; # IP forwarding
   blacklistedKernelModules = [ "k10temp" ];
@@ -200,23 +166,23 @@ console = {
 # ============================================
 
 hardware = {
-#  nvidia = {
-#    modesetting.enable = true;
-#    open = true; # Required for Blackwell
-#    nvidiaSettings = true;
-#    powerManagement.enable = false;
-#    package = config.boot.kernelPackages.nvidiaPackages.stable // {
-#      open = config.boot.kernelPackages.nvidiaPackages.stable.open.overrideAttrs (old: {
-#        patches = (old.patches or [ ]) ++ [
-#          (pkgs.fetchpatch {
-#            name = "get_dev_pagemap.patch";
-#            url = "https://github.com/NVIDIA/open-gpu-kernel-modules/commit/3e230516034d29e84ca023fe95e284af5cd5a065.patch";
-#            hash = "sha256-BhL4mtuY5W+eLofwhHVnZnVf0msDj7XBxskZi8e6/k8=";
-#          })
-#        ];
-#      });
-#    };
-#  };
+  nvidia = {
+    modesetting.enable = true;
+    open = true; # Required for Blackwell
+    nvidiaSettings = true;
+    powerManagement.enable = true;
+    package = config.boot.kernelPackages.nvidiaPackages.stable; #// {
+    prime = {
+      sync.enable = true;
+      intelBusId = "PCI:0:2:0";
+      nvidiaBusID = "PCI:1:0:0";
+    };
+  };
+  opengl = {
+    enable = true;
+    driSupport32Bit = true; # for steam/wine/32-bit GL
+  cpu.intel.updateMicrocode = true;
+  uinput.enable = true; # B0XX native USB
   bluetooth = {
     enable = true;
     hsphfpd.enable = false;
@@ -263,7 +229,7 @@ security = {
 services = {
   xserver = {
     enable = true;
-    videoDrivers = [ "radeon" ];
+    videoDrivers = [ "nvidia" ];
     xkb = {
       layout = "jp";
       model = "jp106";
@@ -340,7 +306,7 @@ services = {
     openDefaultPorts = true;
   };
 
-  # Power Management
+  # Power Management / Hardware
   tlp = {
     enable = true;
     settings = { 
@@ -348,9 +314,13 @@ services = {
       STOP_CHARGE_THRESH_BAT0 = 95; 
     };
   };
+  thermald.enable = true;
 
   # USB Device Rules
   udev.extraRules = ''
+    # B0XX native USB
+    SUBSYSTEM=="hidraw", ATTRS{idVendor}=="045e", ATTRS{idProduct}=="02a1", MODE="0666", GROUP="input"
+    SUBSYSTEM=="usb", ATTRS{idVendor}=="045e", ATTRS{idProduct}=="02a1", MODE="0666", GROUP="input"
     # GCC adapter
     SUBSYSTEM=="usb", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"
     # Teensy 4.1
@@ -573,7 +543,6 @@ environment.systemPackages = with pkgs; [
   nixos-option # query NixOS module options
   ntfs3g # allows to read/write NTFS
   p7zip # 7z/rar/zip compression tool
-  radeontop # AMD iGPU monitor
   ranger # TUI file browser
   rpiboot # tool to boot Pis over USB
   s-tui # terminal TUI for CPU temp/power/freq
