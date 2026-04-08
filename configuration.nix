@@ -74,7 +74,7 @@ boot = {
     "vfio" # VFIO subsystem: allows QEMU to access hardware directly
     "vfio_iommu_type1" # IOMMU backend for VFIO: handles addr trans/isolation between VM and hardware
     "vfio_pci" # allows binding specific PCI devices (ex: GPU) to VFIO driver isntead of host driver
-    ];
+  ];
   kernelPackages = pkgs.linuxPackages_xanmod_latest; # gaming
   kernelParams = [
     "usbcore.autosuspend=-1" # prevent eth adapters from suspending
@@ -89,38 +89,21 @@ boot = {
   ''; # above: JP/US IR flag mismatch
 };
 
-swapDevices = [{device = "/swapfile"; size = 16000;}];
-
 # ============================================
 # NETWORKING
 # ============================================
 
 networking = {
-  hostName = "X13G3";
+  hostName = "P14sG6";
   useDHCP = false;
   networkmanager = {
     enable = true;
-    unmanaged = [ "enp116s0f3u1u3" ];
-  };
-  nat = {
-    enable = true;
-    externalInterface = "wlp1s0";
-    internalInterfaces = [ "enp116s0f3u1u3" ];
   };
 };
 
 systemd.network = {
   enable = true;
   wait-online.enable = false;
-  networks."10-eth-pi" = {
-    matchConfig.Name = "enp116s0f3u1u3";
-    networkConfig = {
-      Address = "192.168.100.1/24";
-      LinkLocalAddressing = "no";
-      DHCP = "no";
-    };
-    linkConfig.RequiredForOnline = "no";
-  };
 };
 
 systemd.services = {
@@ -171,7 +154,7 @@ hardware = {
     open = true; # Required for Blackwell
     nvidiaSettings = true;
     powerManagement.enable = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable; #// {
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
     prime = {
       sync.enable = true;
       intelBusId = "PCI:0:2:0";
@@ -181,6 +164,7 @@ hardware = {
   opengl = {
     enable = true;
     driSupport32Bit = true; # for steam/wine/32-bit GL
+  };
   cpu.intel.updateMicrocode = true;
   uinput.enable = true; # B0XX native USB
   bluetooth = {
