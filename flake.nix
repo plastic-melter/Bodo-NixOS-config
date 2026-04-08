@@ -1,5 +1,5 @@
 {
-  description = "hi";
+  description = "rescription";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -11,7 +11,7 @@
 
   outputs = { self, nixpkgs, home-manager, hyprland, ...}@inputs: {
     nixosConfigurations = {
-      X13G3 = nixpkgs.lib.nixosSystem {
+      P14sG6 = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
         system = "x86_64-linux";
         modules = [
