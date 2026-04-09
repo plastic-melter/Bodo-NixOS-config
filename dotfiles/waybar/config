@@ -12,6 +12,7 @@
     "clock",
     "pulseaudio",
     "backlight",
+    "custom/refreshrate",
     "network",
     "custom/playerlabel",
   ],
@@ -22,16 +23,35 @@
     "cpu",
     "custom/cooling",
     "memory",
-    "custom/diskuse",
+    "disk",
     "custom/power",
     "battery"
   ],
-  "clock": {
-    "format": " {:%H:%M}",
-    "tooltip": "true",
-    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-    "format-alt": "  {:%Y-%m-%d}"
-  },
+    "clock": {
+        "format": "  {:%H:%M}",
+        "format-alt": "{:%A, %B %d, %Y (%R)}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>",
+        "calendar": {
+                    "mode"          : "year",
+                    "mode-mon-col"  : 3,
+                    "weeks-pos"     : "right",
+                    "on-scroll"     : 1,
+                    "format": {
+                              "months":     "<span color='#ffead3'><b>{}</b></span>",
+                              "days":       "<span color='#ecc6d9'><b>{}</b></span>",
+                              "weeks":      "<span color='#99ffdd'><b>W{}</b></span>",
+                              "weekdays":   "<span color='#ffcc66'><b>{}</b></span>",
+                              "today":      "<span color='#ff6699'><b><u>{}</u></b></span>"
+                              }
+                    },
+        "actions":  {
+                    "on-click-right": "mode",
+                    "on-scroll-up": "tz_up",
+                    "on-scroll-down": "tz_down",
+                    "on-scroll-up": "shift_up",
+                    "on-scroll-down": "shift_down"
+                    }
+    },
   "hyprland/workspaces": {
     "active-only": false,
     "all-outputs": true,
@@ -114,10 +134,22 @@
     "format-alt": "󰓅  {avg_frequency} GHz",
     "interval": 5
   },
+  "disk": {
+    "interval": 5,
+    "format": "󰋊  {percentage_used}",
+    "format-alt": "󰋊  {used}/{total} ({free} free)",
+    "unit": "GB"
+  },
   "custom/diskuse": {
     "format": "󰋊  {}",
     "exec": "/etc/nixos/dotfiles/scripts/diskuse.sh",
     "interval": 1
+  },
+  "custom/refreshrate": {
+    "format": "󰍹  {}Hz",
+    "exec": "hyprctl monitors | grep '@' | head -n 1 | cut -d '@' -f 2 | cut -d '.' -f 1",
+    "interval": 1,
+    "on-click": "/etc/nixos/dotfiles/scripts/60-120hz.sh"
   },
   "network": {
     "format-wifi": "󰤨  {essid}",
@@ -135,6 +167,12 @@
     "format": "  {percent}%",
     "format-icons": ["", "", "", "", "", "", "", "", ""],
     "tooltip-format": ""
+  },
+  "custom/brightness": {
+    "format": "  {}",
+    "exec": "/etc/nixos/dotfiles/scripts/brightness.sh",
+    "interval": "once",
+    "restart-interval": 5
   },
   "pulseaudio": {
     "format": "󰕾  {volume}%",

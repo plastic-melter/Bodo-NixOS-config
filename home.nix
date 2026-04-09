@@ -71,16 +71,16 @@ xdg.configFile = {
     force = true;
     text = ''
       [Appearance]
-      style=Kvantum
-      icon_theme=breeze
+      style=Fusion
+      icon_theme=Papirus-Dark
     '';
   };
   "qt6ct/qt6ct.conf" = {
     force = true;
     text = ''
       [Appearance]
-      style=Kvantum
-      icon_theme=breeze
+      style=Fusion
+      icon_theme=Papirus-Dark
     '';
   };
 
@@ -360,11 +360,10 @@ home.sessionVariables = {
 };
 
 systemd.user.sessionVariables = {
-  GTK_THEME = "Adwaita-dark";
+  QT_QPA_PLATFORMTHEME = "qt5ct";
+  GTK_THEME = "catppuccin-frappe-blue-standard";
   XDG_ICON_FALLBACK = "/etc/nixos/dotfiles/images/blankicon.png";
   QT_QPA_PLATFORM = "wayland";
-  QT_QPA_PLATFORMTHEME = "qt5ct";
-  QT6_QPA_PLATFORMTHEME = "qt6ct";
   SDL_VIDEODRIVER = "wayland";
   XDG_SESSION_TYPE = "wayland";
   GTK_USE_PORTAL = "0";
@@ -382,7 +381,7 @@ dconf.settings = {
   };
   "org/gnome/desktop/interface" = {
     color-scheme = "prefer-dark";
-    gtk-theme = "Adwaita-dark"; 
+    gtk-theme = "catppuccin-frappe-blue-standard"; 
     icon-theme = "Papirus-Dark";
   };
 };
@@ -394,11 +393,15 @@ dconf.settings = {
 gtk = {
   enable = true;
   theme = {
-    name = "Adwaita-dark";
+    name = "catppuccin-frappe-blue-standard";
+    package = pkgs.catppuccin-gtk;
   };
   iconTheme = {
     name = "Papirus-Dark";
-    package = pkgs.papirus-icon-theme;
+    package = pkgs.catppuccin-papirus-folders.override {
+      flavor = "macchiato";
+      accent = "lavender";
+    };
   };
   gtk4.theme = config.gtk.theme;
   gtk3.extraConfig.gtk-application-prefer-dark-theme = true;
@@ -483,7 +486,7 @@ home.packages = with pkgs; [
   tagainijisho # japanese dictionary
   thunar # GUI file manager
   vlc # video player
-  #webcord # webkit app for discord
+  webcord # webkit app for discord
   wezterm # dope-ass terminal emulator
   yazi # TUI file manager
   zoom-us # video chat software
@@ -517,8 +520,10 @@ home.packages = with pkgs; [
   zsh-powerlevel10k # fancy ZSH PS1
 
   # WAYLAND, HYPRLAND, RICE
+  catppuccin-gtk # gtk theme
   catppuccin-kvantum # qt theme, apply with kvantum
   grim # grab images from wayland compositors
+  gsettings-desktop-schemas # check on GTK stuff
   hyprdim # dims inactive windows
   hypridle # auto idle screen lock, suspend, etc
   hyprland-workspaces # workspace integration for bars
@@ -527,6 +532,7 @@ home.packages = with pkgs; [
   hyprpaper # wallpaper util
   hyprpicker # color picker tool
   hyprshot # screenshot util
+  libsForQt5.qtstyleplugin-kvantum # check on QT stuff
   nwg-clipman # clipboard manager for wayland
   nwg-dock-hyprland # dock for hyprland
   nwg-drawer # app launcher

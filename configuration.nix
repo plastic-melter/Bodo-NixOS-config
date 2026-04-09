@@ -80,6 +80,9 @@ boot = {
     "mem_sleep_default=s2idle" # Arrow Lake has no S3, forces the only working sleep state
     "intel_iommu=on" # enable IOMMU for VFIO passthrough
     "iommu=pt" # passthrough mode, tells IOMMU to only translate for devices that need it (VMs)
+    "pci_aspm=force" # ignore BIOS ASPM settings and enable ASPM on all PCIe links
+    "nvme.noacpi=1" # let NVMe driver ignore ACPI PM hints and do PM itself
+    "acpi.ec_no_wakeup=1" # prevent ACPI EC from waking things up during suspend
   ];
   kernel.sysctl."net.ipv4.ip_forward" = 1; # IP forwarding
   blacklistedKernelModules = [ "k10temp" ];
@@ -152,7 +155,9 @@ hardware = {
     modesetting.enable = true;
     open = true; # Required for Blackwell
     nvidiaSettings = true;
-    powerManagement.enable = true;
+    powerManagement = {
+      enable = true;
+    };
     package = config.boot.kernelPackages.nvidiaPackages.stable;
     prime = {
       sync.enable = true;
@@ -182,7 +187,15 @@ hardware = {
   };
 };
 
-powerManagement.cpuFreqGovernor = "ondemand";
+powerManagement = {
+  cpuFreqGovernor = "ondemand";
+  powertop.enable = true;
+};
+
+systemd.tmpfiles.rules = [
+  "w /sys/module/pcie_aspm/parameters/policy - - - - powersupersave" 
+  # ^ let devices negotiate low power state when idle: combos with kernelParam "pcie_aspm=force"
+];
 
 # ============================================
 # SECURITY
@@ -322,20 +335,38 @@ services = {
   '';
 };
 
-# Firmware update checker (runs AFTER boot to avoid slowdown)
-systemd.user.services.fwupd-check = {
-  description = "Check for firmware updates";
-  script = ''
-    if ${pkgs.networkmanager}/bin/nmcli -t -f TYPE,STATE device | grep -q "wifi:connected"; then
-      ${pkgs.libnotify}/bin/notify-send "Checking firmware updates..." -u low
-      ${pkgs.fwupd}/bin/fwupdmgr refresh
-      updates=$(${pkgs.fwupd}/bin/fwupdmgr get-updates 2>/dev/null)
-      if [ -n "$updates" ]; then
-        ${pkgs.libnotify}/bin/notify-send "Firmware updates available" "$updates" -u normal
+systemd.user.services = {
+  # Check for firmware updates AFTER boot, sometimes saves a few seconds of boot time
+  fwupd-check = {
+    description = "Check for firmware updates";
+    script = ''
+      if ${pkgs.networkmanager}/bin/nmcli -t -f TYPE,STATE device | grep -q "wifi:connected"; then
+        ${pkgs.libnotify}/bin/notify-send "Checking firmware updates..." -u low
+        ${pkgs.fwupd}/bin/fwupdmgr refresh
+        updates=$(${pkgs.fwupd}/bin/fwupdmgr get-updates 2>/dev/null)
+        if [ -n "$updates" ]; then
+          ${pkgs.libnotify}/bin/notify-send "Firmware updates available" "$updates" -u normal
+        fi
       fi
-    fi
+    '';
+    serviceConfig.Type = "oneshot";
+  };
+};
+
+# Run turbostat in the background: can pull Intel CPU/iGPU power data from this
+systemd.services.turbostat = {
+  description = "turbostat background sampler";
+  wantedBy = [ "multi-user.target" ];
+  script = ''
+    ${pkgs.linuxPackages.turbostat}/bin/turbostat \
+      --quiet --show PkgWatt,CorWatt,GFXWatt,RAMWatt \
+      --interval 1 --no-msr \
+      > /tmp/turbostat.log 2>/dev/null
   '';
-  serviceConfig.Type = "oneshot";
+  serviceConfig = {
+    Restart = "always";
+    User = "root";
+  };
 };
 
 systemd.user.timers.fwupd-check = {

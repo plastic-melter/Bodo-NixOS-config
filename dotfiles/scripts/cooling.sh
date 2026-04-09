@@ -1,7 +1,9 @@
 #!/bin/sh
-CPUTEMP=$(sensors | grep CPU | cut -d '+' -f 2 | head -c -8)
-#POWER=$(sensors | grep PPT | awk '{print $2}')
-#FANSPEED=$(sensors | grep fan1 | awk '{print $2}')
-#echo -n "$CPUTEMP(${FANSPEED}rpm)"
-#PPT=$(sensors | grep PPT | awk '{print $2}')
-echo -n "${CPUTEMP}°C"
+GPUTEMP=$(sensors | grep GPU | grep -oP '\+\K[0-9]+' | head -1)
+CPUTEMP=$(sensors | grep CPU | grep -oP '\+\K[0-9]+' | head -1)
+
+if [ -z "$GPUTEMP" ]; then
+  echo -n "${CPUTEMP}°C"
+else
+  echo -n "${CPUTEMP}${GPUTEMP}°C"
+fi

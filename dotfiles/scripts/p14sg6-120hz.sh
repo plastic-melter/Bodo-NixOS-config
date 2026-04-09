@@ -1,6 +1,6 @@
 #!/bin/sh
-current=$(hyprctl monitors | grep -oP '\d+\.\d+Hz' | head -1)
-if echo "$current" | grep -q "^120"; then
+current_hz=$(hyprctl monitors | grep '@' | head -1 | grep -oP '\d+(?=\.\d+000)')
+if [ "$current_hz" = "120" ]; then
     hyprctl keyword monitor eDP-1,3072x1920@60,0x0,1
     notify-send "Refresh Rate" "Switched to 60Hz"
 else
