@@ -357,6 +357,9 @@ home.sessionVariables = {
   EDITOR = "nvim";
   VISUAL = "nvim";
   SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/keyring/ssh";
+  GTK_IM_MODULE = "fcitx";
+  QT_IM_MODULE  = "fcitx";
+  XMODIFIERS    = "@im=fcitx";
 };
 
 systemd.user.sessionVariables = {
@@ -447,6 +450,15 @@ xdg.mimeApps = {
     # Others
     "application/pdf"           = "firefox.desktop";
     "text/html"                 = "firefox.desktop";
+    "text/plain" = [ "nvim-wezterm.desktop" ];
+    "text/x-shellscript" = [ "nvim-wezterm.desktop" ];
+    "text/x-script.python" = [ "nvim-wezterm.desktop" ];
+    "text/x-csrc" = [ "nvim-wezterm.desktop" ];
+    "text/x-chdr" = [ "nvim-wezterm.desktop" ];
+    "text/x-python" = [ "nvim-wezterm.desktop" ];
+    "text/markdown" = [ "nvim-wezterm.desktop" ];
+    "application/json" = [ "nvim-wezterm.desktop" ];
+    "application/x-shellscript" = [ "nvim-wezterm.desktop" ];
     "x-scheme-handler/http"     = "firefox.desktop";
     "x-scheme-handler/https"    = "firefox.desktop";
     "x-scheme-handler/about"    = "firefox.desktop";

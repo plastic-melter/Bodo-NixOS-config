@@ -57,6 +57,10 @@ window#waybar {
     color: #a8e8b8;  /* soft green */
 }
 
+#custom-tz {
+    color: #a8e8b8;  /* soft green */
+}
+
 #custom-cooling {
     color: #a8c8e8;  /* soft sky blue */
 }
@@ -129,7 +133,7 @@ window#waybar {
 /* Shared background/border for all modules */
 #clock, #battery, #network, #pulseaudio, #temperature, #cpu, #memory,
 #disk, #custom-refreshrate, #custom-hwpower, #custom-power, #custom-cooling,
-#tray, #backlight, #custom-playerctl, #custom-playerlabel {
+#tray, #custom-tz, #backlight, #custom-playerctl, #custom-playerlabel {
     background-color: rgba(13, 15, 28, 0.9);
     border-radius: 8px;
     padding: 0px 15px;

@@ -126,7 +126,8 @@ systemd.services = {
 # LOCALIZATION
 # ============================================
 
-time.timeZone = "America/Los_Angeles";
+#time.timeZone = "America/Los_Angeles";
+time.timeZone = "Asia/Tokyo";
 i18n = {
   defaultLocale = "en_US.UTF-8";
   inputMethod = {
@@ -451,17 +452,11 @@ fonts = {
 # ENVIRONMENT VARIABLES
 # ============================================
 
-lib.mkForce = {
-  environment.variables = {
-    GTK_IM_MODULE = "wayland";  # Not ideal but w/e... 
-    QT_IM_MODULE = "fcitx";     # https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland
-    XMODIFIERS = "@im=fcitx";
-    SDL_IM_MODULE = "fcitx";
-    GLFW_IM_MODULE = "ibus";
-  };
-};
-
 environment.variables = {
+  QT_IM_MODULE = "fcitx";     # https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland
+  XMODIFIERS = "@im=fcitx";
+  SDL_IM_MODULE = "fcitx";
+  GLFW_IM_MODULE = "ibus";
   QT_QPA_PLATFORMTHEME = "qt5ct";
   XDG_ICON_FALLBACK = "/etc/nixos/dotfiles/images/blankicon.png";
 };
@@ -550,6 +545,7 @@ environment.systemPackages = with pkgs; [
   curl # download web stuff
   dislocker # unlock Bitlocker encryption
   fcitx5 # input method framework
+  fcitx5-mozc # IME
   file # determines file type/info
   git # distributed version control system
   htop # view resource usage
