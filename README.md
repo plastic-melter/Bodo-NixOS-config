@@ -1,6 +1,6 @@
-# X13G3 (AMD) NixOS Config
+# P14sG6 (Intel/NVIDIA) NixOS Config
 
-Backup and reproducible config for my personal [NixOS](https://nixos.org) system, currently configured for a ThinkPad [X13 Gen 3 AMD](https://psref.lenovo.com/syspool/Sys/PDF/ThinkPad/ThinkPad_X13_Gen_3_AMD/ThinkPad_X13_Gen_3_AMD_Spec.pdf).
+Backup and reproducible config for my personal [NixOS](https://nixos.org) system, currently configured for a ThinkPad [P14s Gen 6](https://psref.lenovo.com/syspool/Sys/PDF/ThinkPad/ThinkPad_P14s_Gen_6_Intel/ThinkPad_P14s_Gen_6_Intel_Spec.pdf), and soon to be [51nb X210ai](https://macdat.net/laptops/jxtech/x210ai.php).
 
 ![Desktop Screenshot](./.desktop.png)
 
@@ -18,11 +18,9 @@ Config files for:
 ...and more, along with some useful scripts. 
 
 To-do list: 
-- migrate to P14sG6
--- install + machine-specific config (no NixOS HW module exists)
--- get NX working in Win11 (VFIO/IOMMU)
--- get PRIME offload working
--- power saving tweaks
+- optimize s2idle sleep state + suspend-to-hibernate 
+- get NX working in Win11 VM (VFIO/IOMMU)
+- power saving tweaks, PRIME edge case testing
 - explore AGS and EWW
 - make things look nicer (skill issue)
 
