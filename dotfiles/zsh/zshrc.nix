@@ -11,6 +11,7 @@
   ];
   initContent = lib.mkOrder 550 ''
     bindkey -e
+    bindkey "^[[3~" delete-char
     P10K_INSTANT_PROMPT="$XDG_CACHE_HOME/p10k-instant-prompt-''${(%):-%n}.zsh"
     [[ ! -r "$P10K_INSTANT_PROMPT" ]] || source "$P10K_INSTANT_PROMPT"
     function y() {

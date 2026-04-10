@@ -21,6 +21,7 @@
   ],
   "modules-right": [
     "cpu",
+    "custom/hwpower",
     "custom/cooling",
     "memory",
     "disk",
@@ -136,9 +137,14 @@
   },
   "disk": {
     "interval": 5,
-    "format": "󰋊  {percentage_used}",
+    "format": "󰋊  {percentage_used}%",
     "format-alt": "󰋊  {used}/{total} ({free} free)",
     "unit": "GB"
+  },
+  "custom/hwpower": {
+    "format": "  {}",
+    "exec": "/etc/nixos/dotfiles/scripts/hwpower.sh",
+    "interval": 1
   },
   "custom/diskuse": {
     "format": "󰋊  {}",
