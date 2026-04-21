@@ -568,6 +568,7 @@ home.packages = with pkgs; [
   mame # arcade emulator
   nsnake # terminal snake game
   protontricks # allows for Steam proton prefixes
+  vitetris # terminal tetris
   wineWow64Packages.waylandFull # wine for wayland
   winetricks # install DLLs/etc into wine prefixes
 

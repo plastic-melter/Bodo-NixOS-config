@@ -21,6 +21,8 @@ To-do list:
 - optimize s2idle sleep state + suspend-to-hibernate 
 - get NX working in Win11 VM (VFIO/IOMMU)
 - power saving tweaks, PRIME edge case testing
+- plymouth splash
+- defeat the invincible fcitx login notif (!?!?!?)
 - explore AGS and EWW
 - make things look nicer (skill issue)
 

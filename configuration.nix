@@ -9,7 +9,7 @@ imports = [
 ];
 
 # ============================================
-# NIXPKGS CONFIGURATION
+# NIX, NIXPKGS, BOOT, SWAP
 # ============================================
 
 nix = {
@@ -83,16 +83,31 @@ boot = {
     "pci_aspm=force" # ignore BIOS ASPM settings and enable ASPM on all PCIe links
     "nvme.noacpi=1" # let NVMe driver ignore ACPI PM hints and do PM itself
     "acpi.ec_no_wakeup=1" # prevent ACPI EC from waking things up during suspend
+    "resume=UUID=ad157f4a-b51d-4760-a774-4ac86322f9c2" # hibernation: swap file
+    "resume_offset=687831040" # hibernation: swap file
+    "quiet" # surpress kernel boot messages: still readable via dmesg/journalctl
   ];
+  resumeDevice = "/dev/mapper/luks-ad157f4a-b51d-4760-a774-4ac86322f9c2";
   kernel.sysctl."net.ipv4.ip_forward" = 1; # IP forwarding
   blacklistedKernelModules = [ "k10temp" ];
   extraModprobeConfig = ''
     options cfg80211 ieee80211_regdom=US
-  ''; # above: JP/US IR flag mismatch
+    options vfio-pci ids=10de:2db8
+  ''; 
+  # Modprobe config explanation:
+  #   - cfg...  = resolve JP/US IR flag mismatch
+  #   - vfio... = let pvfio-pci kernel module claim RTX 1000 at boot
+  #               This means the dGPU is only ever used for VM use
+  #               All NixOS stuff, including gaming, uses the iGPU
 };
 
+swapDevices = [{
+  device = "/var/lib/swapfile";
+  size = 96*1024; # 96 GiB
+}];
+
 # ============================================
-# NETWORKING
+# NETWORKING, FWUPD
 # ============================================
 
 networking = {
@@ -204,7 +219,17 @@ systemd.tmpfiles.rules = [
 
 security = {
   rtkit.enable = true;
-  polkit.enable = true;
+  polkit = {
+    enable = true;
+#    extraConfig = ''
+#      polkit.addRule(function(action, subject) {
+#        if (action.id == "org.libvirt.unix.manage" &&
+#        subject.isInGroup("libvirtd")) {
+#          return polkit.Result.YES;
+#        }
+#      });
+#    '';
+  };
   sudo.enable = false;
   doas = {
     enable = true;
@@ -380,6 +405,19 @@ systemd.user.timers.fwupd-check = {
 };
 
 # ============================================
+# VIRTUALIZATION
+# ============================================
+
+virtualisation.libvirtd = {
+  enable = true;
+  qemu = {
+    package = pkgs.qemu_kvm;
+    runAsRoot = true;
+    swtpm.enable = true; # TPM for Win11
+  };
+};
+
+# ============================================
 # SYSTEM-WIDE PROGRAM CONFIG
 # ============================================
 
@@ -496,19 +534,19 @@ users = {
   users.joe = {
     isNormalUser = true;
     extraGroups = [
-      "adbusers"	# access to android debug stuff
-      "dialout"		# access to serial ports
-#      "libvirtd"	# access to libvirt VM management
-      "plugdev" # access to USB devices such as rpi flashing
-      "audio"		# access to audio devices
-      "disk"		# access to raw disk devices
-      "video"		# access to video devices
-      "power"		# access to power management
-      "plugdev"		# access to removable devices
-      "network"		# access to network interface
-      "wheel"		# access to sudo
-      "input"		# access to input devices
-      "uinput"		# access to virtual input devices
+      "adbusers"  # access to android debug stuff
+      "dialout"   # access to serial ports
+      "libvirtd"  # access to libvirt VM management
+      "plugdev"   # access to USB devices such as rpi flashing
+      "audio"     # access to audio devices
+      "disk"      # access to raw disk devices
+      "video"     # access to video devices
+      "power"     # access to power management
+      "plugdev"   # access to removable devices
+      "network"   # access to network interface
+      "wheel"     # access to sudo
+      "input"     # access to input devices
+      "uinput"    # access to virtual input devices
     ];
   };
 }; 
@@ -520,7 +558,10 @@ users = {
 environment.systemPackages = with pkgs; [
 
   # P14sG6-specific stuff
-  linuxKernel.packages.linux_xanmod.turbostat
+  linuxKernel.packages.linux_xanmod.turbostat # CPU power use stats
+  virt-manager # manage VMs
+  freerdp # RDP client on host connects to VM NAT
+  intel-gpu-tools # check iGPU resource utilization
 
   # HARDWARE + DRIVERS + EXTERNAL DEVICES
   acpid # watch ACPI events
@@ -603,9 +644,6 @@ environment.systemPackages = with pkgs; [
   astal.battery
   astal.wireplumber
   astal.network
-
-  qmk # temporary
-dos2unix
 ];
 
 ################################################

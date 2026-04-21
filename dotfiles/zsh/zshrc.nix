@@ -66,5 +66,6 @@
     notes = "vim ~/.notes.md";
     homeclean = "env --chdir=/home/joe /etc/nixos/dotfiles/scripts/homeclean.sh";
     gc = "git add -A && git commit -m";
+    nx = "xfreerdp /v:192.168.122.58 /u:odinn /dynamic-resolution";
   };
 }

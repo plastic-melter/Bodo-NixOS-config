@@ -112,6 +112,8 @@
   "custom/tz": {
     "format": "{}",
     "exec": "/etc/nixos/dotfiles/scripts/worldclock.sh",
+    "on-click": "/etc/nixos/dotfiles/scripts/worldclock.sh toggle & pkill -RTMIN+8 waybar",
+    "signal": 8,
     "interval": 5
   },
   "battery": {
