@@ -135,6 +135,11 @@ systemd.services = {
   "fwupd-refresh" = {
     enable = lib.mkForce false;
   };
+  libvirtd.postStart = ''
+    sleep 2
+    virsh net-start default || true
+    virsh net-autostart default || true
+  ''; # Above: save the trouble of running 'virsh netstart default' each time
 };
 
 # ============================================
