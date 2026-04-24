@@ -18,11 +18,9 @@ Config files for:
 ...and more, along with some useful scripts. 
 
 To-do list: 
-- optimize s2idle sleep state + suspend-to-hibernate 
-- get NX working in Win11 VM (VFIO/IOMMU)
-- power saving tweaks, PRIME edge case testing
-- plymouth splash
-- defeat the invincible fcitx login notif (!?!?!?)
+- reliable, power-efficient sleep
+- power saving tweaks (dGPU D3hot, CPU stuff)
+- fcitx login notif thing (complains about env var)
 - explore AGS and EWW
 - make things look nicer (skill issue)
 

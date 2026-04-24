@@ -99,6 +99,9 @@ boot = {
   #   - vfio... = let pvfio-pci kernel module claim RTX 1000 at boot
   #               This means the dGPU is only ever used for VM use
   #               All NixOS stuff, including gaming, uses the iGPU
+  #               Without "options vfio-pci ids=10de:2db8", the shitty
+  #               nvidia driver owns the GPU at boot. Good luck getting
+  #               it to bind/unbind properly for VMs.
 };
 
 swapDevices = [{
@@ -146,8 +149,8 @@ systemd.services = {
 # LOCALIZATION
 # ============================================
 
-#time.timeZone = "America/Los_Angeles";
-time.timeZone = "Asia/Tokyo";
+time.timeZone = "America/Los_Angeles";
+#time.timeZone = "Asia/Tokyo";
 i18n = {
   defaultLocale = "en_US.UTF-8";
   inputMethod = {
@@ -172,19 +175,14 @@ console = {
 # ============================================
 
 hardware = {
-  nvidia = {
+  nvidia = { # NOTE: we are not using PRIME, nor finegrained PM, as vfio-pci owns the GPU
     modesetting.enable = true;
-    open = true; # Required for Blackwell
+    open = true; # Required for Blackwell GPUs
     nvidiaSettings = true;
     powerManagement = {
       enable = true;
     };
     package = config.boot.kernelPackages.nvidiaPackages.stable;
-    prime = {
-      sync.enable = true;
-      intelBusId = "PCI:0:2:0";
-      nvidiaBusId = "PCI:1:0:0";
-    };
   };
   graphics = {
     enable = true;
@@ -215,7 +213,9 @@ powerManagement = {
 
 systemd.tmpfiles.rules = [
   "w /sys/module/pcie_aspm/parameters/policy - - - - powersupersave" 
-  # ^ let devices negotiate low power state when idle: combos with kernelParam "pcie_aspm=force"
+  # ^ let pci devices negotiate low power state when idle: combos with kernelParam "pcie_aspm=force"
+  "w /sys/bus/pci/devices/0000:01:00.0/power/control - - - - auto"
+  # ^ enable runtime PM on dGPU even under vfio-pci so it can (hopefully) power gate when idle
 ];
 
 # ============================================
@@ -339,6 +339,12 @@ services = {
     settings = { 
       START_CHARGE_THRESH_BAT0 = 90; 
       STOP_CHARGE_THRESH_BAT0 = 95; 
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "power"; # Set Intel HWP EPP to power: tells scheduler to bias towards efficiency
+      CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance"; # Same thing but for AC: "performance" will pin it high (annoying)
+      PLATFORM_PROFILE_ON_BAT = "low-power";  # Talks to Lenovo firmware via ACPI platform profile to request a low-power mode
+      # ^ This affects things like fan curves, PL1/PL2, etc.
+      PLATFORM_PROFILE_ON_AC = "balanced"; # Same thing but for AC: be sensible rather than pinning at full power
+      RUNTIME_PM_ON_AC = "auto"; # Allow runtime PM even on AC (ex: don't power on the dGPU if it's not needed)
     };
   };
   thermald.enable = true;
@@ -492,7 +498,7 @@ fonts = {
 };
 
 # ============================================
-# ENVIRONMENT VARIABLES
+# ENV VARS
 # ============================================
 
 environment.variables = {
