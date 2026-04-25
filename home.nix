@@ -192,7 +192,7 @@ programs = {
     withRuby = false;
     withPython3 = false;
     plugins = with pkgs.vimPlugins; [
-      (nvim-treesitter.withPlugins (_: pkgs.vimPlugins.nvim-treesitter.allGrammars)) # Syntax highlighting and parsing
+      (nvim-treesitter.withPlugins (p: builtins.attrValues p)) #Syntax highlighting and parsing
       catppuccin-nvim                   # Mocha colorscheme
       telescope-nvim                    # Fuzzy finder for files/buffers/grep
       plenary-nvim                      # Lua utility library (telescope dependency)

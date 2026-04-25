@@ -81,11 +81,15 @@ boot = {
     "intel_iommu=on" # enable IOMMU for VFIO passthrough
     "iommu=pt" # passthrough mode, tells IOMMU to only translate for devices that need it (VMs)
     "pci_aspm=force" # ignore BIOS ASPM settings and enable ASPM on all PCIe links
-    "nvme.noacpi=1" # let NVMe driver ignore ACPI PM hints and do PM itself
-    "acpi.ec_no_wakeup=1" # prevent ACPI EC from waking things up during suspend
+    #"nvme.noacpi=1" # let NVMe driver ignore ACPI PM hints and do PM itself
+    #    ^ this might be too aggressive, could be causing the issues resuming from suspend
+    #"acpi.ec_no_wakeup=1" # prevent ACPI EC from waking things up during suspend
+    #    ^ this might be too aggressive, could be causing the issues resuming from suspend
     "resume=UUID=ad157f4a-b51d-4760-a774-4ac86322f9c2" # hibernation: swap file
     "resume_offset=687831040" # hibernation: swap file
     "quiet" # surpress kernel boot messages: still readable via dmesg/journalctl
+    "acpi.dump_ecdt=1"  # more EC logging
+    "no_console_suspend"  # keep console active during suspend for better logging
   ];
   resumeDevice = "/dev/mapper/luks-ad157f4a-b51d-4760-a774-4ac86322f9c2";
   kernel.sysctl."net.ipv4.ip_forward" = 1; # IP forwarding
@@ -347,7 +351,8 @@ services = {
       RUNTIME_PM_ON_AC = "auto"; # Allow runtime PM even on AC (ex: don't power on the dGPU if it's not needed)
     };
   };
-  thermald.enable = true;
+  thermald.enable = true; # Intel thermal daemon
+  upower.enable = true; # dbus service that abstracts PM hardware an gives a nice API rather than poking /sys directly
 
   # USB Device Rules
   udev.extraRules = ''
