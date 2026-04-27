@@ -26,7 +26,7 @@ done
 
 # Stage files
 echo -e "${CYAN}Staging new files...${NC}"
-git -C /etc/nixos add -A
+doas git -C /etc/nixos add -A
 
 # Only commit if --push flag is provided
 if [ "$PUSH_FLAG" = true ]; then

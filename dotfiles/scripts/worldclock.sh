@@ -16,8 +16,7 @@ EST=$(TZ="America/New_York" date +"%H:%M")
 BST=$(TZ="Europe/London" date +"%H:%M")
 
 if [[ -f "$STATE_FILE" ]]; then
-  #echo "$JST JST  $PST PST  $EST EST  $BST BST"
-  echo "$JST JST  $PST PST  $EST EST"
+  echo "$JST JST  $PST PST  $EST EST  $BST BST"
 else
   echo "$PST PST"
 fi

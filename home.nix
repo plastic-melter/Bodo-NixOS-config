@@ -23,6 +23,7 @@ home.file = {
     source = ./dotfiles/eww;
     recursive = true;
   };
+  ".config/fastfetch".source = ./dotfiles/fastfetch;
   ".config/foot".source = ./dotfiles/foot;
   ".config/hypr".source = ./dotfiles/hypr;
   ".config/nwg-drawer".source = ./dotfiles/nwg-drawer;
@@ -357,7 +358,7 @@ home.sessionVariables = {
   EDITOR = "nvim";
   VISUAL = "nvim";
   SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/keyring/ssh";
-  GTK_IM_MODULE = "fcitx";
+#  GTK_IM_MODULE = "fcitx";
   QT_IM_MODULE  = "fcitx";
   XMODIFIERS    = "@im=fcitx";
 };
@@ -525,6 +526,7 @@ home.packages = with pkgs; [
   poppler # PDF previews in TUi file manager
   resvg # yazi: SVG image preview
   ripgrep # nvim: required for telescope live_grep
+  simple-scan # for scanning from printer/scanner combo
   synology-drive-client # desktop client for Synology NAS
   tumbler # image previews in file manager
   unrar # extract .rar files
@@ -564,7 +566,7 @@ home.packages = with pkgs; [
   # GAMING
   appimage-run # just for Slippi
   dolphin-emu # GameCube/Wii emulator
-  lutris # game manager like steam
+#  lutris # game launcher, wraps steam + local games etc
   mame # arcade emulator
   nsnake # terminal snake game
   protontricks # allows for Steam proton prefixes

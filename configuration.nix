@@ -85,13 +85,13 @@ boot = {
     #    ^ this might be too aggressive, could be causing the issues resuming from suspend
     #"acpi.ec_no_wakeup=1" # prevent ACPI EC from waking things up during suspend
     #    ^ this might be too aggressive, could be causing the issues resuming from suspend
-    "resume=UUID=ad157f4a-b51d-4760-a774-4ac86322f9c2" # hibernation: swap file
+    "resume=UUID=2ef9551c-28e6-484b-9afa-5de05f928942" # hibernation: swap file
     "resume_offset=687831040" # hibernation: swap file
     "quiet" # surpress kernel boot messages: still readable via dmesg/journalctl
     "acpi.dump_ecdt=1"  # more EC logging
     "no_console_suspend"  # keep console active during suspend for better logging
   ];
-  resumeDevice = "/dev/mapper/luks-ad157f4a-b51d-4760-a774-4ac86322f9c2";
+  resumeDevice = "/dev/disk/by-uuid/2ef9551c-28e6-484b-9afa-5de05f928942";
   kernel.sysctl."net.ipv4.ip_forward" = 1; # IP forwarding
   blacklistedKernelModules = [ "k10temp" ];
   extraModprobeConfig = ''
@@ -163,7 +163,6 @@ i18n = {
     fcitx5.addons = with pkgs; [
       fcitx5-mozc
       fcitx5-gtk
-      fcitx5-nord
     ];
     fcitx5.waylandFrontend = true;
   };
@@ -207,6 +206,18 @@ hardware = {
     emulateWheel = true;
     speed = 97;
     sensitivity = 128;
+  };
+  sane = {
+    enable = true; # for scanning from printer/scanner
+    brscan4 = {
+      enable = true; # for Brother MFC printer/scanner
+      netDevices = {
+        brother = {
+          ip = "192.168.1.16";
+          model = "MFC-L2820DW";
+        };
+      };
+    };
   };
 };
 
@@ -331,7 +342,8 @@ services = {
   openssh.enable = true;
   blueman.enable = true;
   gvfs.enable = true; # required for Thunar to use .local/share/Trash
-
+  
+  # Syncthing
   syncthing = {
     enable = true;
     openDefaultPorts = true;
@@ -344,11 +356,13 @@ services = {
       START_CHARGE_THRESH_BAT0 = 90; 
       STOP_CHARGE_THRESH_BAT0 = 95; 
       CPU_ENERGY_PERF_POLICY_ON_BAT = "power"; # Set Intel HWP EPP to power: tells scheduler to bias towards efficiency
-      CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance"; # Same thing but for AC: "performance" will pin it high (annoying)
+      #CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance"; # Same thing but for AC: "performance" will pin it high (annoying)
+      CPU_ENERGY_PERF_POLICY_ON_AC = "performance"; # Same thing but for AC: "performance" will pin it high (annoying)
       PLATFORM_PROFILE_ON_BAT = "low-power";  # Talks to Lenovo firmware via ACPI platform profile to request a low-power mode
       # ^ This affects things like fan curves, PL1/PL2, etc.
-      PLATFORM_PROFILE_ON_AC = "balanced"; # Same thing but for AC: be sensible rather than pinning at full power
-      RUNTIME_PM_ON_AC = "auto"; # Allow runtime PM even on AC (ex: don't power on the dGPU if it's not needed)
+      #PLATFORM_PROFILE_ON_AC = "balanced"; # Same thing but for AC: be sensible rather than pinning at full power
+      PLATFORM_PROFILE_ON_AC = "performance"; # Same thing but for AC: be sensible rather than pinning at full power
+      #RUNTIME_PM_ON_AC = "auto"; # Allow runtime PM even on AC (ex: don't power on the dGPU if it's not needed)
     };
   };
   thermald.enable = true; # Intel thermal daemon
@@ -359,22 +373,39 @@ services = {
     # B0XX native USB
     SUBSYSTEM=="hidraw", ATTRS{idVendor}=="045e", ATTRS{idProduct}=="02a1", MODE="0666", GROUP="input"
     SUBSYSTEM=="usb", ATTRS{idVendor}=="045e", ATTRS{idProduct}=="02a1", MODE="0666", GROUP="input"
+
     # GCC adapter
     SUBSYSTEM=="usb", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"
+
     # Teensy 4.1
     ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04*", ENV{ID_MM_DEVICE_IGNORE}="1", ENV{ID_MM_PORT_IGNORE}="1"
     ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789a]*", ENV{MTP_NO_PROBE}="1"
     KERNEL=="ttyACM*", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04*", MODE:="0666"
     KERNEL=="hidraw*", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04*", MODE:="0666"
     SUBSYSTEMS=="usb", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04*", MODE:="0666"
+    
     # NXP boards (Teensy 4.x bootloader)
     KERNEL=="hidraw*", ATTRS{idVendor}=="1fc9", ATTRS{idProduct}=="013*", MODE:="0666"
     SUBSYSTEMS=="usb", ATTRS{idVendor}=="1fc9", ATTRS{idProduct}=="013*", MODE:="0666"
+    
     # PicoScope
     SUBSYSTEM=="usb", ATTR{idVendor}=="0ce9", MODE="0666"
+    
     # STM32 flashing in DFU mode
     SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE="0666"
+
+    # AC plugged in: full performance (PL1=50W, PL2=65W)
+    SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="${pkgs.bash}/bin/sh -c 'echo 50000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw'"
+    # On battery: conservative (PL1=28W, PL2=65W)
+    SUBSYSTEM=="power_supply", ATTR{online}=="0", RUN+="${pkgs.bash}/bin/sh -c 'echo 28000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw'"
   '';
+
+  # Printers/scanners
+  avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
 };
 
 systemd.user.services = {
@@ -409,6 +440,23 @@ systemd.services.turbostat = {
     Restart = "always";
     User = "root";
   };
+};
+
+# Set CPU power limits at boot: there's a udev rule for changing it whenever AC adapter is plugged/unplugged too
+systemd.services.rapl-init = {
+  description = "Initialize RAPL limits based on power source";
+  wantedBy = [ "multi-user.target" ];
+  after = [ "systemd-udevd.service" ];
+  script = ''
+    if grep -q 1 /sys/class/power_supply/AC/online 2>/dev/null; then
+      echo 50000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
+      echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw
+    else
+      echo 28000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
+      echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw
+    fi
+  '';
+  serviceConfig.Type = "oneshot";
 };
 
 systemd.user.timers.fwupd-check = {
@@ -468,14 +516,14 @@ programs = {
     enable = true;
     portalPackage = pkgs.xdg-desktop-portal-hyprland;
   };
-  wayfire = {
-    enable = true;
-    xwayland.enable = true;
-    plugins = with pkgs.wayfirePlugins; [
-      wcm # wayfire config manager: GTK app
-      wayfire-plugins-extra
-    ];
-  };
+#  wayfire = {
+#    enable = true;
+#    xwayland.enable = true;
+#    plugins = with pkgs.wayfirePlugins; [
+#      wcm # wayfire config manager: GTK app
+#      wayfire-plugins-extra
+#    ];
+#  };
 };
 
 # ============================================
@@ -558,6 +606,8 @@ users = {
       "disk"      # access to raw disk devices
       "video"     # access to video devices
       "power"     # access to power management
+      "scanner"   # access to scanner
+      "lp"        # access to scanner
       "plugdev"   # access to removable devices
       "network"   # access to network interface
       "wheel"     # access to sudo
@@ -601,16 +651,16 @@ environment.systemPackages = with pkgs; [
   cpufrequtils # cpu frequency control/query
   curl # download web stuff
   dislocker # unlock Bitlocker encryption
-  fcitx5 # input method framework
-  fcitx5-mozc # IME
   file # determines file type/info
   git # distributed version control system
   htop # view resource usage
   id3v2 # view/edit mp3 metadata
+  iftop # like htop but for network stuff
   inetutils # network tools such as telnet
   iotop # view disk usage/processes
   kdePackages.audex # CD ripper for videos
   killall # allows for killing processes by name
+  lsof # shows which processes have files/devices open
   moreutils # useful UNIX tools: ts, sponge, vidir, etc.
   neovim # vim with more goodness
   nixos-option # query NixOS module options

@@ -163,258 +163,258 @@
   # GAMES - TOUHOU
   # ============================================
   
-  th06 = {
-    name = "東方06";
-    genericName = "th06";
-    exec = "wine /home/joe/Backups/Games/quick-access/th06/th06english/th06e.exe";
-    icon = "/etc/nixos/dotfiles/images/th6.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Embodiment of Scarlet Devil";
-    type = "Application";
-  };
-  
-  th07 = {
-    name = "東方07";
-    genericName = "th07";
-    exec = "wine /home/joe/Backups/Games/quick-access/th07/th07/th07patched.exe";
-    icon = "/etc/nixos/dotfiles/images/th7.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Perfect Cherry Blossom";
-    type = "Application";
-  };
-  
-  th075 = {
-    name = "東方07.5";
-    genericName = "th07.5";
-    exec = "wine /home/joe/Backups/Games/quick-access/th07.5/th07.5/th075.exe";
-    icon = "/etc/nixos/dotfiles/images/th7.5.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Immaterial and Missing Power";
-    type = "Application";
-  };
-  
-  th08 = {
-    name = "東方08";
-    genericName = "th08";
-    exec = "wine /home/joe/Backups/Games/quick-access/th08/th08/th08.exe";
-    icon = "/etc/nixos/dotfiles/images/th8.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Imperishable Night";
-    type = "Application";
-  };
-  
-  th09 = {
-    name = "東方09";
-    genericName = "th09";
-    exec = "wine /home/joe/Backups/Games/quick-access/th09/th09/th09.exe";
-    icon = "/etc/nixos/dotfiles/images/th9.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Phantasmagoria of Flower View";
-    type = "Application";
-  };
-  
-  th095 = {
-    name = "東方09.5";
-    genericName = "th09.5";
-    exec = "wine /home/joe/Backups/Games/quick-access/th09.5/th09.5/th095.exe";
-    icon = "/etc/nixos/dotfiles/images/th9.5.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Shoot the Bullet";
-    type = "Application";
-  };
-  
-  th10 = {
-    name = "東方10";
-    genericName = "th10";
-    exec = "wine /home/joe/Backups/Games/quick-access/th10/th10/th10.exe";
-    icon = "/etc/nixos/dotfiles/images/th10.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Mountain of Faith";
-    type = "Application";
-  };
-  
-  th105 = {
-    name = "東方10.5";
-    genericName = "th10.5";
-    exec = "wine /home/joe/Backups/Games/quick-access/th10.5/th10.5/th105.exe";
-    icon = "/etc/nixos/dotfiles/images/th10.5.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Scarlet Weather Rhapsody";
-    type = "Application";
-  };
-  
-  th11 = {
-    name = "東方11";
-    genericName = "th11";
-    exec = "wine /home/joe/Backups/Games/quick-access/th11/th11/th11.exe";
-    icon = "/etc/nixos/dotfiles/images/th11.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Subterranean Animism";
-    type = "Application";
-  };
-  
-  th12 = {
-    name = "東方12";
-    genericName = "th12";
-    exec = "wine /home/joe/Backups/Games/quick-access/th12/th12/th12.exe";
-    icon = "/etc/nixos/dotfiles/images/th12.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Undefined Fantastic Object";
-    type = "Application";
-  };
-  
-  th123 = {
-    name = "東方12.3";
-    genericName = "th12.3";
-    exec = "wine /home/joe/Backups/Games/quick-access/th12.3/th12.3/th123.exe";
-    icon = "/etc/nixos/dotfiles/images/th12.3.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Hisoutensoku";
-    type = "Application";
-  };
-  
-  th125 = {
-    name = "東方12.5";
-    genericName = "th12.5";
-    exec = "wine /home/joe/Backups/Games/quick-access/th12.5/th12.5/th125.exe";
-    icon = "/etc/nixos/dotfiles/images/th12.5.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Double Spoiler";
-    type = "Application";
-  };
-  
-  th128 = {
-    name = "東方12.8";
-    genericName = "th12.8";
-    exec = "wine /home/joe/Backups/Games/quick-access/th12.8/th12.8/th128.exe";
-    icon = "/etc/nixos/dotfiles/images/th12.8.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Great Fairy Wars";
-    type = "Application";
-  };
-  
-  th13 = {
-    name = "東方13";
-    genericName = "th13";
-    exec = "wine /home/joe/Backups/Games/quick-access/th13/th13/th13.exe";
-    icon = "/etc/nixos/dotfiles/images/th13.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Ten Desires";
-    type = "Application";
-  };
-  
-  th14 = {
-    name = "東方14";
-    genericName = "th14";
-    exec = "wine /home/joe/Backups/Games/quick-access/th14/th14/th14.exe";
-    icon = "/etc/nixos/dotfiles/images/th14.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Double Dealing Character";
-    type = "Application";
-  };
-  
-  th143 = {
-    name = "東方14.3";
-    genericName = "th14.3";
-    exec = "wine /home/joe/Backups/Games/quick-access/th14.3/th14.3/th143.exe";
-    icon = "/etc/nixos/dotfiles/images/th14.3.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Impossible Spell Card";
-    type = "Application";
-  };
-  
-  th15 = {
-    name = "東方15";
-    genericName = "th15";
-    exec = "wine /home/joe/Backups/Games/quick-access/th15/th15/th15.exe";
-    icon = "/etc/nixos/dotfiles/images/th15.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Legacy of Lunatic Kingdom";
-    type = "Application";
-  };
-  
-  th16 = {
-    name = "東方16";
-    genericName = "th16";
-    exec = "wine /home/joe/Backups/Games/quick-access/th16/th16/th16.exe";
-    icon = "/etc/nixos/dotfiles/images/th16.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Hidden Star in Four Seasons";
-    type = "Application";
-  };
-  
-  th165 = {
-    name = "東方16.5";
-    genericName = "th16.5";
-    exec = "wine /home/joe/Backups/Games/quick-access/th16.5/th16.5/th165.exe";
-    icon = "/etc/nixos/dotfiles/images/th16.5.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Violet Detector";
-    type = "Application";
-  };
-  
-  th17 = {
-    name = "東方17";
-    genericName = "th17";
-    exec = "wine /home/joe/Backups/Games/quick-access/th17/th17/th17.exe";
-    icon = "/etc/nixos/dotfiles/images/th17.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Wily Beast and Weakest Creature";
-    type = "Application";
-  };
-  
-  th18 = {
-    name = "東方18";
-    genericName = "th18";
-    exec = "wine /home/joe/Backups/Games/quick-access/th18/th18/th18.exe";
-    icon = "/etc/nixos/dotfiles/images/th18.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Unconnected Marketeers";
-    type = "Application";
-  };
-  
-  th185 = {
-    name = "東方18.5";
-    genericName = "th18.5";
-    exec = "wine /home/joe/Backups/Games/quick-access/th18.5/th18.5/th185.exe";
-    icon = "/etc/nixos/dotfiles/images/th18.5.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "100th Black Market";
-    type = "Application";
-  };
-  
-  th19 = {
-    name = "東方19";
-    genericName = "th19";
-    exec = "wine /home/joe/Backups/Games/quick-access/th19/th19/th19.exe";
-    icon = "/etc/nixos/dotfiles/images/th19.png";
-    terminal = false;
-    categories = [ "Game" ];
-    comment = "Unfinished Dream of All Living Ghost";
-    type = "Application";
-  };
+#  th06 = {
+#    name = "東方06";
+#    genericName = "th06";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th06/th06english/th06e.exe";
+#    icon = "/etc/nixos/dotfiles/images/th6.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Embodiment of Scarlet Devil";
+#    type = "Application";
+#  };
+#  
+#  th07 = {
+#    name = "東方07";
+#    genericName = "th07";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th07/th07/th07patched.exe";
+#    icon = "/etc/nixos/dotfiles/images/th7.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Perfect Cherry Blossom";
+#    type = "Application";
+#  };
+#  
+#  th075 = {
+#    name = "東方07.5";
+#    genericName = "th07.5";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th07.5/th07.5/th075.exe";
+#    icon = "/etc/nixos/dotfiles/images/th7.5.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Immaterial and Missing Power";
+#    type = "Application";
+#  };
+#  
+#  th08 = {
+#    name = "東方08";
+#    genericName = "th08";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th08/th08/th08.exe";
+#    icon = "/etc/nixos/dotfiles/images/th8.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Imperishable Night";
+#    type = "Application";
+#  };
+#  
+#  th09 = {
+#    name = "東方09";
+#    genericName = "th09";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th09/th09/th09.exe";
+#    icon = "/etc/nixos/dotfiles/images/th9.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Phantasmagoria of Flower View";
+#    type = "Application";
+#  };
+#  
+#  th095 = {
+#    name = "東方09.5";
+#    genericName = "th09.5";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th09.5/th09.5/th095.exe";
+#    icon = "/etc/nixos/dotfiles/images/th9.5.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Shoot the Bullet";
+#    type = "Application";
+#  };
+#  
+#  th10 = {
+#    name = "東方10";
+#    genericName = "th10";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th10/th10/th10.exe";
+#    icon = "/etc/nixos/dotfiles/images/th10.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Mountain of Faith";
+#    type = "Application";
+#  };
+#  
+#  th105 = {
+#    name = "東方10.5";
+#    genericName = "th10.5";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th10.5/th10.5/th105.exe";
+#    icon = "/etc/nixos/dotfiles/images/th10.5.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Scarlet Weather Rhapsody";
+#    type = "Application";
+#  };
+#  
+#  th11 = {
+#    name = "東方11";
+#    genericName = "th11";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th11/th11/th11.exe";
+#    icon = "/etc/nixos/dotfiles/images/th11.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Subterranean Animism";
+#    type = "Application";
+#  };
+#  
+#  th12 = {
+#    name = "東方12";
+#    genericName = "th12";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th12/th12/th12.exe";
+#    icon = "/etc/nixos/dotfiles/images/th12.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Undefined Fantastic Object";
+#    type = "Application";
+#  };
+#  
+#  th123 = {
+#    name = "東方12.3";
+#    genericName = "th12.3";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th12.3/th12.3/th123.exe";
+#    icon = "/etc/nixos/dotfiles/images/th12.3.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Hisoutensoku";
+#    type = "Application";
+#  };
+#  
+#  th125 = {
+#    name = "東方12.5";
+#    genericName = "th12.5";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th12.5/th12.5/th125.exe";
+#    icon = "/etc/nixos/dotfiles/images/th12.5.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Double Spoiler";
+#    type = "Application";
+#  };
+#  
+#  th128 = {
+#    name = "東方12.8";
+#    genericName = "th12.8";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th12.8/th12.8/th128.exe";
+#    icon = "/etc/nixos/dotfiles/images/th12.8.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Great Fairy Wars";
+#    type = "Application";
+#  };
+#  
+#  th13 = {
+#    name = "東方13";
+#    genericName = "th13";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th13/th13/th13.exe";
+#    icon = "/etc/nixos/dotfiles/images/th13.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Ten Desires";
+#    type = "Application";
+#  };
+#  
+#  th14 = {
+#    name = "東方14";
+#    genericName = "th14";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th14/th14/th14.exe";
+#    icon = "/etc/nixos/dotfiles/images/th14.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Double Dealing Character";
+#    type = "Application";
+#  };
+#  
+#  th143 = {
+#    name = "東方14.3";
+#    genericName = "th14.3";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th14.3/th14.3/th143.exe";
+#    icon = "/etc/nixos/dotfiles/images/th14.3.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Impossible Spell Card";
+#    type = "Application";
+#  };
+#  
+#  th15 = {
+#    name = "東方15";
+#    genericName = "th15";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th15/th15/th15.exe";
+#    icon = "/etc/nixos/dotfiles/images/th15.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Legacy of Lunatic Kingdom";
+#    type = "Application";
+#  };
+#  
+#  th16 = {
+#    name = "東方16";
+#    genericName = "th16";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th16/th16/th16.exe";
+#    icon = "/etc/nixos/dotfiles/images/th16.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Hidden Star in Four Seasons";
+#    type = "Application";
+#  };
+#  
+#  th165 = {
+#    name = "東方16.5";
+#    genericName = "th16.5";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th16.5/th16.5/th165.exe";
+#    icon = "/etc/nixos/dotfiles/images/th16.5.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Violet Detector";
+#    type = "Application";
+#  };
+#  
+#  th17 = {
+#    name = "東方17";
+#    genericName = "th17";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th17/th17/th17.exe";
+#    icon = "/etc/nixos/dotfiles/images/th17.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Wily Beast and Weakest Creature";
+#    type = "Application";
+#  };
+#  
+#  th18 = {
+#    name = "東方18";
+#    genericName = "th18";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th18/th18/th18.exe";
+#    icon = "/etc/nixos/dotfiles/images/th18.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Unconnected Marketeers";
+#    type = "Application";
+#  };
+#  
+#  th185 = {
+#    name = "東方18.5";
+#    genericName = "th18.5";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th18.5/th18.5/th185.exe";
+#    icon = "/etc/nixos/dotfiles/images/th18.5.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "100th Black Market";
+#    type = "Application";
+#  };
+#  
+#  th19 = {
+#    name = "東方19";
+#    genericName = "th19";
+#    exec = "wine /home/joe/Backups/Games/quick-access/th19/th19/th19.exe";
+#    icon = "/etc/nixos/dotfiles/images/th19.png";
+#    terminal = false;
+#    categories = [ "Game" ];
+#    comment = "Unfinished Dream of All Living Ghost";
+#    type = "Application";
+#  };
 
   # ============================================
   # GAMES - OTHER

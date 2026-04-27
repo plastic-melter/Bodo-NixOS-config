@@ -2,6 +2,7 @@
 
 {
   enable = true;
+  history.size = 1000000; # yes, one million: might wanna look back on this, decades in the future
   plugins = [
     {
       name = "powerlevel10k";
@@ -66,6 +67,6 @@
     notes = "vim ~/.notes.md";
     homeclean = "env --chdir=/home/joe /etc/nixos/dotfiles/scripts/homeclean.sh";
     gc = "git add -A && git commit -m";
-    nx = "xfreerdp /v:192.168.122.58 /u:odinn /dynamic-resolution";
+    nx = "xfreerdp /v:192.168.122.188 /u:odinn /dynamic-resolution";
   };
 }

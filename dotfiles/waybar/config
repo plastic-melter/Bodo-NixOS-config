@@ -30,9 +30,9 @@
     "battery"
   ],
 "clock": {
-  "timezone": "Asia/Tokyo",
+  "timezone": "America/Los_Angeles",
   "format": "",
-  "format-alt": "{:%A, %B %d, %Y (%R)}",
+  "format-alt": "{:%A, %B %d, %Y (%R PST)}",
   "calendar": {
     "mode"          : "year",
     "mode-mon-col"  : 3,
