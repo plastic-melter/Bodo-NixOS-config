@@ -4,4 +4,4 @@ LAST=$(cat /tmp/turbostat.log | tail -n 1)
 CPUPOWER=$(echo "$LAST" | cut -d $'\t' -f 1 | xargs printf "%.1f\n")  # PkgWatt
 #IGPUPOWER=$(echo "$LAST" | cut -d $'\t' -f 3 | xargs printf "%.1f\n") # GFXWatt
 
-  echo "CPU ${CPUPOWER}W"
+  echo "${CPUPOWER}W"

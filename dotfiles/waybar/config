@@ -23,6 +23,7 @@
   "modules-right": [
     "cpu",
     "custom/hwpower",
+    "custom/nvidia",
     "custom/cooling",
     "memory",
     "disk",
@@ -31,8 +32,8 @@
   ],
 "clock": {
   "timezone": "America/Los_Angeles",
-  "format": "",
-  "format-alt": "{:%A, %B %d, %Y (%R PST)}",
+  "format": "  %b/%d",
+  "format-alt": "{:%A, %B %d, %Y (%R)}",
   "calendar": {
     "mode"          : "year",
     "mode-mon-col"  : 3,
@@ -150,6 +151,11 @@
   "custom/hwpower": {
     "format": "  {}",
     "exec": "/etc/nixos/dotfiles/scripts/hwpower.sh",
+    "interval": 1
+  },
+  "custom/nvidia": {
+    "format": "  {}",
+    "exec": "/etc/nixos/dotfiles/scripts/nvidia.sh",
     "interval": 1
   },
   "custom/diskuse": {

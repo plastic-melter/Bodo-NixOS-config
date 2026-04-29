@@ -67,6 +67,8 @@ boot = {
     };
     efi.canTouchEfiVariables = true;
   };
+  extraModulePackages = [ config.boot.kernelPackages.kvmfr ]; # Looking Glass / VM KVMFR
+  initrd.kernelModules = [ "kvmfr" ]; # Looking Glass / VM KVMFR
   kernelModules = [ 
     "ntsync" # CoD WaW performance
     "uinput" # B0XX native USB
@@ -90,6 +92,7 @@ boot = {
     "quiet" # surpress kernel boot messages: still readable via dmesg/journalctl
     "acpi.dump_ecdt=1"  # more EC logging
     "no_console_suspend"  # keep console active during suspend for better logging
+    "kvmfr.static_size_mb=64" # allow memory for KVMFR framebuffer: 64MB covers 4K resolution
   ];
   resumeDevice = "/dev/disk/by-uuid/2ef9551c-28e6-484b-9afa-5de05f928942";
   kernel.sysctl."net.ipv4.ip_forward" = 1; # IP forwarding
@@ -368,6 +371,17 @@ services = {
   thermald.enable = true; # Intel thermal daemon
   upower.enable = true; # dbus service that abstracts PM hardware an gives a nice API rather than poking /sys directly
 
+  # udev package for KVMFR (for Looking Glass)
+  udev.packages = lib.singleton (pkgs.writeTextFile
+    { 
+      name = "kvmfr";
+      text = ''
+        SUBSYSTEM=="kvmfr", GROUP="kvm", MODE="0660", TAG+="uaccess"
+      '';
+      destination = "/etc/udev/rules.d/70-kvmfr.rules";
+    }
+  );
+
   # USB Device Rules
   udev.extraRules = ''
     # B0XX native USB
@@ -478,6 +492,16 @@ virtualisation.libvirtd = {
     package = pkgs.qemu_kvm;
     runAsRoot = true;
     swtpm.enable = true; # TPM for Win11
+    verbatimConfig = ''
+      namespaces = []
+      cgroup_device_acl = [
+        "/dev/null", "/dev/full", "/dev/zero",
+        "/dev/random", "/dev/urandom",
+        "/dev/ptmx", "/dev/kvm", "/dev/kqemu",
+        "/dev/rtc","/dev/hpet", "/dev/vfio/vfio",
+        "/dev/kvmfr0"
+      ]
+    '';
   };
 };
 
@@ -624,10 +648,11 @@ users = {
 environment.systemPackages = with pkgs; [
 
   # P14sG6-specific stuff
-  linuxKernel.packages.linux_xanmod.turbostat # CPU power use stats
-  virt-manager # manage VMs
   freerdp # RDP client on host connects to VM NAT
   intel-gpu-tools # check iGPU resource utilization
+  linuxKernel.packages.linux_xanmod.turbostat # CPU power use stats
+  looking-glass-client # KVM frame relay implementation
+  virt-manager # manage VMs
 
   # HARDWARE + DRIVERS + EXTERNAL DEVICES
   acpid # watch ACPI events
@@ -670,6 +695,7 @@ environment.systemPackages = with pkgs; [
   rpiboot # tool to boot Pis over USB
   s-tui # terminal TUI for CPU temp/power/freq
   scanmem # reverse engineering LoT2 lol
+  smartmontools # monitor storage systems (ex: SSD health)
   stress # hardware stress tool
   tmux # terminal multiplexer
   traceroute # traces network hops
