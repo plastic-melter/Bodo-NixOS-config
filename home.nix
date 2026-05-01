@@ -31,13 +31,11 @@ home.file = {
   ".config/plutonium".source = ./dotfiles/plutonium;
   ".config/scripts".source = ./dotfiles/scripts;
   ".config/waybar".source = ./dotfiles/waybar;
-  ".config/wayfire".source = ./dotfiles/wayfire;
   ".config/wezterm".source = ./dotfiles/wezterm;
   ".config/wlogout".source = ./dotfiles/wlogout;
   ".config/wofi".source = ./dotfiles/wofi;
   ".config/xdg-desktop-portal".source = ./dotfiles/xdg-desktop-portal;
   ".config/yazi".source = ./dotfiles/yazi;
-
   ".vim/undodir/.keep".text = ""; # creates ~/.vim/undodir
 };
 

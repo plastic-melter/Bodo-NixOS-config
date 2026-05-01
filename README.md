@@ -18,18 +18,14 @@ Config files for:
 ...and more, along with some useful scripts. 
 
 To-do list: 
-- force dGPU D3cold (pci-vfio owned) sooner on battery
-- Looking Glass setup for better GPU performance in Win11 VMs
 - bluetooth issues (??)
 - hyprland confirm-on-kill list for sensitive programs
-- Win11 VM audio passthrough
 - fcitx5 mozc IME issues (??)
 - kill the unkillable GTK_IM_MODULE env var warning on login (??)
-- remove fwupd delay? analyze-blame review, speed up boot
 - test cooling limits (15s 65W PL1 + 50W PL2 is low)
-- find a use for AGS and EWW
+- find a use for AGS and EWW?
 - make things look nicer (skill issue)
-- set up game launcher/wrapper, WINE tweaks/testing for old game library 
+- set up game launcher/wrapper, WINE tweaks/testing for old game library, plutonium setup 
 
 Why NixOS?
 - **Declarative system configuration**: your entire system lives in version-controlled text files you can read, understand, and modify in one place (no more mystery edits buried deep in /etc, forgotten PPAs, config drift, or "I ran some command 3 years ago and now I can't remember what it was")

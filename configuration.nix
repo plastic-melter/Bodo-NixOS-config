@@ -6,6 +6,7 @@
 
 imports = [
   ./hardware-configuration.nix
+  ./cachix.nix
 ];
 
 # ============================================
@@ -144,12 +145,6 @@ systemd.services = {
     stopIfChanged = false;
     serviceConfig.LimitMEMLOCK = "infinity";
   };
-  fwupd = {
-    wantedBy = lib.mkForce []; # Prevent boot slowdown
-  };
-  "fwupd-refresh" = {
-    enable = lib.mkForce false;
-  };
   libvirtd.postStart = ''
     sleep 2
     virsh net-start default || true
@@ -240,7 +235,7 @@ hardware = {
 
 powerManagement = {
   cpuFreqGovernor = "ondemand";
-  powertop.enable = true;
+  powertop.enable = false; # powertop sometimes randomly enforces weird low power limits on AC
 };
 
 # ============================================
@@ -416,29 +411,11 @@ services = {
   SUBSYSTEM=="kvmfr", OWNER="joe", GROUP="kvm", MODE="0660"
   '';
 
-  # Printers/scanners
+  # Printers/scanners: access to scanner
   avahi = {
     enable = true;
     nssmdns4 = true;
     openFirewall = true;
-  };
-};
-
-systemd.user.services = {
-  # Check for firmware updates AFTER boot, sometimes saves a few seconds of boot time
-  fwupd-check = {
-    description = "Check for firmware updates";
-    script = ''
-      if ${pkgs.networkmanager}/bin/nmcli -t -f TYPE,STATE device | grep -q "wifi:connected"; then
-        ${pkgs.libnotify}/bin/notify-send "Checking firmware updates..." -u low
-        ${pkgs.fwupd}/bin/fwupdmgr refresh
-        updates=$(${pkgs.fwupd}/bin/fwupdmgr get-updates 2>/dev/null)
-        if [ -n "$updates" ]; then
-          ${pkgs.libnotify}/bin/notify-send "Firmware updates available" "$updates" -u normal
-        fi
-      fi
-    '';
-    serviceConfig.Type = "oneshot";
   };
 };
 
