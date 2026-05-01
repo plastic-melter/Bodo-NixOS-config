@@ -566,7 +566,6 @@ home.packages = with pkgs; [
   # GAMING
   appimage-run # just for Slippi
   dolphin-emu # GameCube/Wii emulator
-#  lutris # game launcher, wraps steam + local games etc
   mame # arcade emulator
   nsnake # terminal snake game
   protontricks # allows for Steam proton prefixes

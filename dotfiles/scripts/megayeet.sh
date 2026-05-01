@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 # Color codes
 CYAN='\033[1;36m'
 NC='\033[0m'

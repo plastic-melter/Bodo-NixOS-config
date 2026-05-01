@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 STATE_FILE="/tmp/worldclock_expanded"
 
 if [[ "$1" == "toggle" ]]; then

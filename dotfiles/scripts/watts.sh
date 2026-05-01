@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 W=$(cat /sys/class/power_supply/BAT0/power_now)
 #W=$(echo $W1)
 S=$(cat /sys/class/power_supply/BAT0/status)

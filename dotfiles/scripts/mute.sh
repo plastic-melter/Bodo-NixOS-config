@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 
 # Toggle mute state using wpctl
 wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle

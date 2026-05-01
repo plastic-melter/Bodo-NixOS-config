@@ -4,11 +4,6 @@ Things that aren't tracked in the NixOS config and need to be redone manually on
 
 ---
 
-## Dolphin Emulator stuff
-- ISO paths
-- Controller config
-- Gecko codes
-
 ## Files to copy over on new systems
 - Folders in `~`: Desktop, Downloads, Documents, Videos, Images, Backups, Arduino, qmk_firmware
 - Dotfiles in `~`: `.zsh_history`, `.ssh/` (keys), `.vim/`, `.platformio/`, `.notes.md`, `.arduino15/`
@@ -17,76 +12,47 @@ Things that aren't tracked in the NixOS config and need to be redone manually on
 - `~/.local/share/`: dolphin-emu, lutris, qBittorrent, nvim, prusa-slicer, vlc, Trash, syncthing, game saves
 - VM image at `/var/lib/libvirt/images/win11.qcow2`
 
-## Games
-Steam manages all games that aren't in `~/Backups` (incl. save files), download as needed.
+# Win11 VM Manual Setup Checklist
 
----
+## Restore VM
 
-## Win11 VM (libvirt/QEMU)
+- [ ] Copy `win11.qcow2` → `/var/lib/libvirt/images/`
+- [ ] `virsh define /etc/nixos/dotfiles/vms/win11.xml`
+- [ ] `virsh -c qemu:///system net-autostart default`
+- [ ] `virsh -c qemu:///system net-start default`
 
-### Re-setup procedure (on a new install)
+## VM XML (`virsh edit win11`)
 
-1. Copy `win11.qcow2` to `/var/lib/libvirt/images/`
-2. In virt-manager, create new VM → **Import existing disk image** → point to qcow2
-   - Memory: 49152 MB, vCPUs: 6
-   - OS: Windows 11, Firmware: UEFI
-   - Check "Customize before install"
-   - NIC: virtio
-3. Add PCI Host Device `0000:01:00.0` (NVIDIA RTX PRO 1000) via Add Hardware
-4. Start default network: `virsh -c qemu:///system net-autostart default`
-5. Apply CPU pinning via `virsh -c qemu:///system edit win11` (see below)
-6. Connect via RDP
+- [ ] Domain tag: `<domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>`
+- [ ] CPU topology (1 socket, 6 cores, host-passthrough)
+- [ ] CPU pinning: vCPUs 0,1 → host CPUs 0,1 (P-cores); vCPUs 2–5 → host CPUs 6,7,8,9 (E-cores)
+- [ ] PCI passthrough: `0000:01:00.0` (RTX PRO 1000)
+- [ ] kvmfr commandline block (`size=256M`, must match modprobe `static_size_mb=256`)
+- [ ] `<memoryBacking><locked/></memoryBacking>`
 
-### VM Definition
-The VM XML lives outside NixOS config at `/var/lib/libvirt/qemu/win11.xml`.
-To back up after changes:
+## Verify
+
+- [ ] `/dev/kvmfr0` exists, owned by joe:kvm, mode 660
+- [ ] VM boots and shows 1 socket / 6 cores in Task Manager
+- [ ] RTX PRO 1000 shows in Device Manager (no Code 43)
+
+## Connect
+
 ```bash
-virsh -c qemu:///system dumpxml win11 > /etc/nixos/dotfiles/vms/win11.xml
-```
-To restore on a new machine:
-```bash
-virsh define /etc/nixos/dotfiles/vms/win11.xml
-```
-
-### Disk image
-Located at `/var/lib/libvirt/images/win11.qcow2`. Back up manually — this is the full Windows install.
-
-### CPU Pinning
-Applied via `virsh -c qemu:///system edit win11`. VM gets CPUs 0,1 (P-core) + 6,7,8,9 (Skymont E-core). Host keeps CPUs 2,3,4,5 (P-core) + 10-13 (Skymont) + 14,15 (Crestmont LP).
-
-```xml
-<cputune>
-  <vcpupin vcpu='0' cpuset='0'/>
-  <vcpupin vcpu='1' cpuset='1'/>
-  <vcpupin vcpu='2' cpuset='6'/>
-  <vcpupin vcpu='3' cpuset='7'/>
-  <vcpupin vcpu='4' cpuset='8'/>
-  <vcpupin vcpu='5' cpuset='9'/>
-</cputune>
-```
-
-### Windows Firewall Rules (applied manually in Win11 admin cmd)
-```cmd
-netsh advfirewall firewall set rule group="Remote Desktop" new enable=Yes
-netsh advfirewall firewall add rule name="ICMP Allow" protocol=icmpv4:8,any dir=in action=allow
-```
-
-### VirtIO Network Driver
-Installed manually from virtio-win ISO (`NetKVM\w11\amd64`) via Device Manager during initial setup.
-
-### NVIDIA Driver
-Installed manually in Win11. Version 595.97. GPU passed through via vfio-pci (PCI `0000:01:00.0`, ID `10de:2db8`).
-
-### NX / AWS VPN
-- AWS VPN Client minimizes to system tray
-- Connect to VPN before launching NX to reach floating license server
-
-### RDP Access
-Connect from host:
-```bash
-xfreerdp /v:192.168.122.XX /u:odinn /dynamic-resolution
-```
-Note: VM IP may change. Check with:
-```bash
+# RDP
 virsh -c qemu:///system domifaddr win11
+xfreerdp /v:<IP> /u:odinn /dynamic-resolution /sound:sys:pulse /cert:ignore
+
+# Looking Glass
+looking-glass-client -f /dev/kvmfr0
 ```
+
+## In Windows (if fresh qcow2)
+
+- [ ] VirtIO drivers (NetKVM, vioinput) from virtio-win ISO
+- [ ] NVIDIA driver 595.97
+- [ ] AWS VPN Client
+- [ ] Enable RDP: `netsh advfirewall firewall set rule group="Remote Desktop" new enable=Yes`
+- [ ] Looking Glass B7 host binary (install as service)
+- [ ] NX floating license config
+

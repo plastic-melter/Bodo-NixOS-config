@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 
 # The laptop's display is always eDP-1
 laptop_display="eDP-1"

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 echo -n "POWERING OFF IN 5..."
 sleep 1
 echo -n "4..."

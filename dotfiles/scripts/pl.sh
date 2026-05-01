@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
+setopt NULL_GLOB # zsh will error out if the "$domain"intel-rapl:*/ glob matches nothing
 RAPL=/sys/devices/virtual/powercap/intel-rapl
 
 # Map constraint names to PL terminology

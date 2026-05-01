@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 
 # Check if waybar is running using ps and grep
 if ps ax | grep -v grep | grep -q "waybar"; then

@@ -92,7 +92,7 @@ boot = {
     "quiet" # surpress kernel boot messages: still readable via dmesg/journalctl
     "acpi.dump_ecdt=1"  # more EC logging
     "no_console_suspend"  # keep console active during suspend for better logging
-    "kvmfr.static_size_mb=64" # allow memory for KVMFR framebuffer: 64MB covers 4K resolution
+    "kvmfr.static_size_mb=256" # allow memory for KVMFR framebuffer: 256MB covers 4K HDR
   ];
   resumeDevice = "/dev/disk/by-uuid/2ef9551c-28e6-484b-9afa-5de05f928942";
   kernel.sysctl."net.ipv4.ip_forward" = 1; # IP forwarding
@@ -100,6 +100,7 @@ boot = {
   extraModprobeConfig = ''
     options cfg80211 ieee80211_regdom=US
     options vfio-pci ids=10de:2db8
+    options kvmfr static_size_mb=256
   ''; 
   # Modprobe config explanation:
   #   - cfg...  = resolve JP/US IR flag mismatch
@@ -109,6 +110,7 @@ boot = {
   #               Without "options vfio-pci ids=10de:2db8", the shitty
   #               nvidia driver owns the GPU at boot. Good luck getting
   #               it to bind/unbind properly for VMs.
+  #   - kvmfr... = set memory size for video stuff: 128M=4k SDR, 256M=4k HDR, etc 
 };
 
 swapDevices = [{
@@ -117,7 +119,7 @@ swapDevices = [{
 }];
 
 # ============================================
-# NETWORKING, FWUPD
+# NETWORKING, SYSTEMD SERVICES
 # ============================================
 
 networking = {
@@ -138,7 +140,10 @@ systemd.services = {
   NetworkManager-wait-online.enable = false;
   "systemd-networkd-wait-online".enable = false;
   vboxnet0.wantedBy = lib.mkForce [];
-  libvirtd.stopIfChanged = false;
+  libvirtd = {
+    stopIfChanged = false;
+    serviceConfig.LimitMEMLOCK = "infinity";
+  };
   fwupd = {
     wantedBy = lib.mkForce []; # Prevent boot slowdown
   };
@@ -151,6 +156,15 @@ systemd.services = {
     virsh net-autostart default || true
   ''; # Above: save the trouble of running 'virsh netstart default' each time
 };
+
+systemd.tmpfiles.rules = [
+  "w /sys/module/pcie_aspm/parameters/policy - - - - powersupersave" 
+  # ^ let pci devices negotiate low power state when idle: combos with kernelParam "pcie_aspm=force"
+  "w /sys/bus/pci/devices/0000:01:00.0/power/control - - - - auto"
+  # ^ enable runtime PM on dGPU even under vfio-pci so it can (hopefully) power gate when idle
+  "f /dev/shm/looking-glass 0660 joe kvm -"
+  # ^ Looking Glass setup
+];
 
 # ============================================
 # LOCALIZATION
@@ -229,13 +243,6 @@ powerManagement = {
   powertop.enable = true;
 };
 
-systemd.tmpfiles.rules = [
-  "w /sys/module/pcie_aspm/parameters/policy - - - - powersupersave" 
-  # ^ let pci devices negotiate low power state when idle: combos with kernelParam "pcie_aspm=force"
-  "w /sys/bus/pci/devices/0000:01:00.0/power/control - - - - auto"
-  # ^ enable runtime PM on dGPU even under vfio-pci so it can (hopefully) power gate when idle
-];
-
 # ============================================
 # SECURITY
 # ============================================
@@ -244,14 +251,6 @@ security = {
   rtkit.enable = true;
   polkit = {
     enable = true;
-#    extraConfig = ''
-#      polkit.addRule(function(action, subject) {
-#        if (action.id == "org.libvirt.unix.manage" &&
-#        subject.isInGroup("libvirtd")) {
-#          return polkit.Result.YES;
-#        }
-#      });
-#    '';
   };
   sudo.enable = false;
   doas = {
@@ -412,6 +411,9 @@ services = {
     SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="${pkgs.bash}/bin/sh -c 'echo 50000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw'"
     # On battery: conservative (PL1=28W, PL2=65W)
     SUBSYSTEM=="power_supply", ATTR{online}=="0", RUN+="${pkgs.bash}/bin/sh -c 'echo 28000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw'"
+
+  # Looking Glass
+  SUBSYSTEM=="kvmfr", OWNER="joe", GROUP="kvm", MODE="0660"
   '';
 
   # Printers/scanners
@@ -493,14 +495,7 @@ virtualisation.libvirtd = {
     runAsRoot = true;
     swtpm.enable = true; # TPM for Win11
     verbatimConfig = ''
-      namespaces = []
-      cgroup_device_acl = [
-        "/dev/null", "/dev/full", "/dev/zero",
-        "/dev/random", "/dev/urandom",
-        "/dev/ptmx", "/dev/kvm", "/dev/kqemu",
-        "/dev/rtc","/dev/hpet", "/dev/vfio/vfio",
-        "/dev/kvmfr0"
-      ]
+      cgroup_controllers = [ "cpu", "memory", "blkio", "cpuset", "cpuacct" ]
     '';
   };
 };
@@ -625,6 +620,7 @@ users = {
       "adbusers"  # access to android debug stuff
       "dialout"   # access to serial ports
       "libvirtd"  # access to libvirt VM management
+      "kvm"       # looking glass
       "plugdev"   # access to USB devices such as rpi flashing
       "audio"     # access to audio devices
       "disk"      # access to raw disk devices

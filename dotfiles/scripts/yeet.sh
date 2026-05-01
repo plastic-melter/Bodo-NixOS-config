@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 CYAN='\033[1;36m'
 PURPLE='\033[1;35m'
 GREEN='\033[1;32m'
@@ -26,7 +26,7 @@ done
 
 # Stage files
 echo -e "${CYAN}Staging new files...${NC}"
-doas git -C /etc/nixos add -A
+git -C /etc/nixos add -A
 
 # Only commit if --push flag is provided
 if [ "$PUSH_FLAG" = true ]; then

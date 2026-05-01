@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 # Images
 mv /home/joe/*.png /home/joe/Images 2>/dev/null
 mv /home/joe/*.PNG /home/joe/Images 2>/dev/null

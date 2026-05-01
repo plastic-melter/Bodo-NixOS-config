@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 for greeting in "morning" "afternoon" "evening"; do
   eww update greeting_image="/etc/nixos/dotfiles/images/greetings/${greeting}.jpg"

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 print_status() {
   brightness=$(cat /sys/class/backlight/intel_backlight/actual_brightness)
   max=$(cat /sys/class/backlight/intel_backlight/max_brightness)

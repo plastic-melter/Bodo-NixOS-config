@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 laptop_display="eDP-1"
 
 # Resolutions (with refresh rates where applicable)

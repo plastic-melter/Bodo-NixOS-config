@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 GPUTEMP=$(sensors | grep GPU | grep -oP '\+\K[0-9]+' | head -1)
 CPUTEMP=$(sensors | grep CPU | grep -oP '\+\K[0-9]+' | head -1)
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 
 # Snatch that mic ID dynamically, no more hardcoding that junk
 mic_id=$(wpctl status | grep 'Digital Mic' | awk '{print $3}' | cut -d '.' -f 1)

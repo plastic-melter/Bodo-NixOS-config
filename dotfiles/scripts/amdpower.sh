@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 
 declare -a power_samples=()
 sample_rate=5           # 5 samples per second

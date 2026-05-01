@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 
 # sleep a sec to let the XF86 command do its thing on the backedn
 sleep 0.2

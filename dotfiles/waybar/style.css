@@ -54,7 +54,7 @@ window#waybar {
 
 /* Per-module pastel icon colors */
 #clock {
-    color: #a8e8b8;  /* soft green */
+    color: #ba97ff;  /* purple */
 }
 
 #custom-tz {

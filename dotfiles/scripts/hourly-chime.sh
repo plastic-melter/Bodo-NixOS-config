@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 eww update chime_time="$(date +'%I:%M %p')"
 eww update chime_date="$(date +'%A, %B %d')"

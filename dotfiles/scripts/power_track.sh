@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 # Power draw tracker: Battery, CPU breakdown, GPU, platform remainder
 
 while true; do

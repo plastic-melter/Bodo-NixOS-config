@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 
 FALLBACK_ICON="/path/to/your/fallback/icon.png"
 

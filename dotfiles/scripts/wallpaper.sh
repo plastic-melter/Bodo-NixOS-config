@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 
 # Directory containing wallpapers
 WALLPAPER_DIR="/etc/nixos/dotfiles/wallpapers"

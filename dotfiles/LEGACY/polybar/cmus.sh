@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 
 ARTIST=$(cmus-remote -Q | grep 'tag artist' | cut -b 12-)
 TRACK=$(cmus-remote -Q | grep 'tag title' | cut -b 11-)

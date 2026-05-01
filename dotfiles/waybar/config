@@ -32,8 +32,9 @@
   ],
 "clock": {
   "timezone": "America/Los_Angeles",
-  "format": "  %b/%d",
+  "format": "  {:%m/%d}",
   "format-alt": "{:%A, %B %d, %Y (%R)}",
+  "tooltip-format": "<tt><small>{calendar}</small></tt>",
   "calendar": {
     "mode"          : "year",
     "mode-mon-col"  : 3,
