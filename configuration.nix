@@ -48,9 +48,11 @@ nixpkgs.config = {
 
 boot = {
   loader = {
+    efi.canTouchEfiVariables = true;
+    timeout = 1;
     systemd-boot = {
       enable = true;
-      configurationLimit = 25;
+      configurationLimit = 10;
       editor = false; # prevent root access by passing kernel param int=/bin/sh
       extraEntries = {
         "reboot.conf" = ''
@@ -65,7 +67,6 @@ boot = {
         '';
       };
     };
-    efi.canTouchEfiVariables = true;
   };
   extraModulePackages = [ config.boot.kernelPackages.kvmfr ]; # Looking Glass / VM KVMFR
   initrd.kernelModules = [ "kvmfr" ]; # Looking Glass / VM KVMFR
@@ -338,7 +339,7 @@ services = {
   openssh.enable = true;
   blueman.enable = true;
   gvfs.enable = true; # required for Thunar to use .local/share/Trash
-  
+
   # Syncthing
   syncthing = {
     enable = true;
@@ -638,7 +639,6 @@ environment.systemPackages = with pkgs; [
   lm_sensors # tons of hardware sensors
   lshw # list hardware inventory
   pciutils # contains PCI tools like lspci
-  powertop # Intel-only power tuning/analyzer
   udisks2 # for mounting disks from userland
 
   # UTILS
