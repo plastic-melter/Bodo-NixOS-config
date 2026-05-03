@@ -23,6 +23,11 @@
       rm -f -- "$tmp"
     }
   '';
+  envExtra = ''
+    if [[ -z "$__NIXOS_SET_ENVIRONMENT_DONE" ]]; then
+      source /etc/set-environment
+    fi
+  '';
   localVariables = {
     POWERLEVEL9K_SHORTEN_STRATEGY = "truncate_middle";
     POWERLEVEL9K_SHORTEN_DIR_LENGHTH = "2";
@@ -68,6 +73,6 @@
     homeclean = "env --chdir=/home/joe /etc/nixos/dotfiles/scripts/homeclean.sh";
     gc = "git add -A && git commit -m";
     nxrdp = "xfreerdp /v:192.168.122.188 /u:odinn /dynamic-resolution /sound:sys:pulse";
-    nxlg = "looking-glass-clent -f /dev/kvmfr0";
+    nxlg = "looking-glass-client -f /dev/kvmfr0";
   };
 }

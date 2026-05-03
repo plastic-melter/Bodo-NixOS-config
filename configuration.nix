@@ -102,6 +102,7 @@ boot = {
     options cfg80211 ieee80211_regdom=US
     options vfio-pci ids=10de:2db8
     options kvmfr static_size_mb=256
+    options thinkpad_acpi fan_control=1
   ''; 
   # Modprobe config explanation:
   #   - cfg...  = resolve JP/US IR flag mismatch
@@ -112,6 +113,7 @@ boot = {
   #               nvidia driver owns the GPU at boot. Good luck getting
   #               it to bind/unbind properly for VMs.
   #   - kvmfr... = set memory size for video stuff: 128M=4k SDR, 256M=4k HDR, etc 
+  #   - ...fan_control... = enable writing /proc/acpi/ibm/fan
 };
 
 swapDevices = [{
@@ -404,11 +406,17 @@ services = {
 
     # AC plugged in: full performance (PL1=50W, PL2=65W)
     SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="${pkgs.bash}/bin/sh -c 'echo 50000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw'"
-    # On battery: conservative (PL1=28W, PL2=65W)
-    SUBSYSTEM=="power_supply", ATTR{online}=="0", RUN+="${pkgs.bash}/bin/sh -c 'echo 28000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw'"
+    # On battery: conservative (PL1=35W, PL2=65W)
+    SUBSYSTEM=="power_supply", ATTR{online}=="0", RUN+="${pkgs.bash}/bin/sh -c 'echo 35000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw'"
 
-  # Looking Glass
-  SUBSYSTEM=="kvmfr", OWNER="joe", GROUP="kvm", MODE="0660"
+    # AC plugged in: full performance (PL1=50W, PL2=65W)
+    SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="${pkgs.bash}/bin/sh -c 'echo 50000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw && echo 50000000 > /sys/class/powercap/intel-rapl-mmio:0/constraint_0_power_limit_uw'"
+
+    # On battery: conservative (PL1=35W, PL2=65W)
+    SUBSYSTEM=="power_supply", ATTR{online}=="0", RUN+="${pkgs.bash}/bin/sh -c 'echo 35000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw && echo 28000000 > /sys/class/powercap/intel-rapl-mmio:0/constraint_0_power_limit_uw'"
+
+    # Looking Glass
+    SUBSYSTEM=="kvmfr", OWNER="joe", GROUP="kvm", MODE="0660"
   '';
 
   # Printers/scanners: access to scanner
@@ -445,11 +453,40 @@ systemd.services.rapl-init = {
       echo 50000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
       echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw
     else
-      echo 28000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
+      echo 35000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
       echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw
     fi
   '';
   serviceConfig.Type = "oneshot";
+};
+
+systemd.services.rapl-pl1 = {
+  description = "Reapply RAPL PL1 limits (EC override workaround)";
+  serviceConfig.Type = "oneshot";
+  script = ''
+    online=$(cat /sys/class/power_supply/AC/online 2>/dev/null || echo 0)
+    if [[ "$online" == "1" ]]; then
+      pl1=50000000
+      pl2=65000000
+    else
+      pl1=28000000
+      pl2=65000000
+    fi
+    echo $pl1 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
+    echo $pl1 > /sys/class/powercap/intel-rapl-mmio:0/constraint_0_power_limit_uw
+    echo $pl2 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw
+    echo $pl2 > /sys/class/powercap/intel-rapl-mmio:0/constraint_1_power_limit_uw
+  '';
+};
+
+systemd.timers.rapl-pl1 = {
+  description = "Reapply RAPL PL1 every 5s";
+  wantedBy = [ "timers.target" ];
+  timerConfig = {
+    OnBootSec = "10s";
+    OnUnitActiveSec = "5s";
+    AccuracySec = "1s";
+  };
 };
 
 systemd.user.timers.fwupd-check = {
@@ -638,6 +675,7 @@ environment.systemPackages = with pkgs; [
   jmtpfs # allows for Android MTP; use instead of mtpfs
   lm_sensors # tons of hardware sensors
   lshw # list hardware inventory
+  msr-tools # read/write to/from the MSR
   pciutils # contains PCI tools like lspci
   udisks2 # for mounting disks from userland
 
