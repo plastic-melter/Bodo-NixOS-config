@@ -488,11 +488,13 @@ home.packages = with pkgs; [
   mpv # simple video player
   obsidian # cross-platform notes program
   obs-studio # desktop recording
+  openscad # text-based 3D parametric model compiler (CAD)
   picoscope # pocket oscilloscope
   platformio # arduino TUI + utils
   prusa-slicer # 3DP slicer
   qbittorrent # peer-to-peer file sharing
   qalculate-gtk # GUI calculator
+  signal-desktop # secure messenger
   spotify # music streaming
   tagainijisho # japanese dictionary
   thunar # GUI file manager
@@ -563,10 +565,12 @@ home.packages = with pkgs; [
 
   # GAMING
   appimage-run # just for Slippi
+  discord # sucks
   dolphin-emu # GameCube/Wii emulator
   mame # arcade emulator
   nsnake # terminal snake game
   protontricks # allows for Steam proton prefixes
+  vencord # stuff
   vitetris # terminal tetris
   wineWow64Packages.waylandFull # wine for wayland
   winetricks # install DLLs/etc into wine prefixes

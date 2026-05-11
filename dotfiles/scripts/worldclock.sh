@@ -14,9 +14,10 @@ JST=$(TZ="Asia/Tokyo" date +"%H:%M")
 PST=$(TZ="America/Los_Angeles" date +"%H:%M")
 EST=$(TZ="America/New_York" date +"%H:%M")
 BST=$(TZ="Europe/London" date +"%H:%M")
+HST=$(TZ="Pacific/Honolulu" date +"%H:%M")
 
 if [[ -f "$STATE_FILE" ]]; then
-  echo "$JST JST  $PST PST  $EST EST  $BST BST"
+  echo "$JST JST  $HST HST  $PST PST  $EST EST  $BST BST"
 else
   echo "$PST PST"
 fi

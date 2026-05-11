@@ -18,8 +18,8 @@ Config files for:
 ...and more, along with some useful scripts. 
 
 To-do list: 
+- custom fan curves
 - bluetooth issues (??)
-- hyprland confirm-on-kill list for sensitive programs
 - VM/host file sharing (virtiofs)
 - fcitx5 mozc IME issues (??)
 - kill the unkillable GTK_IM_MODULE env var warning on login (??)

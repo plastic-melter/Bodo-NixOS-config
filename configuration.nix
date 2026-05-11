@@ -366,6 +366,18 @@ services = {
   };
   thermald.enable = true; # Intel thermal daemon
   upower.enable = true; # dbus service that abstracts PM hardware an gives a nice API rather than poking /sys directly
+  thinkfan = {
+    enable = true;
+    levels = [
+      [ 0                    0  50 ]
+      [ 1                   45  62 ]
+      [ 2                   58  82 ]
+      [ 3                   78  88 ]
+      [ 5                   85  92 ]
+      [ 7                   90  97 ]
+      [ "level full-speed"  95  32767 ]
+    ];
+  };
 
   # udev package for KVMFR (for Looking Glass)
   udev.packages = lib.singleton (pkgs.writeTextFile
@@ -698,6 +710,7 @@ environment.systemPackages = with pkgs; [
   lsof # shows which processes have files/devices open
   moreutils # useful UNIX tools: ts, sponge, vidir, etc.
   neovim # vim with more goodness
+  nethogs # view per-process network throughput
   nixos-option # query NixOS module options
   ntfs3g # allows to read/write NTFS
   p7zip # 7z/rar/zip compression tool
