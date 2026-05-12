@@ -1,0 +1,18 @@
+# palette: rocky_land_20260512_1123
+# saved: 2026-05-12 11:23
+# source: /etc/nixos/dotfiles/wallpapers/Scenic/rocky_land.jpg (awww)
+
+BG="140c1d"
+BG_ALT="140c1d"
+SURFACE="655c70"
+BORDER="CB7B96"
+BORDER_ACTIVE="FBBA52"
+BORDER_ACTIVE2="9575A6"
+BORDER_INACTIVE="000009"
+ACCENT="FBBA52"
+TEXT="c4c2c6"
+TEXT_DIM="c4c2c6"
+LOCK_BG="20,12,29"
+LOCK_FG="196,194,198"
+LOCK_C1="149,117,166"
+LOCK_C2="251,186,82"

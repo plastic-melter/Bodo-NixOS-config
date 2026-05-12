@@ -29,6 +29,7 @@ Things that aren't tracked in the NixOS config and need to be redone manually on
 - [ ] PCI passthrough: `0000:01:00.0` (RTX PRO 1000)
 - [ ] kvmfr commandline block (`size=256M`, must match modprobe `static_size_mb=256`)
 - [ ] `<memoryBacking><locked/></memoryBacking>`
+- [ ] webcam/mic passthrough/toggle: 
 
 ## Verify
 

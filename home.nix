@@ -24,13 +24,13 @@ home.file = {
     recursive = true;
   };
   ".config/fastfetch".source = ./dotfiles/fastfetch;
-  ".config/foot".source = ./dotfiles/foot;
   ".config/hypr".source = ./dotfiles/hypr;
   ".config/nwg-drawer".source = ./dotfiles/nwg-drawer;
   ".config/nwg-panel".source = ./dotfiles/nwg-panel;
   ".config/plutonium".source = ./dotfiles/plutonium;
   ".config/scripts".source = ./dotfiles/scripts;
   ".config/waybar".source = ./dotfiles/waybar;
+  ".config/waypaper".source = ./dotfiles/waypaper;
   ".config/wezterm".source = ./dotfiles/wezterm;
   ".config/wlogout".source = ./dotfiles/wlogout;
   ".config/wofi".source = ./dotfiles/wofi;
@@ -40,7 +40,7 @@ home.file = {
 };
 
 # ============================================
-# XDG STUFF
+# XDG STUFF (mostly ~/.config files)
 # ============================================
 
 xdg.userDirs.enable = false;
@@ -83,83 +83,14 @@ xdg.configFile = {
     '';
   };
 
-  # Disable annoying fctix popup about GTK_IM_MODULE
-  "fcitx5/config".text = ''
-    [Hotkey]
-    # Enumerate when holding modifier of Toggle key
-    EnumerateWithTriggerKeys=True
-    # Enumerate Input Method Forward
-    EnumerateForwardKeys=
-    # Enumerate Input Method Backward
-    EnumerateBackwardKeys=
-    # Skip first input method while enumerating
-    EnumerateSkipFirst=False
-    # Time limit in milliseconds for triggering modifier key shortcuts
-    ModifierOnlyKeyTimeout=250
-    [Hotkey/TriggerKeys]
-    0=Zenkaku_Hankaku
-    1=Zenkaku_Hankaku
-    2=Hangul
-    [Hotkey/ActivateKeys]
-    0=Hangul_Hanja
-    [Hotkey/DeactivateKeys]
-    0=Hangul_Romaja
-    [Hotkey/AltTriggerKeys]
-    0=Shift_L
-    [Hotkey/EnumerateGroupForwardKeys]
-    0=Super+space
-    [Hotkey/EnumerateGroupBackwardKeys]
-    [Hotkey/PrevPage]
-    0=Up
-    [Hotkey/NextPage]
-    0=Down
-    [Hotkey/PrevCandidate]
-    0=Shift+Tab
-    [Hotkey/NextCandidate]
-    0=Tab
-    [Hotkey/TogglePreedit]
-    0=Control+Alt+P
-    [Behavior]
-    # Active By Default
-    ActiveByDefault=False
-    # Reset state on Focus In
-    resetStateWhenFocusIn=No
-    # Share Input State
-    ShareInputState=No
-    # Show preedit in application
-    PreeditEnabledByDefault=True
-    # Show Input Method Information when switch input method
-    ShowInputMethodInformation=True
-    # Show Input Method Information when changing focus
-    showInputMethodInformationWhenFocusIn=False
-    # Show compact input method information
-    CompactInputMethodInformation=True
-    # Show first input method information
-    ShowFirstInputMethodInformation=True
-    # Default page size
-    DefaultPageSize=5
-    # Override XKB Option
-    OverrideXkbOption=False
-    # Custom XKB Option
-    CustomXkbOption=
-    # Force Enabled Addons
-    EnabledAddons=
-    # Force Disabled Addons
-    DisabledAddons=
-    # Preload input method to be used by default
-    PreloadInputMethod=True
-    # Allow input method in the password field
-    AllowInputMethodForPassword=False
-    # Show preedit text when typing password
-    ShowPreeditForPassword=False
-    # Interval of saving user data in minutes
-    AutoSavePeriod=30
-    [Notifications]
-    HiddenNotifications=wayland-diagnose
-  '';
-
   # Make thunar use wezterm
   "xfce4/helpers.rc".text = "TerminalEmulator=wezterm";
+
+  # Dunst config file
+  "dunst/dunstrc".source = ./dotfiles/dunst/dunstrc;
+
+  # ZSH prompt
+  "starship.toml".source = ./dotfiles/starship/starship.toml;
 };
 
 # ============================================
@@ -181,6 +112,11 @@ programs = {
       user.email = "140357149+plastic-melter@users.noreply.github.com";
       safe.directory = "/etc/nixos";
     };
+  };
+
+  starship = {
+    enable = true;
+    enableZshIntegration = true;
   };
 
   neovim = {
@@ -234,45 +170,7 @@ wayland.windowManager = {
 services = {
   playerctld.enable = true;
   syncthing.enable = true;
-
-  dunst = {
-    enable = true;
-    settings.global = {
-      timeout = 2;
-      width = "(0, 600)";
-      height = 200;
-      offset = "0x30";
-      origin = "top-center";
-      corner_radius = 15;
-      notification_limit = 5;
-      idle_threshold = 0;
-      progress_bar = true;
-      progress_bar_height = 15;
-      progress_bar_horizontal_alignment = "center";
-      progress_bar_corner_radius = 3;
-      progress_bar_min_width = 150;
-      progress_bar_max_width = 350;
-      progress_bar_frame_width = 2;
-      separator_height = 3;
-      separator_color = "auto";
-      sort = "false";
-      layer = "overlay";
-      line_height = 0;
-      format = "<b>%s</b>\n%b";
-      padding = 5;
-      horizontal_padding = 5;
-      icon_corner_radius = 5;
-      text_icon_padding = 5;
-      frame_width = 4;
-      frame_color = "#5E81AC";
-      background_color = "#181b28";
-      foreground_color = "#ffffd8";
-      font = "NotoSansCJK 18";
-      min_icon_size = 128;
-      max_icon_size = 128;
-      background = "#090909B5";
-    };
-  };
+  dunst.enable = true;
 };
 
 # ============================================
@@ -356,9 +254,8 @@ home.sessionVariables = {
   EDITOR = "nvim";
   VISUAL = "nvim";
   SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/keyring/ssh";
-#  GTK_IM_MODULE = "fcitx";
-  QT_IM_MODULE  = "fcitx";
-  XMODIFIERS    = "@im=fcitx";
+#  QT_IM_MODULE  = "fcitx";
+#  XMODIFIERS    = "@im=fcitx";
 };
 
 systemd.user.sessionVariables = {
@@ -408,6 +305,14 @@ gtk = {
   gtk4.theme = config.gtk.theme;
   gtk3.extraConfig.gtk-application-prefer-dark-theme = true;
   gtk4.extraConfig.gtk-application-prefer-dark-theme = true;
+  # Below: make Mission Center's top bar not go blindingly white
+  gtk4.extraCss = ''
+    headerbar:backdrop,
+    headerbar {
+      background-color: #303446;
+      background-image: none;
+    }
+  '';
 };
 
 qt = {
@@ -531,9 +436,9 @@ home.packages = with pkgs; [
   tumbler # image previews in file manager
   unrar # extract .rar files
   wofi # app launcher
-  zsh-powerlevel10k # fancy ZSH PS1
 
   # WAYLAND, HYPRLAND, RICE
+  awww # swww got renamed upstream (wayland desktop background)
   catppuccin-gtk # gtk theme
   catppuccin-kvantum # qt theme, apply with kvantum
   grim # grab images from wayland compositors
@@ -555,8 +460,10 @@ home.packages = with pkgs; [
   nwg-look # GUI theme/config tool
   nwg-menu # basically a start menu
   nwg-panel # like a settings panel with sliders etc.
+  pywal # generate color palette from an image
   swaybg # set desktop wallpaper; hyprpaper not work w/ wayfire
   waybar # wayland status bar
+  waypaper # wallpaper manager GUI
   wdisplays # wayland display settings GUI
   wev # identify keystrokes in wayland
   wlogout # wayang logout menu

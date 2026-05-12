@@ -1,0 +1,18 @@
+# palette: green-space
+# saved: 2026-05-12 10:37
+# source: /etc/nixos/dotfiles/wallpapers/Sky_or_Space/586388.jpg (awww)
+
+BG="0d1f1c"
+BG_ALT="0d1f1c"
+SURFACE="5c716d"
+BORDER="4FAD96"
+BORDER_ACTIVE="296959"
+BORDER_ACTIVE2="2E7983"
+BORDER_INACTIVE="000b08"
+ACCENT="296959"
+TEXT="c2c7c6"
+TEXT_DIM="c2c7c6"
+LOCK_BG="13,31,28"
+LOCK_FG="194,199,198"
+LOCK_C1="46,121,131"
+LOCK_C2="41,105,89"

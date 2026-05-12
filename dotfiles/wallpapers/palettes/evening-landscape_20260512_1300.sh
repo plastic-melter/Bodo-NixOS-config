@@ -1,0 +1,18 @@
+# palette: evening-landscape_20260512_1300
+# saved: 2026-05-12 13:00
+# source: /etc/nixos/dotfiles/wallpapers/Scenic/evening-landscape.jpg (awww)
+
+BG="111227"
+BG_ALT="111227"
+SURFACE="606075"
+BORDER="638BC2"
+BORDER_ACTIVE="215493"
+BORDER_ACTIVE2="D37DA8"
+BORDER_INACTIVE="000013"
+ACCENT="215493"
+TEXT="c3c3c9"
+TEXT_DIM="c3c3c9"
+LOCK_BG="17,18,39"
+LOCK_FG="195,195,201"
+LOCK_C1="211,125,168"
+LOCK_C2="33,84,147"

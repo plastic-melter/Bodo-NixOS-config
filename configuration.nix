@@ -369,9 +369,9 @@ services = {
   thinkfan = {
     enable = true;
     levels = [
-      [ 0                    0  50 ]
-      [ 1                   45  62 ]
-      [ 2                   58  82 ]
+      [ 0                    0  60 ]
+      [ 1                   55  68 ]
+      [ 2                   64  82 ]
       [ 3                   78  88 ]
       [ 5                   85  92 ]
       [ 7                   90  97 ]
@@ -561,14 +561,6 @@ programs = {
     enable = true;
     portalPackage = pkgs.xdg-desktop-portal-hyprland;
   };
-#  wayfire = {
-#    enable = true;
-#    xwayland.enable = true;
-#    plugins = with pkgs.wayfirePlugins; [
-#      wcm # wayfire config manager: GTK app
-#      wayfire-plugins-extra
-#    ];
-#  };
 };
 
 # ============================================
@@ -585,6 +577,8 @@ fonts = {
     nerd-fonts.fira-code
     nerd-fonts.symbols-only
     noto-fonts-cjk-sans
+    powerline-symbols
+    powerline-fonts
     source-code-pro
     ttf_bitstream_vera
   ];

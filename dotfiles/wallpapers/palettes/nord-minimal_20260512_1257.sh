@@ -1,0 +1,18 @@
+# palette: nord-minimal_20260512_1257
+# saved: 2026-05-12 12:57
+# source: /etc/nixos/dotfiles/wallpapers/Mountains/nord-minimal.png (awww)
+
+BG="1b1e25"
+BG_ALT="1b1e25"
+SURFACE="626878"
+BORDER="303440"
+BORDER_ACTIVE="424A5C"
+BORDER_ACTIVE2="2F3542"
+BORDER_INACTIVE="070a11"
+ACCENT="424A5C"
+TEXT="c6c6c8"
+TEXT_DIM="c6c6c8"
+LOCK_BG="27,30,37"
+LOCK_FG="198,198,200"
+LOCK_C1="47,53,66"
+LOCK_C2="66,74,92"

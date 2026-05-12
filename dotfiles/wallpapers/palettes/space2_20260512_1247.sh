@@ -1,0 +1,18 @@
+# palette: space2_20260512_1247
+# saved: 2026-05-12 12:47
+# source: /etc/nixos/dotfiles/wallpapers/Sky_or_Space/space2.jpg (awww)
+
+BG="0c131c"
+BG_ALT="0c131c"
+SURFACE="5b6370"
+BORDER="5BABCD"
+BORDER_ACTIVE="548977"
+BORDER_ACTIVE2="5A97AE"
+BORDER_INACTIVE="000008"
+ACCENT="548977"
+TEXT="c2c4c6"
+TEXT_DIM="c2c4c6"
+LOCK_BG="12,19,28"
+LOCK_FG="194,196,198"
+LOCK_C1="90,151,174"
+LOCK_C2="84,137,119"

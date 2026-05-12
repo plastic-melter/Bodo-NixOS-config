@@ -5,15 +5,15 @@
 }
 
 window {
-    background-color: rgba(24, 20, 28, 0.88); /* deep dark plum */
+    background-color: rgba(10, 14, 25, 0.88); /* deep dark plum */
 }
 
 button {
     border-radius: 25px;
     border-style: solid;
     border-width: 10px;
-    border-color: #7c6f8e;     /* muted violet/mauve */
-    background-color: rgba(40, 32, 44, 0.90); /* dark plum */
+    border-color: #324864;     /* muted violet/mauve */
+    background-color: rgba(10, 14, 25, 0.90); /* dark plum */
     color: #d4c8e0;            /* soft lavender text */
     text-decoration-color: #d4c8e0;
     background-repeat: no-repeat;
@@ -24,7 +24,7 @@ button {
 
 button:focus,
 button:active {
-    background-color: rgba(90, 60, 75, 0.85); /* dusty rose highlight */
+    background-color: rgba(46, 48, 74, 0.85); /* dusty rose highlight */
     outline-style: none;
 }
 

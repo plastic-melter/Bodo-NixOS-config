@@ -1,0 +1,114 @@
+add_newline = false
+format = """[](fg:#0a0e19)\
+$os\
+[](bg:#59606e fg:#0a0e19)\
+$directory\
+[](fg:#59606e)\
+$character """
+
+[os]
+disabled = false
+format = "[$symbol ]($style)"
+style = "fg:#2E304A bg:#0a0e19"
+
+[os.symbols]
+NixOS = "󱄅"
+
+[directory]
+style = "fg:#c1c2c5 bg:#59606e"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"/etc/nixos" = " "
+"/home/joe" = "~"
+
+[character]
+success_symbol = ""
+error_symbol = "[✗](fg:#e8a0a8)"
+
+[git_branch]
+disabled = true
+
+[git_status]
+disabled = true
+
+[git_commit]
+disabled = true
+
+[git_state]
+disabled = true
+
+[git_metrics]
+disabled = true
+
+[username]
+disabled = true
+
+[hostname]
+disabled = true
+
+[nix_shell]
+disabled = true
+
+[package]
+disabled = true
+
+[cmd_duration]
+disabled = true
+
+[line_break]
+disabled = true
+
+[time]
+disabled = true
+
+[c]
+disabled = true
+
+[cpp]
+disabled = true
+
+[docker_context]
+disabled = true
+
+[elixir]
+disabled = true
+
+[elm]
+disabled = true
+
+[golang]
+disabled = true
+
+[gradle]
+disabled = true
+
+[haskell]
+disabled = true
+
+[java]
+disabled = true
+
+[julia]
+disabled = true
+
+[maven]
+disabled = true
+
+[nodejs]
+disabled = true
+
+[bun]
+disabled = true
+
+[nim]
+disabled = true
+
+[rust]
+disabled = true
+
+[scala]
+disabled = true
+

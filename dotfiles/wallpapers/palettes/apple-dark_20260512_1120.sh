@@ -1,0 +1,18 @@
+# palette: apple-dark_20260512_1120
+# saved: 2026-05-12 11:20
+# source: /etc/nixos/dotfiles/wallpapers/Mountains/apple-dark.jpg (awww)
+
+BG="0b121a"
+BG_ALT="0b121a"
+SURFACE="5a626f"
+BORDER="47688A"
+BORDER_ACTIVE="27445D"
+BORDER_ACTIVE2="386487"
+BORDER_INACTIVE="000006"
+ACCENT="27445D"
+TEXT="c2c3c5"
+TEXT_DIM="c2c3c5"
+LOCK_BG="11,18,26"
+LOCK_FG="194,195,197"
+LOCK_C1="56,100,135"
+LOCK_C2="39,68,93"

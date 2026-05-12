@@ -1,0 +1,14 @@
+[1;32mDEBUG [0m]: Welcome to hyprpaper!
+built from commit v0.8.4 ()
+[1;31mERR [0mfrom hyprtoolkit ]: [EGL] Command eglQueryDevicesEXT errored out with EGL_BAD_ALLOC (0x12291): EGL_BAD_ALLOC error: In eglQueryDevicesEXT: Failed to allocate device list.
+
+[1;31mERR [0mfrom hyprtoolkit ]: [EGL] Command eglQueryDevicesEXT errored out with EGL_BAD_ALLOC (0x12291): EGL_BAD_ALLOC error: In eglQueryDevicesEXT: Failed to allocate device list.
+
+[1;32mDEBUG [0m]: Found 1 output(s)
+[1;32mDEBUG [0m]: Welcome to hyprpaper!
+built from commit v0.8.4 ()
+[1;31mERR [0mfrom hyprtoolkit ]: [EGL] Command eglQueryDevicesEXT errored out with EGL_BAD_ALLOC (0x12291): EGL_BAD_ALLOC error: In eglQueryDevicesEXT: Failed to allocate device list.
+
+[1;31mERR [0mfrom hyprtoolkit ]: [EGL] Command eglQueryDevicesEXT errored out with EGL_BAD_ALLOC (0x12291): EGL_BAD_ALLOC error: In eglQueryDevicesEXT: Failed to allocate device list.
+
+[1;32mDEBUG [0m]: Found 1 output(s)

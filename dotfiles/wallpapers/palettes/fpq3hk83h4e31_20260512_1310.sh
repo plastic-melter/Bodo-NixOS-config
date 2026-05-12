@@ -1,0 +1,18 @@
+# palette: fpq3hk83h4e31_20260512_1310
+# saved: 2026-05-12 13:10
+# source: /etc/nixos/dotfiles/wallpapers/Scenic/fpq3hk83h4e31.jpg (awww)
+
+BG="1b1e0d"
+BG_ALT="1b1e0d"
+SURFACE="6d705c"
+BORDER="CAD3A5"
+BORDER_ACTIVE="99A560"
+BORDER_ACTIVE2="BEC0BD"
+BORDER_INACTIVE="070a00"
+ACCENT="99A560"
+TEXT="c6c6c2"
+TEXT_DIM="c6c6c2"
+LOCK_BG="27,30,13"
+LOCK_FG="198,198,194"
+LOCK_C1="190,192,189"
+LOCK_C2="153,165,96"

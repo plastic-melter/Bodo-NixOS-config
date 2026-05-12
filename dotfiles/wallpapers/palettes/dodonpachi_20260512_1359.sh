@@ -1,0 +1,18 @@
+# palette: dodonpachi_20260512_1359
+# saved: 2026-05-12 13:59
+# source: /etc/nixos/dotfiles/wallpapers/dodonpachi.jpg (awww)
+
+BG="463321"
+BG_ALT="463321"
+SURFACE="867a6d"
+BORDER="E1B889"
+BORDER_ACTIVE="B8863D"
+BORDER_ACTIVE2="F8CF6D"
+BORDER_INACTIVE="321f0d"
+ACCENT="B8863D"
+TEXT="d0ccc7"
+TEXT_DIM="d0ccc7"
+LOCK_BG="70,51,33"
+LOCK_FG="208,204,199"
+LOCK_C1="248,207,109"
+LOCK_C2="184,134,61"

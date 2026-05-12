@@ -1,0 +1,18 @@
+# palette: space4_20260512_1400
+# saved: 2026-05-12 14:00
+# source: /etc/nixos/dotfiles/wallpapers/Sky_or_Space/space4.jpg (awww)
+
+BG="0a0e19"
+BG_ALT="0a0e19"
+SURFACE="59606e"
+BORDER="324864"
+BORDER_ACTIVE="2E304A"
+BORDER_ACTIVE2="513C62"
+BORDER_INACTIVE="000005"
+ACCENT="2E304A"
+TEXT="c1c2c5"
+TEXT_DIM="c1c2c5"
+LOCK_BG="10,14,25"
+LOCK_FG="193,194,197"
+LOCK_C1="81,60,98"
+LOCK_C2="46,48,74"

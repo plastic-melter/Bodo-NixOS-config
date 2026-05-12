@@ -2,7 +2,7 @@ local wezterm = require("wezterm")
 local config = {}
 
 if wezterm.config_builder then
-    config = wezterm.config_builder()
+  config = wezterm.config_builder()
 end
 
 config = {
@@ -15,7 +15,10 @@ config = {
   color_scheme = "neobones_dark",
   --color_scheme = "NvimDark",
   font_size =12.0,
-  font = wezterm.font("JetBrains Mono", { weight = "Bold" }),
+  font = wezterm.font_with_fallback({
+    { family = "JetBrains Mono", weight = "Bold" },
+    "Symbols Nerd Font",
+  }),
   window_padding = {
     left = 0,
     right = 0,
@@ -25,9 +28,10 @@ config = {
   window_background_gradient = {
     orientation = "Vertical";
     colors = {
-      '#1d1e2e',
+      '#0a0e19',
     };
   };
+--[[
   background = {
     {
       source = {
@@ -41,13 +45,14 @@ config = {
     },
     {
       source = {
-        Color = "19172B",
+        Color = "0A0E19",
       },
       width = "100%",
       height = "100%",
       opacity = 0.8,
     },
-  },
+  }, 
+  ]]--
 }
 
 return config

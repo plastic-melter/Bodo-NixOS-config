@@ -8,20 +8,20 @@
 #window {
     background-color: rgba(0, 0, 0, 0);
     border-radius: 20px;
-    border: 2px solid #7a5a6a;
+    border: 2px solid #324864;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
 }
 
 #outer-box {
-    background-color: rgba(13, 15, 28, 0.92);
-    border: 2px solid #5a3a4a;
+    background-color: rgba(10, 14, 25, 0.92);
+    border: 2px solid #283e5a;
     border-radius: 20px;
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
     overflow: hidden;
 }
 
 #scroll {
-    border: 2px solid #4a3050;
+    border: 2px solid #1e3450;
     margin: 1rem;
     border-radius: 12px;
     background-color: rgba(20, 18, 35, 0.85);
@@ -30,7 +30,7 @@
 
 #input {
     margin: 1rem 8rem;
-    border: 2px solid #7a5a6a;
+    border: 2px solid #324864;
     border-radius: 12px;
     padding: 0.5rem 1rem;
     background-color: rgba(20, 18, 35, 0.85);
@@ -48,13 +48,13 @@
 }
 
 #entry:hover {
-    background-color: rgba(140, 96, 112, 0.15);
+    background-color: rgba(46, 48, 74, 0.15);
     color: #d4cfe8;
 }
 
 #entry:selected {
     color: #d4cfe8;
     font-weight: bold;
-    background-color: rgba(140, 96, 112, 0.3);
+    background-color: rgba(46, 48, 74, 0.3);
     border-radius: 12px;
 }

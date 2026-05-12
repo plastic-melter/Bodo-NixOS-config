@@ -10,7 +10,7 @@
     "custom/launcher",
     "tray",
     "clock",
-    "custom/tz",
+    "custom/worldclock",
     "pulseaudio",
     "backlight",
     "custom/refreshrate",
@@ -111,7 +111,7 @@
     },
     "tooltip": false
   },
-  "custom/tz": {
+  "custom/worldclock": {
     "format": "{}",
     "exec": "/etc/nixos/dotfiles/scripts/worldclock.sh",
     "on-click": "/etc/nixos/dotfiles/scripts/worldclock.sh toggle & pkill -RTMIN+8 waybar",
@@ -213,6 +213,8 @@
   "custom/cooling": {
     "format": "󰏈  {}",
     "exec": "/etc/nixos/dotfiles/scripts/cooling.sh",
+    "on-click": "/etc/nixos/dotfiles/scripts/cooling.sh toggle & pkill -RTMIN+9 waybar",
+    "signal": 9,
     "interval": 1
   },
   "custom/hyprpicker": {
