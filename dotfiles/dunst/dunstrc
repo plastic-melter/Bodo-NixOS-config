@@ -1,4 +1,8 @@
 [global]
+    frame_color = "#__BORDER__"
+    background_color = "#__BG__"
+    foreground_color = "#__TEXT__"
+    background = "#__BG__B5"
     timeout = 2
     width = (0, 600)
     height = 200
@@ -25,10 +29,6 @@
     icon_corner_radius = 5
     text_icon_padding = 5
     frame_width = 4
-    frame_color = "#324864"
-    background_color = "#0a0e19"
-    foreground_color = "#c1c2c5"
     font = "NotoSansCJK 18"
     min_icon_size = 128
     max_icon_size = 128
-    background = "#0a0e19B5"

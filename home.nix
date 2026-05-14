@@ -1,4 +1,13 @@
-{ inputs, config, pkgs, lib, ... }: {
+{ inputs, config, pkgs, lib, ... }: 
+
+# Some dotfiles will source color codes (by pywal) from palette.nix
+let
+  palette = import ./dotfiles/palette.nix;
+  themed = path: builtins.replaceStrings
+    (map (k: "__${k}__") (builtins.attrNames palette))
+    (builtins.attrValues palette)
+    (builtins.readFile path);
+in {
 
 #################################################
 ################## HOME.NIX #####################
@@ -13,7 +22,6 @@ home = {
 # ============================================
 # DOTFILE SOURCING
 # ============================================
-
 home.file = {
   ".config/ags" = {
     source = ./dotfiles/ags;
@@ -24,33 +32,60 @@ home.file = {
     recursive = true;
   };
   ".config/fastfetch".source = ./dotfiles/fastfetch;
-  ".config/hypr".source = ./dotfiles/hypr;
-  ".config/nwg-drawer".source = ./dotfiles/nwg-drawer;
-  ".config/nwg-panel".source = ./dotfiles/nwg-panel;
+  # Hyprland
+  ".config/hypr/hyprland.conf".text = themed ./dotfiles/hypr/hyprland.conf;
+  ".config/hypr/hypridle.conf".source = ./dotfiles/hypr/hypridle.conf;
+  ".config/hypr/hyprlock.conf".source = ./dotfiles/hypr/hyprlock.conf;
+  ".config/hypr/hyprpaper.conf".source = ./dotfiles/hypr/hyprpaper.conf;
+  ".config/hypr/hyprlock/colors-hyprlock.conf".text = themed ./dotfiles/hypr/hyprlock/colors-hyprlock.conf;
+  ".config/hypr/hyprlock/colors-hyprlock.sh".text = themed ./dotfiles/hypr/hyprlock/colors-hyprlock.sh;
+  ".config/hypr/hyprlock/sizes-hyprlock.conf".source = ./dotfiles/hypr/hyprlock/sizes-hyprlock.conf;
+  ".config/hypr/hyprlock/sizes-hyprlock.sh".source = ./dotfiles/hypr/hyprlock/sizes-hyprlock.sh;
+  ".config/hypr/hyprlock/hyprlock-run".source = ./dotfiles/hypr/hyprlock/hyprlock-run;
+  ".config/hypr/hyprlock/profile.png".source = ./dotfiles/hypr/hyprlock/profile.png;
+  # nwg-drawer
+  ".config/nwg-drawer/drawer.css".text = themed ./dotfiles/nwg-drawer/drawer.css;
+  ".config/nwg-drawer/config".source = ./dotfiles/nwg-drawer/config;
+  ".config/nwg-drawer/settings".source = ./dotfiles/nwg-drawer/settings;
+  # nwg-panel
+  ".config/nwg-panel/menu-start.css".text = themed ./dotfiles/nwg-panel/menu-start.css;
+  # waybar
+  ".config/waybar/style.css".text = themed ./dotfiles/waybar/style.css;
+  ".config/waybar/config".source = ./dotfiles/waybar/config;
+  # wlogout
+  ".config/wlogout/style.css".text = themed ./dotfiles/wlogout/style.css;
+  ".config/wlogout/config".source = ./dotfiles/wlogout/config;
+  ".config/wlogout/layout".source = ./dotfiles/wlogout/layout;
+  ".config/wlogout/assets" = {
+    source = ./dotfiles/wlogout/assets;
+    recursive = true;
+  };
+  ".config/wlogout/icons" = {
+    source = ./dotfiles/wlogout/icons;
+    recursive = true;
+  };
+  # wofi
+  ".config/wofi/style.css".text = themed ./dotfiles/wofi/style.css;
+  ".config/wofi/config".source = ./dotfiles/wofi/config;
+  # wezterm
+  ".config/wezterm/wezterm.lua".text = themed ./dotfiles/wezterm/wezterm.lua;
+  # Untouched
   ".config/plutonium".source = ./dotfiles/plutonium;
   ".config/scripts".source = ./dotfiles/scripts;
-  ".config/waybar".source = ./dotfiles/waybar;
   ".config/waypaper".source = ./dotfiles/waypaper;
-  ".config/wezterm".source = ./dotfiles/wezterm;
-  ".config/wlogout".source = ./dotfiles/wlogout;
-  ".config/wofi".source = ./dotfiles/wofi;
   ".config/xdg-desktop-portal".source = ./dotfiles/xdg-desktop-portal;
   ".config/yazi".source = ./dotfiles/yazi;
   ".vim/undodir/.keep".text = ""; # creates ~/.vim/undodir
 };
-
 # ============================================
 # XDG STUFF (mostly ~/.config files)
 # ============================================
-
 xdg.userDirs.enable = false;
-
 xdg.configFile = {
   # Neovim configuration
   "nvim/lua/settings.lua".source = ./dotfiles/neovim/lua/settings.lua;
   "nvim/lua/keymaps.lua".source = ./dotfiles/neovim/lua/keymaps.lua;
   "nvim/lua/plugins.lua".source = ./dotfiles/neovim/lua/plugins.lua;
-
   # User directories, hopefully these get indexed by nwg
   "user-dirs.conf".text = "enabled=True";
   "user-dirs.dirs".text = ''
@@ -64,7 +99,6 @@ xdg.configFile = {
     XDG_VIDEOS_DIR="/home/joe/Videos"
     XDG_BACKUP_DIR="/home/joe/Backups"
   '';
-
   # Qt configuration
   "qt5ct/qt5ct.conf" = {
     force = true;
@@ -82,15 +116,12 @@ xdg.configFile = {
       icon_theme=Papirus-Dark
     '';
   };
-
   # Make thunar use wezterm
   "xfce4/helpers.rc".text = "TerminalEmulator=wezterm";
-
-  # Dunst config file
-  "dunst/dunstrc".source = ./dotfiles/dunst/dunstrc;
-
-  # ZSH prompt
-  "starship.toml".source = ./dotfiles/starship/starship.toml;
+  # Dunst config file (themed)
+  "dunst/dunstrc".text = themed ./dotfiles/dunst/dunstrc;
+  # ZSH prompt (themed)
+  "starship.toml".text = themed ./dotfiles/starship/starship.toml;
 };
 
 # ============================================
@@ -260,7 +291,6 @@ home.sessionVariables = {
 
 systemd.user.sessionVariables = {
   QT_QPA_PLATFORMTHEME = "qt5ct";
-  GTK_THEME = "catppuccin-frappe-blue-standard";
   XDG_ICON_FALLBACK = "/etc/nixos/dotfiles/images/blankicon.png";
   QT_QPA_PLATFORM = "wayland";
   SDL_VIDEODRIVER = "wayland";
@@ -280,7 +310,6 @@ dconf.settings = {
   };
   "org/gnome/desktop/interface" = {
     color-scheme = "prefer-dark";
-    gtk-theme = "catppuccin-frappe-blue-standard"; 
     icon-theme = "Papirus-Dark";
   };
 };
@@ -293,12 +322,12 @@ gtk = {
   enable = true;
   theme = {
     name = "catppuccin-frappe-blue-standard";
-    package = pkgs.catppuccin-gtk;
+    package = pkgs.magnetic-catppuccin-gtk;
   };
   iconTheme = {
     name = "Papirus-Dark";
     package = pkgs.catppuccin-papirus-folders.override {
-      flavor = "macchiato";
+      flavor = "frappe";
       accent = "lavender";
     };
   };
@@ -324,6 +353,13 @@ qt = {
 xresources.properties = {
   "Nsxiv.window.background" = "#1e1e1e";
   "Nsxiv.window.foreground" = "#d4d4d4";
+};
+
+home.pointerCursor = {
+  gtk.enable = true;
+  package = pkgs.adwaita-icon-theme;
+  name = "Adwaita";
+  size = 18;
 };
 
 # ============================================
@@ -435,11 +471,12 @@ home.packages = with pkgs; [
   synology-drive-client # desktop client for Synology NAS
   tumbler # image previews in file manager
   unrar # extract .rar files
+  vips # fast image processing for large images
   wofi # app launcher
 
   # WAYLAND, HYPRLAND, RICE
   awww # swww got renamed upstream (wayland desktop background)
-  catppuccin-gtk # gtk theme
+  catppuccin-gtk # archived, but might work
   catppuccin-kvantum # qt theme, apply with kvantum
   grim # grab images from wayland compositors
   gsettings-desktop-schemas # check on GTK stuff
@@ -452,6 +489,7 @@ home.packages = with pkgs; [
   hyprpicker # color picker tool
   hyprshot # screenshot util
   libsForQt5.qtstyleplugin-kvantum # check on QT stuff
+  magnetic-catppuccin-gtk # catppuccin-gtk was archived, this is more recent
   nwg-clipman # clipboard manager for wayland
   nwg-dock-hyprland # dock for hyprland
   nwg-drawer # app launcher

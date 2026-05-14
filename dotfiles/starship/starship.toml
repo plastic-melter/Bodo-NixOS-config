@@ -1,21 +1,20 @@
 add_newline = false
-format = """[](fg:#0a0e19)\
-$os\
-[](bg:#59606e fg:#0a0e19)\
+format = """$os\
+[](bg:#__SURFACE__ fg:#__BORDER_INACTIVE__)\
 $directory\
-[](fg:#59606e)\
-$character """
+[](bg:#__BG__ fg:#__SURFACE__)\
+$character"""
 
 [os]
 disabled = false
-format = "[$symbol ]($style)"
-style = "fg:#2E304A bg:#0a0e19"
+format = "[ $symbol ]($style)"
+style = "fg:#__BORDER__ bg:#__BORDER_INACTIVE__"
 
 [os.symbols]
 NixOS = "󱄅"
 
 [directory]
-style = "fg:#c1c2c5 bg:#59606e"
+style = "fg:#__TEXT_DIM__ bg:#__SURFACE__"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
@@ -26,7 +25,7 @@ truncation_symbol = "…/"
 
 [character]
 success_symbol = ""
-error_symbol = "[✗](fg:#e8a0a8)"
+error_symbol = "[✗](bg:#__BG__ fg:#__BG__)"
 
 [git_branch]
 disabled = true

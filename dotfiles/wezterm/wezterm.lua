@@ -13,7 +13,6 @@ config = {
   window_decorations = "NONE",
   default_cursor_style = "SteadyBlock",
   color_scheme = "neobones_dark",
-  --color_scheme = "NvimDark",
   font_size =12.0,
   font = wezterm.font_with_fallback({
     { family = "JetBrains Mono", weight = "Bold" },
@@ -28,7 +27,7 @@ config = {
   window_background_gradient = {
     orientation = "Vertical";
     colors = {
-      '#0a0e19',
+      '#__BG__',
     };
   };
 --[[
@@ -45,7 +44,7 @@ config = {
     },
     {
       source = {
-        Color = "0A0E19",
+        Color = "__BG__",
       },
       width = "100%",
       height = "100%",

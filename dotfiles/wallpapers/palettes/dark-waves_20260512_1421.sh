@@ -1,0 +1,18 @@
+# palette: dark-waves_20260512_1421
+# saved: 2026-05-12 14:21
+# source: /etc/nixos/dotfiles/wallpapers/Abstract/dark-waves.jpg (awww)
+
+BG="160d20"
+BG_ALT="160d20"
+SURFACE="665d71"
+BORDER="36618B"
+BORDER_ACTIVE="273C63"
+BORDER_ACTIVE2="4D4A63"
+BORDER_INACTIVE="02000c"
+ACCENT="273C63"
+TEXT="c4c2c7"
+TEXT_DIM="c4c2c7"
+LOCK_BG="22,13,32"
+LOCK_FG="196,194,199"
+LOCK_C1="77,74,99"
+LOCK_C2="39,60,99"

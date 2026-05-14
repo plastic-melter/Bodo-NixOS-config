@@ -3,46 +3,30 @@
     box-shadow: none;
     font-size: 24pt;
 }
-
 window {
-    background-color: rgba(10, 14, 25, 0.88); /* deep dark plum */
+    background-color: rgba(__BG_RGB__, 0.88);
 }
-
 button {
     border-radius: 25px;
     border-style: solid;
     border-width: 10px;
-    border-color: #324864;     /* muted violet/mauve */
-    background-color: rgba(10, 14, 25, 0.90); /* dark plum */
-    color: #d4c8e0;            /* soft lavender text */
-    text-decoration-color: #d4c8e0;
+    border-color: #__BORDER__;
+    background-color: rgba(__BG_RGB__, 0.90);
+    color: #__TEXT__;
+    text-decoration-color: #__TEXT__;
     background-repeat: no-repeat;
     background-position: center;
     background-size: 25%;
     margin: 20px;
 }
-
 button:focus,
 button:active {
-    background-color: rgba(46, 48, 74, 0.85); /* dusty rose highlight */
+    background-color: rgba(__ACCENT_RGB__, 0.85);
     outline-style: none;
 }
-
-#lock {
-    background-image: image(url("/home/joe/.config/wlogout/icons/lock.png"));
-}
-#logout {
-    background-image: image(url("/home/joe/.config/wlogout/icons/logout.png"));
-}
-#suspend {
-    background-image: image(url("/home/joe/.config/wlogout/icons/suspend.png"));
-}
-#hibernate {
-    background-image: image(url("/home/joe/.config/wlogout/icons/hibernate.png"));
-}
-#shutdown {
-    background-image: image(url("/home/joe/.config/wlogout/icons/shutdown.png"));
-}
-#reboot {
-    background-image: image(url("/home/joe/.config/wlogout/icons/reboot.png"));
-}
+#lock { background-image: image(url("/home/joe/.config/wlogout/icons/lock.png")); }
+#logout { background-image: image(url("/home/joe/.config/wlogout/icons/logout.png")); }
+#suspend { background-image: image(url("/home/joe/.config/wlogout/icons/suspend.png")); }
+#hibernate { background-image: image(url("/home/joe/.config/wlogout/icons/hibernate.png")); }
+#shutdown { background-image: image(url("/home/joe/.config/wlogout/icons/shutdown.png")); }
+#reboot { background-image: image(url("/home/joe/.config/wlogout/icons/reboot.png")); }

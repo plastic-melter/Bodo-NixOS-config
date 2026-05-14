@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Extracted from pinkSakoora/sakoora.hyprlock (MIT)
 # Generates sizes-hyprlock.conf and sizes-hyprlock.sh based on current display resolution.
+# Uptime offsets have been edited compared to creator's script (prevent overlap)
 
 CONF_OUT="${1:-./sizes-hyprlock.conf}"
 SH_OUT="${2:-./sizes-hyprlock.sh}"
@@ -42,8 +43,8 @@ cat > "$CONF_OUT" <<EOF
 ###################
 \$bottom_left_offset = $((-pw/2-pp/2)), $((-pw/2-pp/2))
 \$time_text_offset = $((-pw/2-pp/2)), $((-height/2-pw/4-pp*3/2))
-\$uptime_ltext_offset = $((width/2-pw+pp*5/2)), $((height/2-pw*3/4+pp/2))
-\$uptime_rtext_offset = $((-width/2-pp*7/2)), $((height/2-pw*3/4+pp/2))
+\$uptime_ltext_offset = $((width/2-pw+pp*3/2)), $((height/2-pw*3/4+pp*1/3))
+\$uptime_rtext_offset = $((-width/2-pp*11/4)), $((height/2-pw*3/4+pp*1/3))
 \$bottom_left_size = $((pw/2))
 
 #############

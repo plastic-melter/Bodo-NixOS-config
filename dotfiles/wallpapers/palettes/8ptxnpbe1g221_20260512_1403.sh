@@ -1,0 +1,18 @@
+# palette: 8ptxnpbe1g221_20260512_1403
+# saved: 2026-05-12 14:03
+# source: /etc/nixos/dotfiles/wallpapers/Mountains/8ptxnpbe1g221.jpg (awww)
+
+BG="140e20"
+BG_ALT="140e20"
+SURFACE="645d72"
+BORDER="83788C"
+BORDER_ACTIVE="435B76"
+BORDER_ACTIVE2="517599"
+BORDER_INACTIVE="00000c"
+ACCENT="435B76"
+TEXT="c4c2c7"
+TEXT_DIM="c4c2c7"
+LOCK_BG="20,14,32"
+LOCK_FG="196,194,199"
+LOCK_C1="81,117,153"
+LOCK_C2="67,91,118"

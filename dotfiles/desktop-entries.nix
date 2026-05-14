@@ -24,6 +24,24 @@
   # UTILITIES
   # ============================================
 
+  nvim-wezterm = {
+    name = "Neovim (WezTerm)";
+    exec = "wezterm start -- nvim %F";
+    mimeType = [
+      "text/plain"
+      "text/x-shellscript"
+      "text/x-script.python"
+      "text/x-csrc"
+      "text/x-chdr"
+      "text/x-python"
+      "text/markdown"
+      "application/json"
+      "application/x-shellscript"
+    ];
+    categories = [ "Utility" "TextEditor" ];
+    terminal = false;  # wezterm provides its own terminal
+  };
+
   picoscope = {
     name = "picoscope";
     genericName = "picoscope";

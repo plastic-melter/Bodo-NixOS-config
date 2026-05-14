@@ -1,0 +1,18 @@
+# palette: blue-moon-5k_20260512_1619
+# saved: 2026-05-12 16:19
+# source: /etc/nixos/dotfiles/wallpapers/Mountains/blue-moon-5k.jpg (awww)
+
+BG="0c181e"
+BG_ALT="0c181e"
+SURFACE="5c6970"
+BORDER="5F7798"
+BORDER_ACTIVE="126774"
+BORDER_ACTIVE2="136A92"
+BORDER_INACTIVE="00040a"
+ACCENT="126774"
+TEXT="c2c5c6"
+TEXT_DIM="c2c5c6"
+LOCK_BG="12,24,30"
+LOCK_FG="194,197,198"
+LOCK_C1="19,106,146"
+LOCK_C2="18,103,116"

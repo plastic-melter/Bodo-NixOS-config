@@ -1,125 +1,100 @@
 * {
     font-family: "NotoSansCJK";
     font-size: 14px;
-    color: #d4cfe8;
+    color: #__TEXT__;
 }
-
 window {
-    background-color: rgba(13, 15, 28, 0.95);
-    border: 1px solid #5a3a4a;
+    background-color: rgba(__BG_RGB__, 0.95);
+    border: 1px solid #__BORDER__;
     border-radius: 12px;
 }
-
 #menu-box {
     background-color: transparent;
     padding: 4px;
 }
-
-/* Search */
 entry {
-    background-color: rgba(20, 18, 35, 0.85);
-    border: 2px solid #7a5a6a;
+    background-color: rgba(__BG_ALT_RGB__, 0.85);
+    border: 2px solid #__BORDER_ACTIVE__;
     border-radius: 10px;
-    color: #d4cfe8;
+    color: #__TEXT__;
     padding: 4px 12px;
     margin: 6px;
 }
-
 entry:focus {
-    border-color: #8c6070;
+    border-color: #__BORDER_ACTIVE2__;
 }
-
-/* Floating menu panel */
 menu {
-    background-color: rgba(13, 15, 28, 0.95);
-    border: 1px solid #5a3a4a;
+    background-color: rgba(__BG_RGB__, 0.95);
+    border: 1px solid #__BORDER__;
     border-radius: 10px;
     padding: 4px;
 }
-
 menuitem {
     border-radius: 6px;
     padding: 4px 12px;
-    color: #8a8098;
+    color: #__TEXT_DIM__;
     transition: background-color 0.2s ease;
 }
-
 menuitem:hover {
-    background-color: rgba(140, 96, 112, 0.22);
-    color: #d4cfe8;
+    background-color: rgba(__ACCENT_RGB__, 0.22);
+    color: #__TEXT__;
 }
-
 menuitem:selected {
-    background-color: rgba(140, 96, 112, 0.3);
-    color: #d4cfe8;
+    background-color: rgba(__ACCENT_RGB__, 0.3);
+    color: #__TEXT__;
 }
-
-/* Category list */
 #category-list {
-    background-color: rgba(20, 18, 35, 0.6);
-    border-right: 1px solid #3a2a3a;
+    background-color: rgba(__BG_ALT_RGB__, 0.6);
+    border-right: 1px solid #__BORDER_INACTIVE__;
     padding: 4px;
 }
-
 #category-list row {
     border-radius: 8px;
     padding: 4px 12px;
-    color: #8a8098;
+    color: #__TEXT_DIM__;
     transition: background-color 0.2s ease;
 }
-
 #category-list row:hover {
-    background-color: rgba(140, 96, 112, 0.18);
-    color: #d4cfe8;
+    background-color: rgba(__ACCENT_RGB__, 0.18);
+    color: #__TEXT__;
 }
-
 #category-list row:selected {
-    background-color: rgba(140, 96, 112, 0.3);
-    color: #d4cfe8;
+    background-color: rgba(__ACCENT_RGB__, 0.3);
+    color: #__TEXT__;
 }
-
-/* App list */
 #app-list {
     background-color: transparent;
     padding: 4px;
 }
-
 #app-list row {
     border-radius: 8px;
     padding: 4px 12px;
-    color: #8a8098;
+    color: #__TEXT_DIM__;
     background-color: transparent;
     transition: background-color 0.2s ease;
 }
-
 #app-list row:hover {
-    background-color: rgba(140, 96, 112, 0.18);
-    color: #d4cfe8;
+    background-color: rgba(__ACCENT_RGB__, 0.18);
+    color: #__TEXT__;
 }
-
 #app-list row:selected,
 #app-list row:active {
-    background-color: rgba(140, 96, 112, 0.3);
-    color: #d4cfe8;
+    background-color: rgba(__ACCENT_RGB__, 0.3);
+    color: #__TEXT__;
 }
-
-/* Bottom buttons bar */
 #buttons-box button {
     border-radius: 8px;
-    background-color: rgba(106, 90, 138, 0.15);
-    border: 1px solid #5a3a4a;
+    background-color: rgba(__BG_ALT_RGB__, 0.15);
+    border: 1px solid #__BORDER__;
     padding: 4px 8px;
     transition: background-color 0.2s ease;
 }
-
 #buttons-box button:hover {
-    background-color: rgba(140, 96, 112, 0.3);
-    border-color: #7a5a6a;
+    background-color: rgba(__ACCENT_RGB__, 0.3);
+    border-color: #__BORDER_ACTIVE__;
 }
-
-/* Separator */
 separator {
-    background-color: #3a2a3a;
+    background-color: #__BORDER_INACTIVE__;
     min-height: 1px;
     margin: 4px 8px;
 }

@@ -1,22 +1,50 @@
 #!/bin/sh
+# Generates blurred panel images for hyprlock.
+# Uses grim region capture (avoids full-screen grab) and libvips (faster than magick).
 
-. "$HOME"/.config/hypr/hyprlock/colors-hyprlock.sh		# Colors
-. "$HOME"/.config/hypr/hyprlock/sizes-hyprlock.sh		# Get size of panels according to screen size
+. "$HOME"/.config/hypr/hyprlock/colors-hyprlock.sh   # $background, $foreground, $color1, $color2
+. "$HOME"/.config/hypr/hyprlock/sizes-hyprlock.sh    # offsets and sizes
 
 cache_dir="$HOME"/.cache/hyprlock-cache
-[ ! -d "$cache_dir" ] && mkdir -p "$cache_dir"	# Make cache directory if it's not there
+[ ! -d "$cache_dir" ] && mkdir -p "$cache_dir"
 
-grim "$cache_dir/screenshot.png"
+# Parse "WxH" → "W H" and "X+Y" → "X Y"
+ix="${initial_cutout_offset%+*}"; iy="${initial_cutout_offset#*+}"
+iw="${initial_cutout_size%x*}";   ih="${initial_cutout_size#*x}"
+tlx="${top_left_offset%+*}";      tly="${top_left_offset#*+}"
+tlw="${top_left_size%x*}";        tlh="${top_left_size#*x}"
+blx="${bottom_left_offset%+*}";   bly="${bottom_left_offset#*+}"
+blw="${bottom_left_size%x*}";     blh="${bottom_left_size#*x}"
+rx="${right_offset%+*}";          ry="${right_offset#*+}"
+rw="${right_size%x*}";            rh="${right_size#*x}"
 
-# Crop screenshot to required size
-# Resize to 0.1x, apply size 5 blur, resize to 10x (essentially being 50x blur for less resources used)
-# Generate a 0.1x size overlay of $color1, 40% alpha and resize it 10x
-# Composite it on top of blurred screenshot
-# Split top and bottom panels
+# Convert #rrggbb to "R G B" ints
+hex2rgb() {
+    h="${1#\#}"
+    printf "%d %d %d" "0x${h:0:2}" "0x${h:2:2}" "0x${h:4:2}"
+}
+bg_rgb=$(hex2rgb "$background")
 
-magick \( "$cache_dir"/screenshot.png -crop "$initial_cutout_size"+"$initial_cutout_offset" -scale 10% -blur 0x5 -resize 1000% +repage \) \
-	\( -size "$initial_cutout_size" xc:"$background" -alpha set -channel A -evaluate set 40% \) \
-	-composite "$cache_dir"/combi.png
-magick "$cache_dir"/combi.png -crop "$top_left_size"+"$top_left_offset" "$cache_dir"/top_left_panel.png
-magick "$cache_dir"/combi.png -crop "$bottom_left_size"+"$bottom_left_offset" "$cache_dir"/bottom_left_panel.png
-magick "$cache_dir"/combi.png -crop "$right_size"+"$right_offset" "$cache_dir"/right_panel.png
+# Capture ONLY the region we need, no PNG compression.
+# Region coords are screen-absolute; cutout offsets in sizes-hyprlock.sh are
+# already screen-absolute, so pass through as-is.
+grim -l 0 -g "${ix},${iy} ${iw}x${ih}" "$cache_dir"/screenshot.png
+
+# Blur the captured region
+vips gaussblur "$cache_dir"/screenshot.png "$cache_dir"/blurred.v 5
+
+# 40% bg-tinted overlay, composited over blur
+vips black "$cache_dir"/overlay.v "$iw" "$ih" --bands 3
+vips linear "$cache_dir"/overlay.v "$cache_dir"/overlay_tinted.v "0 0 0" "$bg_rgb"
+vips bandjoin_const "$cache_dir"/overlay_tinted.v "$cache_dir"/overlay_rgba.v 102
+vips composite2 "$cache_dir"/blurred.v "$cache_dir"/overlay_rgba.v "$cache_dir"/combi.png over
+
+# The combi is now in cutout-local coords (0,0 = top-left of initial_cutout).
+# Top_left/bottom_left/right offsets in sizes-hyprlock.sh are also relative to
+# the cutout, so use them directly.
+vips crop "$cache_dir"/combi.png "$cache_dir"/top_left_panel.png    "$tlx" "$tly" "$tlw" "$tlh"
+vips crop "$cache_dir"/combi.png "$cache_dir"/bottom_left_panel.png "$blx" "$bly" "$blw" "$blh"
+vips crop "$cache_dir"/combi.png "$cache_dir"/right_panel.png       "$rx"  "$ry"  "$rw"  "$rh"
+
+rm -f "$cache_dir"/blurred.v "$cache_dir"/overlay.v \
+      "$cache_dir"/overlay_tinted.v "$cache_dir"/overlay_rgba.v
