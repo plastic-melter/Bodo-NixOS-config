@@ -1,29 +1,214 @@
-(include "./stats.yuck")
-(include "./hourly-chime.yuck")
+;; ─── poll / listen sources ───────────────────────────────────────────────
 
-(defwindow greeting
+(defpoll time :interval "30s"
+  "date '+%H:%M'")
+(defpoll date :interval "60s"
+  "date '+%A, %B %d'")
+(defpoll calendar :interval "60s"
+  "cal | tail -n +2")
+
+(defpoll battery :interval "10s"
+  "cat /sys/class/power_supply/BAT0/capacity")
+(defpoll battery-status :interval "5s"
+  "cat /sys/class/power_supply/BAT0/status")
+
+(defpoll volume :interval "1s"
+  "wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print int($2*100)}'")
+(defpoll volume-muted :interval "1s"
+  "wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -q MUTED && echo true || echo false")
+
+(defpoll brightness :interval "2s"
+  "brightnessctl -m | cut -d',' -f4 | tr -d '%'")
+
+(defpoll wifi-name :interval "5s"
+  "iwgetid -r 2>/dev/null || echo 'disconnected'")
+(defpoll wifi-signal :interval "5s"
+  "awk 'NR==3 {print int($3 * 10 / 7)}' /proc/net/wireless 2>/dev/null || echo 0")
+
+(defpoll bt-status :interval "5s"
+  "bluetoothctl show | grep -q 'Powered: yes' && echo on || echo off")
+(defpoll bt-devices :interval "10s"
+  "bluetoothctl devices Connected 2>/dev/null | sed 's/Device [A-F0-9:]* //' | head -3")
+
+(defpoll media-title :interval "2s"
+  "playerctl metadata --format '{{title}}' 2>/dev/null || echo ''")
+(defpoll media-artist :interval "2s"
+  "playerctl metadata --format '{{artist}}' 2>/dev/null || echo ''")
+(defpoll media-status :interval "2s"
+  "playerctl status 2>/dev/null || echo Stopped")
+
+(defpoll cpu-usage :interval "3s"
+  "top -bn1 | grep 'Cpu(s)' | awk '{print int($2+$4)}'")
+(defpoll mem-usage :interval "5s"
+  "free | awk '/Mem:/ {printf \"%d\", $3/$2 * 100}'")
+(defpoll disk-usage :interval "30s"
+  "df / | awk 'NR==2 {print $5}' | tr -d '%'")
+
+(defpoll per-app-volume :interval "2s"
+  "/etc/nixos/dotfiles/eww/scripts/per-app-volume")
+
+;; ─── individual widgets ──────────────────────────────────────────────────
+
+(defwidget section [title]
+  (label :class "section-title" :halign "start" :text title))
+
+(defwidget network []
+  (box :class "row" :orientation "h" :space-evenly false :spacing 8
+    (label :class "icon" :text "")
+    (box :orientation "v" :space-evenly false :hexpand true
+      (label :class "row-label" :halign "start" :text wifi-name)
+      (label :class "row-sub" :halign "start"
+             :text "signal: ${wifi-signal}/10"))))
+
+(defwidget bluetooth []
+  (box :class "row" :orientation "h" :space-evenly false :spacing 8
+    (label :class "icon" :text "")
+    (box :orientation "v" :space-evenly false :hexpand true
+      (button :class "row-label" :halign "start"
+              :onclick "bluetoothctl power ${bt-status == 'on' ? 'off' : 'on'}"
+              :tooltip "click to toggle"
+              "bluetooth: ${bt-status}")
+      (label :class "row-sub" :halign "start"
+             :text {bt-devices == "" ? "no devices" : bt-devices}))))
+
+(defwidget calendar-block []
+  (box :class "row" :orientation "v" :space-evenly false :spacing 4
+    (label :class "row-label" :halign "start" :text "${date}")
+    (label :class "calendar" :halign "start" :text calendar)))
+
+(defwidget volume-slider []
+  (box :class "row" :orientation "h" :space-evenly false :spacing 8
+    (button :class "icon-btn"
+            :onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+            :tooltip "click to toggle mute"
+            {volume-muted == "true" ? "" : ""})
+    (scale :hexpand true
+           :min 0 :max 101
+           :value volume
+           :onchange "wpctl set-volume @DEFAULT_AUDIO_SINK@ {}%")
+    (label :class "row-sub" :text "${volume}%")))
+
+(defwidget per-app-volume-widget []
+  (box :orientation "v" :space-evenly false :spacing 2
+    (literal :content per-app-volume)))
+
+(defwidget brightness-slider []
+  (box :class "row" :orientation "h" :space-evenly false :spacing 8
+    (label :class "icon" :text "")
+    (scale :hexpand true
+           :min 1 :max 100
+           :value brightness
+           :onchange "brightnessctl set {}%")
+    (label :class "row-sub" :text "${brightness}%")))
+
+(defwidget display-switcher []
+  (box :class "row todo" :orientation "h" :space-evenly false :spacing 8
+    (label :class "icon" :text "")
+    (label :class "row-label" :halign "start" :hexpand true :text "display switcher (TODO)")))
+
+(defwidget media-block []
+  (box :class "row" :orientation "v" :space-evenly false :spacing 4
+    (label :class "row-label" :halign "start"
+           :text {media-title == "" ? "(nothing playing)" : media-title})
+    (label :class "row-sub" :halign "start"
+           :text {media-artist == "" ? "" : media-artist})
+    (box :orientation "h" :space-evenly true :spacing 8
+      (button :class "media-btn" :onclick "playerctl previous" "")
+      (button :class "media-btn" :onclick "playerctl play-pause"
+              {media-status == "Playing" ? "" : ""})
+      (button :class "media-btn" :onclick "playerctl next" ""))))
+
+(defwidget system-info []
+  (box :orientation "v" :space-evenly false :spacing 4
+    (box :class "row" :orientation "h" :space-evenly false :spacing 8
+      (label :class "icon" :text "")
+      (scale :hexpand true :min 0 :max 100 :value cpu-usage :active false)
+      (label :class "row-sub" :text "${cpu-usage}%"))
+    (box :class "row" :orientation "h" :space-evenly false :spacing 8
+      (label :class "icon" :text "")
+      (scale :hexpand true :min 0 :max 100 :value mem-usage :active false)
+      (label :class "row-sub" :text "${mem-usage}%"))
+    (box :class "row" :orientation "h" :space-evenly false :spacing 8
+      (label :class "icon" :text "")
+      (scale :hexpand true :min 0 :max 100 :value disk-usage :active false)
+      (label :class "row-sub" :text "${disk-usage}%"))))
+
+(defwidget battery-widget []
+  (box :class "row" :orientation "h" :space-evenly false :spacing 8
+    (label :class "icon"
+           :text {battery-status == "Charging" ? "" :
+                  battery >= 80 ? "" :
+                  battery >= 60 ? "" :
+                  battery >= 40 ? "" :
+                  battery >= 20 ? "" : ""})
+    (box :orientation "v" :hexpand true :space-evenly false
+      (label :class "row-label" :halign "start"
+             :text "${battery}% — ${battery-status}"))))
+
+(defwidget power-mode []
+  (box :class "row todo" :orientation "h" :space-evenly false :spacing 8
+    (label :class "icon" :text "")
+    (label :class "row-label" :halign "start" :hexpand true :text "power mode (TODO)")))
+
+(defwidget power-menu []
+  (box :orientation "h" :space-evenly true :spacing 8 :class "row"
+    (button :class "power-btn" :onclick "/etc/nixos/dotfiles/scripts/lock.sh" :tooltip "lock"     "")
+    (button :class "power-btn" :onclick "systemctl suspend"                   :tooltip "suspend"  "")
+    (button :class "power-btn" :onclick "systemctl reboot"                    :tooltip "reboot"   "")
+    (button :class "power-btn" :onclick "systemctl poweroff"                  :tooltip "shutdown" "")))
+
+(defwidget app-launcher []
+  (box :class "row todo" :orientation "h" :space-evenly false :spacing 8
+    (label :class "icon" :text "")
+    (button :class "row-label" :halign "start" :hexpand true
+            :onclick "wofi --show drun"
+            "launch app (wofi for now)")))
+
+;; ─── top-level window ────────────────────────────────────────────────────
+
+(defwindow flyout
   :monitor 0
-  :geometry (geometry :x "0%"
-                      :y "0%"
-                      :width "877px"
-                      :height "632px"
-                      :anchor "center")
+  :geometry (geometry :x "0px"
+                      :y "60px"
+                      :width "20%"
+                      :height "30%"
+                      :anchor "top left")
   :stacking "overlay"
   :exclusive false
-  :focusable false
-  (box :class "greeting-box"
-       :orientation "v"
-       :space-evenly false
-    (image :path greeting_image
-           :image-width 577
-           :image-height 5432)
-    (label :class "greeting-text"
-           :halign "center"
-           :text greeting_text)
-    (label :class "date-text"
-           :halign "center"
-           :text date_text)))
+  :focusable "ondemand"
+  (scroll :hscroll false :vscroll true
+    (box :class "flyout" :orientation "v" :space-evenly false :spacing 6
+      (section :title "network")
+      (network)
 
-(defvar greeting_image "/etc/nixos/dotfiles/images/greetings/clock.jpg")
-(defvar greeting_text "If you see this text: something ain't right, fix me")
-(defvar date_text "If you see this text: something ain't right, fix me")
+      (section :title "bluetooth")
+      (bluetooth)
+
+      (section :title "date")
+      (calendar-block)
+
+      (section :title "volume")
+      (volume-slider)
+      (per-app-volume-widget)
+
+      (section :title "brightness")
+      (brightness-slider)
+
+      (section :title "display")
+      (display-switcher)
+
+      (section :title "media")
+      (media-block)
+
+      (section :title "system")
+      (system-info)
+
+      (section :title "battery")
+      (battery-widget)
+      (power-mode)
+
+      (section :title "power")
+      (power-menu)
+
+      (section :title "launcher")
+      (app-launcher))))

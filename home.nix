@@ -23,12 +23,11 @@ home = {
 # DOTFILE SOURCING
 # ============================================
 home.file = {
-  ".config/ags" = {
-    source = ./dotfiles/ags;
-    recursive = true;
-  };
-  ".config/eww" = {
-    source = ./dotfiles/eww;
+  # Eww
+  ".config/eww/eww.yuck".source = ./dotfiles/eww/eww.yuck;
+  ".config/eww/eww.scss".text   = themed ./dotfiles/eww/eww.scss;
+  ".config/eww/scripts" = {
+    source = ./dotfiles/eww/scripts;
     recursive = true;
   };
   ".config/fastfetch".source = ./dotfiles/fastfetch;

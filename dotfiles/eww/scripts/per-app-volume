@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Emits an eww yuck snippet listing per-app volume sliders.
+# Reads sink-inputs via pactl; for each one, outputs a horizontal row.
+
+emit_row() {
+    local name="$1" vol="$2" idx="$3"
+    cat <<EOF
+(box :class "row" :orientation "h" :space-evenly false :spacing 8
+  (label :class "icon" :text "")
+  (box :orientation "v" :hexpand true :space-evenly false
+    (label :class "row-sub" :halign "start" :text "${name}")
+    (scale :hexpand true :min 0 :max 101 :value ${vol}
+           :onchange "pactl set-sink-input-volume ${idx} {}%")))
+EOF
+}
+
+# pactl list sink-inputs -- parse into (index, name, volume%) triples
+pactl list sink-inputs 2>/dev/null | awk '
+    /^Sink Input #/ { idx = substr($3, 2); name = ""; vol = "" }
+    /application.name = / {
+        sub(/^[[:space:]]*application.name = "/, "")
+        sub(/"$/, "")
+        name = $0
+    }
+    /^[[:space:]]*Volume:/ && vol == "" {
+        # match first percentage on the line
+        match($0, /[0-9]+%/)
+        if (RSTART > 0) {
+            vol = substr($0, RSTART, RLENGTH - 1)
+            print idx "\t" name "\t" vol
+        }
+    }
+' | while IFS=$'\t' read -r idx name vol; do
+    # truncate long names
+    [ "${#name}" -gt 28 ] && name="${name:0:25}..."
+    emit_row "$name" "$vol" "$idx"
+done
+
+# If nothing was emitted, emit a placeholder so the literal is non-empty
+if [ -z "$(pactl list sink-inputs short 2>/dev/null)" ]; then
+    echo '(label :class "row-sub" :halign "start" :text "(no active streams)")'
+fi

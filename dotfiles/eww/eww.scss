@@ -1,43 +1,128 @@
+/* eww flyout styles — palette tokens replaced at home-manager eval time */
+
 * {
-  all: unset;
+    all: unset;
+    font-family: "NotoSansCJK";
+    font-size: 14px;
+    color: #__TEXT__;
 }
 
-.chime-box {
-  background-color: rgba(24, 27, 40, 0.95);
-  border: 4px solid #5E81AC;
-  border-radius: 15px;
-  padding: 15px 10px;
+.flyout {
+    background-color: rgba(__BG_RGB__, 0.95);
+    border: 2px solid #__BORDER__;
+    border-radius: 16px;
+    padding: 12px 14px;
 }
 
-.time-text {
-  font-family: "NotoSansCJK";
-  font-size: 32px;
-  color: #ffffd8;
-  margin-top: 10px;
+.section-title {
+    color: #__TEXT_DIM__;
+    font-size: 11px;
+    font-weight: bold;
+    margin-top: 8px;
+    margin-bottom: 2px;
+    letter-spacing: 2px;
 }
 
-.greeting-box {
-  background-color: rgba(24, 27, 40, 0.95);
-  border: 4px solid #5E81AC;
-  border-radius: 15px;
-  padding: 10px 10px;
-  transition: opacity 1s ease-out;
+.row {
+    background-color: rgba(__BG_ALT_RGB__, 0.4);
+    border: 1px solid #__BORDER_INACTIVE__;
+    border-radius: 10px;
+    padding: 6px 10px;
 }
 
-.greeting-text {
-  font-family: "NotoSansCJK";
-  font-size: 32px;
-  color: #ffffd8;
-  margin-top: 10px;
+.row.todo {
+    opacity: 0.4;
 }
 
-.greeting-box.fade-out {
-  opacity: 0;
+.row-label {
+    color: #__TEXT__;
+    font-size: 13px;
 }
 
-.date-text {
-  font-family: "NotoSansCJK";
-  font-size: 18px;
-  color: #ffffd8;
-  margin-top: 5px;
+.row-sub {
+    color: #__TEXT_DIM__;
+    font-size: 11px;
+}
+
+.icon {
+    color: #__ACCENT__;
+    font-family: "FontAwesome", "Symbols Nerd Font";
+    font-size: 16px;
+    min-width: 22px;
+}
+
+.icon-btn {
+    color: #__ACCENT__;
+    font-family: "FontAwesome", "Symbols Nerd Font";
+    font-size: 16px;
+    min-width: 22px;
+    padding: 2px 4px;
+    border-radius: 6px;
+}
+.icon-btn:hover {
+    background-color: rgba(__ACCENT_RGB__, 0.25);
+}
+
+/* sliders (gtk scale widget) */
+scale trough {
+    background-color: rgba(__BG_ALT_RGB__, 0.6);
+    border-radius: 6px;
+    min-height: 6px;
+}
+scale highlight {
+    background-color: #__ACCENT__;
+    border-radius: 6px;
+}
+scale slider {
+    background-color: #__BORDER_ACTIVE__;
+    border: 1px solid #__BORDER__;
+    border-radius: 50%;
+    min-height: 14px;
+    min-width: 14px;
+    margin: -4px 0;
+}
+scale slider:hover {
+    background-color: #__BORDER_ACTIVE2__;
+}
+
+.calendar {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: #__TEXT_DIM__;
+    padding: 4px 0;
+}
+
+.media-btn {
+    color: #__TEXT__;
+    font-family: "FontAwesome", "Symbols Nerd Font";
+    font-size: 18px;
+    padding: 4px 12px;
+    border-radius: 8px;
+    background-color: rgba(__BG_ALT_RGB__, 0.4);
+}
+.media-btn:hover {
+    background-color: rgba(__ACCENT_RGB__, 0.3);
+}
+
+.power-btn {
+    color: #__TEXT__;
+    font-family: "FontAwesome", "Symbols Nerd Font";
+    font-size: 18px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background-color: rgba(__BG_ALT_RGB__, 0.5);
+    border: 1px solid #__BORDER_INACTIVE__;
+}
+.power-btn:hover {
+    background-color: rgba(__ACCENT_RGB__, 0.35);
+    border-color: #__BORDER_ACTIVE__;
+}
+
+button {
+    color: #__TEXT__;
+}
+button:hover {
+    color: #__TEXT__;
+    background-color: rgba(__ACCENT_RGB__, 0.25);
+    border-radius: 6px;
 }

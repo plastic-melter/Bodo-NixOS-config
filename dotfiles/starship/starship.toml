@@ -25,7 +25,7 @@ truncation_symbol = "…/"
 
 [character]
 success_symbol = ""
-error_symbol = "[✗](bg:#__BG__ fg:#__BG__)"
+error_symbol = ""
 
 [git_branch]
 disabled = true

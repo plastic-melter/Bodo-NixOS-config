@@ -19,12 +19,10 @@ Config files for:
 
 To-do list: 
 - bluetooth issues (??)
-- nwg-drawer
 - VM/host file sharing (virtiofs)
+- eww panel
+- help menu
 - fcitx5 mozc IME issues (??)
-- kill the unkillable GTK_IM_MODULE env var warning on login (??)
-- test cooling limits (15s 65W PL1 + 50W PL2 is low)
-- find a use for AGS and EWW?
 - make things look nicer (skill issue)
 - set up game launcher/wrapper, WINE tweaks/testing for old game library, plutonium setup 
 

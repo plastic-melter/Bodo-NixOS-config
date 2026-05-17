@@ -36,27 +36,27 @@ window#waybar {
 #workspaces button:hover {
     background-color: #__SURFACE__;
 }
-/* Per-module icon colors — themed (identity + 50% toward BORDER_ACTIVE2) */
-#clock { color: #__MOD_CLOCK__; }
-#custom-worldclock { color: #__MOD_WORLDCLOCK__; }
-#custom-cooling { color: #__MOD_COOLING__; }
-#custom-nvidia { color: #__MOD_NVIDIA__; }
-#battery { color: #__MOD_BATTERY__; }
-#battery.warning:not(.charging) { color: #__MOD_BATTERY_WARN__; }
-#battery.critical:not(.charging) { color: #__MOD_BATTERY_CRIT__; }
-#battery.charging { color: #__MOD_BATTERY_CHARGE__; padding: 0px 15px; }
-#network { color: #__MOD_NETWORK__; }
-#network.disconnected { color: #__MOD_NETWORK_DISC__; }
-#pulseaudio { color: #__MOD_PULSEAUDIO__; }
+/* Per-module pastel icon colors — NOT THEMED */
+#clock { color: #ba97ff; }
+#custom-worldclock { color: #a8e8b8; }
+#custom-cooling { color: #a8c8e8; }
+#custom-nvidia { color: #a8d8b8; }
+#battery { color: #a8d8b8; }
+#battery.warning:not(.charging) { color: #e8d8a0; }
+#battery.critical:not(.charging) { color: #e8a0a8; }
+#battery.charging { color: #a8c8e8; padding: 0px 15px; }
+#network { color: #a8c8e8; }
+#network.disconnected { color: #e8a0a8; }
+#pulseaudio { color: #e8b8d8; }
 #pulseaudio.muted { color: #__TEXT__; }
-#cpu { color: #__MOD_CPU__; }
-#memory { color: #__MOD_MEMORY__; }
-#temperature { color: #__MOD_TEMP__; }
-#temperature.critical { color: #__MOD_TEMP_CRIT__; }
-#backlight { color: #__MOD_BACKLIGHT__; }
-#custom-refreshrate { color: #__MOD_REFRESHRATE__; }
-#custom-power { color: #__MOD_POWER__; }
-#custom-disk { color: #__MOD_DISK__; }
+#cpu { color: #e8c8a8; }
+#memory { color: #c8a8e8; }
+#temperature { color: #e8b8d8; }
+#temperature.critical { color: #e8a0a8; }
+#backlight { color: #e8e8a8; }
+#custom-refreshrate { color: #e8a565; }
+#custom-power { color: #e8a565; }
+#custom-disk { color: #a8c8e8; }
 /* Shared background/border for all modules */
 #clock, #battery, #network, #pulseaudio, #temperature, #cpu, #memory,
 #disk, #custom-refreshrate, #custom-hwpower, #custom-power, #custom-cooling,
@@ -70,10 +70,10 @@ window#waybar {
 #custom-playerctl {
     font-size: 24px;
     padding: 0px 10px 0px 17px;
-    color: #__MOD_PLAYERCTL__;
+    color: #e8b8d8;
 }
 #custom-launcher {
-    color: #__MOD_LAUNCHER__;
+    color: #7ad4f0;
     background-color: rgba(__BG_RGB__, 0.9);
     border-radius: 8px;
     margin: 0px 3px;
@@ -95,7 +95,7 @@ window#waybar {
 }
 #custom-wf-recorder {
     padding: 0px 15px;
-    color: #__MOD_RECORDER__;
+    color: #e8a0a8;
     background-color: rgba(__BG_RGB__, 0.9);
     border-radius: 8px;
     margin: 0px 3px;
