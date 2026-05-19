@@ -24,7 +24,7 @@ YEET="$DOTFILES/scripts/yeet.sh"
 # Per-module identity colors (static pastels) and the theme target they
 # blend toward. MIX_RATIO is percent of theme bleed (0=keep identity,
 # 100=full theme).
-MIX_RATIO=50
+MIX_RATIO=35
 
 # Identity colors keyed by module short-name.
 IDENT_CLOCK="ba97ff"
@@ -132,7 +132,7 @@ load_palette() {
     LOCK_C2=$(hex_rgb_compact "$color1")
 
     # Per-module accents: blend each identity color toward BORDER_ACTIVE2
-    local t="$BORDER_ACTIVE2"
+    local t="$BORDER"
     MOD_CLOCK=$(mix          "$IDENT_CLOCK"          "$t" "$MIX_RATIO")
     MOD_WORLDCLOCK=$(mix     "$IDENT_WORLDCLOCK"     "$t" "$MIX_RATIO")
     MOD_COOLING=$(mix        "$IDENT_COOLING"        "$t" "$MIX_RATIO")

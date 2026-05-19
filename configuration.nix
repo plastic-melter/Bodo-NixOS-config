@@ -348,15 +348,6 @@ services = {
     openDefaultPorts = true;
   };
 
-  # Llama
-  ollama = {
-    enable = true;
-    package = pkgs.ollama-vulkan;
-    loadModels = [ "qwen3:8b" "qwen3:14b" "qwen3-coder:30b" ];
-    host = "127.0.0.1";
-    port = 11434;
-  };
-
   # Power Management / Hardware
   tlp = {
     enable = true;

@@ -190,6 +190,7 @@ wayland.windowManager = {
     xwayland.enable = true;
     systemd.enable = false;
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    configType = "hyprlang";
   };
 };
 
