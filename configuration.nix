@@ -77,6 +77,7 @@ boot = {
     "vfio" # VFIO subsystem: allows QEMU to access hardware directly
     "vfio_iommu_type1" # IOMMU backend for VFIO: handles addr trans/isolation between VM and hardware
     "vfio_pci" # allows binding specific PCI devices (ex: GPU) to VFIO driver isntead of host driver
+    "hid_nintendo" # Switch controller pairing
   ];
   kernelPackages = pkgs.linuxPackages_xanmod_latest; # gaming
   kernelParams = [
@@ -211,6 +212,7 @@ hardware = {
   };
   cpu.intel.updateMicrocode = true;
   uinput.enable = true; # B0XX native USB
+  steam-hardware.enable = true; # Swtich controller on Steam
   bluetooth = {
     enable = true;
     hsphfpd.enable = false;
@@ -304,6 +306,7 @@ services = {
      accelSpeed = "0.0";
     };
   };
+  joycond.enable = true; # Switch controller
 
   # Audio
   pulseaudio.enable = false;
@@ -349,6 +352,7 @@ services = {
   };
 
   # Power Management / Hardware
+  power-profiles-daemon.enable = false; # don7t fight tlp
   tlp = {
     enable = true;
     settings = { 
@@ -361,7 +365,9 @@ services = {
       # ^ This affects things like fan curves, PL1/PL2, etc.
       #PLATFORM_PROFILE_ON_AC = "balanced"; # Same thing but for AC: be sensible rather than pinning at full power
       PLATFORM_PROFILE_ON_AC = "performance"; # Same thing but for AC: be sensible rather than pinning at full power
-      #RUNTIME_PM_ON_AC = "auto"; # Allow runtime PM even on AC (ex: don't power on the dGPU if it's not needed)
+      RUNTIME_PM_ON_AC = "auto"; # Allow runtime PM even on AC (ex: don't power on the dGPU if it's not needed)
+      CPU_SCALING_GOVERNOR_ON_AC  = "performance";
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
     };
   };
   thermald.enable = true; # Intel thermal daemon
@@ -372,8 +378,8 @@ services = {
       [ 0                    0  60 ]
       [ 1                   55  68 ]
       [ 2                   64  82 ]
-      [ 3                   78  88 ]
-      [ 5                   85  92 ]
+      [ 3                   78  85 ]
+      [ 5                   82  92 ]
       [ 7                   90  97 ]
       [ "level full-speed"  95  32767 ]
     ];
@@ -416,13 +422,13 @@ services = {
     # STM32 flashing in DFU mode
     SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE="0666"
 
-    # AC plugged in: full performance (PL1=50W, PL2=65W)
-    SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="${pkgs.bash}/bin/sh -c 'echo 50000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw'"
+    # AC plugged in: full performance (PL1=55W, PL2=65W)
+    SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="${pkgs.bash}/bin/sh -c 'echo 55000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw'"
     # On battery: conservative (PL1=35W, PL2=65W)
     SUBSYSTEM=="power_supply", ATTR{online}=="0", RUN+="${pkgs.bash}/bin/sh -c 'echo 35000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw'"
 
-    # AC plugged in: full performance (PL1=50W, PL2=65W)
-    SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="${pkgs.bash}/bin/sh -c 'echo 50000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw && echo 50000000 > /sys/class/powercap/intel-rapl-mmio:0/constraint_0_power_limit_uw'"
+    # AC plugged in: full performance (PL1=55W, PL2=65W)
+    SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="${pkgs.bash}/bin/sh -c 'echo 55000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw && echo 50000000 > /sys/class/powercap/intel-rapl-mmio:0/constraint_0_power_limit_uw'"
 
     # On battery: conservative (PL1=35W, PL2=65W)
     SUBSYSTEM=="power_supply", ATTR{online}=="0", RUN+="${pkgs.bash}/bin/sh -c 'echo 35000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw && echo 28000000 > /sys/class/powercap/intel-rapl-mmio:0/constraint_0_power_limit_uw'"
@@ -462,7 +468,7 @@ systemd.services.rapl-init = {
   after = [ "systemd-udevd.service" ];
   script = ''
     if grep -q 1 /sys/class/power_supply/AC/online 2>/dev/null; then
-      echo 50000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
+      echo 55000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
       echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw
     else
       echo 35000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
@@ -478,7 +484,7 @@ systemd.services.rapl-pl1 = {
   script = ''
     online=$(cat /sys/class/power_supply/AC/online 2>/dev/null || echo 0)
     if [[ "$online" == "1" ]]; then
-      pl1=50000000
+      pl1=55000000
       pl2=65000000
     else
       pl1=28000000

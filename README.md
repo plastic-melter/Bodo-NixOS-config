@@ -14,11 +14,15 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 - [Wofi](https://hg.sr.ht/~scoopta/wofi), an application launcher.
 - [Yazi](https://yazi-rs.github.io), an efficient TUI file browser.
 - [EWW](https://elkowar.github.io/eww/) **⚠️ WIP**
+
 ...and more, along with some useful scripts. 
 
 ## To-do list: 
+- dynamic vfio binding (free dGPU for AI loads)
 - VM/host file sharing (virtiofs)
-- Arrow Lake local AI issues
+- fix Looking Glass
+- Arrow Lake local AI issues (or dGPU cold-binding)
+- hypr compositing CPU util at high refresh rates
 - eww panel
 - help menu for other ppl
 - fcitx5 mozc IME issues (??)
@@ -35,37 +39,41 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 - **Nix-shell**: per-project environments on the fly, without all the annoying complex overhead of things like docker
 
 ## Why P14sG6? 
-- need a good jp106 keyboard, trackpoint, and click buttons -> **ThinkPads are the only option**
-- don't want a gimped ultrabook w/ tiny cooling capacity, don't want a heavy briefcase laptop: **14.5" / 3~4lbs** is good
+- want jp106 keyboard, trackpoint, and physical click buttons -> **ThinkPads are the only option**
+- don't want a gimped ultrabook w/ tiny cooling capacity, don't want a heavy briefcase laptop
+  - P14s (14.5", 3.5lb, ~60W steady-state) is OK
 - bells and whistles:
-  - **Blackwell dGPU (8GB)** for local AI loads + Windows VMs (CAD programs)
-  - **96GB RAM** / **8TB PCIe5 nVME** = no resource constraints (but just 6400MHz, no LPCAMM yet)
-  - **60W PL2** cooling capacity, w/ Arrow Lake ultrabook-like efficiency on battery
-  - **3072x1920 120Hz** panel (IPS, no backlight PWM, full DCI-P3 coverage) is nice
+  - **Blackwell dGPU (8GB)** for local AI loads + Windows VM (CAD)
+  - **96GB RAM** / **8TB SSD** = no resource constraints (but only 6400MHz; not LPCAMM)
+  - **~60W steady-state** cooling capacity, w/ Arrow Lake ultrabook-like efficiency on battery
+  - great **3072x1920 120Hz** panel (IPS, not glossy, DC dimming not PWM, full DCI-P3 coverage)
   - big-ish **75Whr battery** and a real RJ-45 **ethernet port**
-  - **platform firmware** (EC, ACPI): full control over PL states, fan curves, battery thresholds + calibration, good thermal sensor suite,  MSR edits (turbo ratios, RAPL), direct access to UEFI vars, fwupd, etc.
+  - excellent **platform firmware** (EC, ACPI): full control over PL states, fan curves, battery thresholds + calibration, good thermal sensor suite,  MSR edits (turbo ratios, RAPL), direct access to UEFI vars, fwupd, etc... Framework is the only other laptop OEM competitive on this.
 
 ## What about X210ai?
-- (-) can't handle jp106 keyboard
-- (-) generally buggy firmware as of May 2026
-  - battery TDP setting isn't possible: currently gimped
-  - manual VRAM allocation for iGPU isn't possible
-  - battery level display is inaccurate
-  - long-press shutdown breaks battery/AC status LEDs and ThinkLight
-  - <100% boot success rate (requires long-press restart)
-  - no custom fan curves
-  - resuming from suspend-to-RAM is not reliable
-  - resuming from hibernation is not reliable
-- (-) display is kinda fragile
-- (-) Thunderbolt/USB-C is really janky
-- (-) heavier and thicker (3.6->4.3lb, 18mm->28mm)
-- (-) less overall power (cooling limit) and less efficiency (Meteor vs. Arrow Lake)
-- (-) no DGPU
-- (-) horrible speakers
-- (-) previous 51nb machines (x210/x2100) had intermittent issues
-- (+) supports 128GB RAM, 8+8+4TB SSD (fast nVME, slow SATA, slow mSATA)
-- (+) nicer keyboard
-- (+) fun hackable internals
-- (+) hotswap battery
-- (+) chassis is a work of modern art
-- (+) swag
+- can't handle jp106 keyboard (proprietary EC)
+- (FW bug) battery TDP setting isn't possible: currently gimped
+- (FW bug) manual VRAM allocation for iGPU isn't possible
+- (FW bug) battery level display is inaccurate
+- (FW bug) long-press shutdown breaks battery/AC status LEDs and ThinkLight
+- (FW bug) <100% boot success rate (requires long-press restart)
+- (FW bug) no custom fan curves
+- (FW bug) resuming from suspend-to-RAM is not reliable
+- (FW bug) resuming from hibernation is not reliable
+- ~useless touchpad
+- display is kinda fragile, trackpoint leaves a mark on it
+- Thunderbolt/USB-C is really janky
+- heavier and thicker than P14s (3.6->4.3lb, 18mm->28mm)
+- less overall power (~45W cooling limit?) and less efficiency (Meteor vs. Arrow Lake)
+- no DGPU
+- horrible speakers
+- previous 51nb machines (x210, x2100) had misc. issues
++ supports 128GB RAM, 20TB SSD (8TB NVMe, 8TB SATA, 4TB mSATA)
++ nicer keyboard
++ fun, hackable internals
++ swappable battery (hot swap on AC power)
++ chassis is a work of art, looks beautiful
++ can ditch the touchpad
++ coreboot support "maybe"
++ advanced BIOS features
++ holds value

@@ -56,4 +56,3 @@ looking-glass-client -f /dev/kvmfr0
 - [ ] Enable RDP: `netsh advfirewall firewall set rule group="Remote Desktop" new enable=Yes`
 - [ ] Looking Glass B7 host binary (install as service)
 - [ ] NX floating license config
-

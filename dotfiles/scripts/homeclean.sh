@@ -8,6 +8,7 @@ mv /home/joe/*.jpeg /home/joe/Images 2>/dev/null
 mv /home/joe/*.JPEG /home/joe/Images 2>/dev/null
 mv /home/joe/*.webp /home/joe/Images 2>/dev/null
 mv /home/joe/*.WEBP /home/joe/Images 2>/dev/null
+mv /home/joe/*hyprshot* /home/joe/Images/screenshots 2>/dev/null
 
 # Videos
 mv /home/joe/*.mp4 /home/joe/Videos 2>/dev/null

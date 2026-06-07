@@ -1,12 +1,19 @@
-{ inputs, config, pkgs, lib, ... }: 
-
-# Some dotfiles will source color codes (by pywal) from palette.nix
+{ inputs, config, pkgs, lib, ... }:
 let
+  # Some dotfiles will source color codes (by pywal) from palette.nix
   palette = import ./dotfiles/palette.nix;
   themed = path: builtins.replaceStrings
     (map (k: "__${k}__") (builtins.attrNames palette))
     (builtins.attrValues palette)
     (builtins.readFile path);
+
+  # LLM convenience launcher
+  llama-up = pkgs.writeShellScriptBin "llama-up" ''
+    exec ${pkgs.llama-cpp}/bin/llama-server \
+      -m "$HOME/.models/$(ls ~/.models | ${pkgs.fzf}/bin/fzf)" \
+      -c 16384 -t 14 --mlock \
+      --host 127.0.0.1 --port 8080
+  '';
 in {
 
 #################################################
@@ -68,7 +75,7 @@ home.file = {
   ".config/wofi/config".source = ./dotfiles/wofi/config;
   # wezterm
   ".config/wezterm/wezterm.lua".text = themed ./dotfiles/wezterm/wezterm.lua;
-  # Untouched
+  # misc
   ".config/plutonium".source = ./dotfiles/plutonium;
   ".config/scripts".source = ./dotfiles/scripts;
   ".config/waypaper".source = ./dotfiles/waypaper;
@@ -76,6 +83,7 @@ home.file = {
   ".config/yazi".source = ./dotfiles/yazi;
   ".vim/undodir/.keep".text = ""; # creates ~/.vim/undodir
 };
+
 # ============================================
 # XDG STUFF (mostly ~/.config files)
 # ============================================
@@ -123,11 +131,34 @@ xdg.configFile = {
   "starship.toml".text = themed ./dotfiles/starship/starship.toml;
 };
 
+xdg.portal = {
+  enable = true;
+  extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  config.common = {
+    default = [ "hyprland" "gtk" ];
+    "org.freedesktop.impl.portal.Settings" = [ "gtk" ];
+    "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+  };
+};
+
 # ============================================
 # PROGRAMS
 # ============================================
 
 programs = {
+
+  aichat = {
+    enable = true;
+    settings = {
+      clients = [{
+        type = "openai-compatible";
+        name = "local";
+        api_base = "http://127.0.0.1:8080/v1";
+        models = [{ name = "local"; max_input_tokens = 16384; }];
+      }];
+      model = "local:local";
+    };
+  };
 
   direnv = {
     enable = true;
@@ -454,7 +485,7 @@ home.packages = with pkgs; [
   fastfetch # quickly fetch general system info
   fd # better file finding
   ffmpeg # video re-encoding CLI
-  fzf # yazi: quick file subtree navigation
+  fzf # fuzzy finder: useful for yazi, llama, etc.
   gnome-bluetooth # GUI for bluetooth devices
   imagemagick # image editing CLI
   imv # image viewer
@@ -473,6 +504,7 @@ home.packages = with pkgs; [
   unrar # extract .rar files
   vips # fast image processing for large images
   wofi # app launcher
+  xfburn # GUI for burning CDs
 
   # WAYLAND, HYPRLAND, RICE
   awww # swww got renamed upstream (wayland desktop background)
@@ -530,6 +562,12 @@ home.packages = with pkgs; [
     rich # fancy terminal output
     scipy #SciPy: lots of handy tools
   ]))
+
+  # AI
+  python312Packages.huggingface-hub # interface w/ Hugging Face Hub (open-source ML)
+  llama-cpp # LLM inference
+  llama-up # LLM convenience helper
+
 ];
 
 ################################################
