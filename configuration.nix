@@ -645,7 +645,7 @@ environment.systemPackages = with pkgs; [
   s-tui # terminal TUI for CPU temp/power/freq
   scanmem # reverse engineering LoT2 lol
   smartmontools # monitor storage systems (ex: SSD health)
-  stress # hardware stress tool
+  stress-ng # hardware stress tool
   tmux # terminal multiplexer
   traceroute # traces network hops
   trash-cli # alias rm -> similar to Recycle Bin
