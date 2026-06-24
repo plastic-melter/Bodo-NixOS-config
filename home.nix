@@ -460,7 +460,7 @@ home.packages = with pkgs; [
   mpv # simple video player
   obsidian # cross-platform notes program
   obs-studio # desktop recording
-  openscad # text-based 3D parametric model compiler (CAD)
+  #openscad # text-based 3D parametric model compiler (CAD)
   picoscope # pocket oscilloscope
   platformio # arduino TUI + utils
   prusa-slicer # 3DP slicer

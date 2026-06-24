@@ -158,16 +158,11 @@
     (button :class "power-btn" :onclick "systemctl poweroff"                  :tooltip "shutdown" "")))
 
 (defwidget app-launcher []
-  (box :class "row" :orientation "h" :space-evenly true :spacing 8
-    (button :class "launcher-btn" :tooltip "app launcher"
-            :onclick "bash -c 'wofi --show drun &'"
-            " apps")
-    (button :class "launcher-btn" :tooltip "run command"
-            :onclick "bash -c 'wofi --show run &'"
-            " run")
-    (button :class "launcher-btn" :tooltip "window switcher"
-            :onclick "bash -c 'wofi --show window &'"
-            "󰖯 windows")))
+  (box :class "row todo" :orientation "h" :space-evenly false :spacing 8
+    (label :class "icon" :text "")
+    (button :class "row-label" :halign "start" :hexpand true
+            :onclick "wofi --show drun"
+            "launch app (wofi for now)")))
 
 ;; ─── top-level window ────────────────────────────────────────────────────
 

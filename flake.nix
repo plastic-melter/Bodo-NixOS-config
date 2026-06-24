@@ -10,7 +10,7 @@
 
   outputs = { self, nixpkgs, home-manager, hyprland, ...}@inputs: {
     nixosConfigurations = {
-      P14sG6 = nixpkgs.lib.nixosSystem {
+      X210Ai = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
         system = "x86_64-linux";
         modules = [

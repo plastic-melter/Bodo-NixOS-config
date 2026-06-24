@@ -6,23 +6,10 @@ if [[ "$1" == "toggle" ]]; then
   exit 0
 fi
 
-GPUTEMP=$(sensors | grep GPU | grep -oP '\+\K[0-9]+' | head -1)
-CPUTEMP=$(sensors | grep CPU | grep -oP '\+\K[0-9]+' | head -1)
-FAN_LEVEL=$(awk '/^level:/ {print $2}' /proc/acpi/ibm/fan)
-FAN1=$(cat /sys/class/hwmon/hwmon8/fan1_input)
-FAN2=$(cat /sys/class/hwmon/hwmon8/fan2_input)
-FAN_AVG=$(( (FAN1 + FAN2) / 2 ))
+CPUTEMP=$(sensors | grep 'id 0' | awk '{print $4}' | cut -d '+' -f 2 | cut -d '.' -f 1)
 
 if [[ -f "$STATE_FILE" ]]; then
-  if [ -z "$GPUTEMP" ]; then
-    echo -n "${CPUTEMP}°C (L${FAN_LEVEL}) ${FAN_AVG}rpm"
-  else
-    echo -n "${CPUTEMP}${GPUTEMP}°C (L${FAN_LEVEL}) ${FAN_AVG}rpm"
-  fi
+    echo -n "${CPUTEMP} (L${FAN_LEVEL}) ${FAN_AVG}rpm"
 else
-  if [ -z "$GPUTEMP" ]; then
     echo -n "${CPUTEMP}°C"
-  else
-    echo -n "${CPUTEMP}${GPUTEMP}°C"
-  fi
 fi

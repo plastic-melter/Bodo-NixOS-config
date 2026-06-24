@@ -23,7 +23,6 @@
   "modules-right": [
     "cpu",
     "custom/hwpower",
-    "custom/nvidia",
     "custom/cooling",
     "memory",
     "disk",
@@ -168,7 +167,7 @@
     "format": "󰍹  {}Hz",
     "exec": "hyprctl monitors | grep '@' | head -n 1 | cut -d '@' -f 2 | cut -d '.' -f 1",
     "interval": 1,
-    "on-click": "/etc/nixos/dotfiles/scripts/60-120hz.sh"
+    "on-click": "/etc/nixos/dotfiles/scripts/x210ai-165hz-toggle.sh"
   },
   "network": {
     "format-wifi": "󰤨  {essid}",

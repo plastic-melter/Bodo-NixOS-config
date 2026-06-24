@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 STATE_FILE="/tmp/worldclock_expanded"
+export TZDIR=/etc/zoneinfo
 
 if [[ "$1" == "toggle" ]]; then
   if [[ -f "$STATE_FILE" ]]; then

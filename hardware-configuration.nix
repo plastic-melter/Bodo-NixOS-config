@@ -5,11 +5,11 @@
 
 {
   imports =
-    [ (modulesPath + "/hardware/cpu/intel-npu.nix")
+    [ #(modulesPath + "/hardware/cpu/intel-npu.nix") # P14s legacy
       (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" ];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "rtsx_usb_sdmmc" ]; #new: ahci, usbhid, rtsx...
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];

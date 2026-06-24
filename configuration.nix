@@ -1,7 +1,7 @@
 { inputs, outputs, lib, config, pkgs, ... }: {
 
 #############################################
-############# P14sG6 CONFIG #################
+############# X210Ai CONFIG #################
 #############################################
 
 imports = [
@@ -68,58 +68,30 @@ boot = {
       };
     };
   };
-  extraModulePackages = [ config.boot.kernelPackages.kvmfr ]; # Looking Glass / VM KVMFR
-  initrd.kernelModules = [ "kvmfr" ]; # Looking Glass / VM KVMFR
   kernelModules = [ 
     "ntsync" # CoD WaW performance
     "uinput" # B0XX native USB
     "kvm-intel" # enables hardware-accelerated virtualization (VMX)
-    "vfio" # VFIO subsystem: allows QEMU to access hardware directly
-    "vfio_iommu_type1" # IOMMU backend for VFIO: handles addr trans/isolation between VM and hardware
-    "vfio_pci" # allows binding specific PCI devices (ex: GPU) to VFIO driver isntead of host driver
     "hid_nintendo" # Switch controller pairing
   ];
   kernelPackages = pkgs.linuxPackages_xanmod_latest; # gaming
   kernelParams = [
-    "mem_sleep_default=s2idle" # Arrow Lake has no S3, forces the only working sleep state
-    "intel_iommu=on" # enable IOMMU for VFIO passthrough
-    "iommu=pt" # passthrough mode, tells IOMMU to only translate for devices that need it (VMs)
-    "pci_aspm=force" # ignore BIOS ASPM settings and enable ASPM on all PCIe links
-    #"nvme.noacpi=1" # let NVMe driver ignore ACPI PM hints and do PM itself
-    #    ^ this might be too aggressive, could be causing the issues resuming from suspend
-    #"acpi.ec_no_wakeup=1" # prevent ACPI EC from waking things up during suspend
-    #    ^ this might be too aggressive, could be causing the issues resuming from suspend
-    "resume=UUID=2ef9551c-28e6-484b-9afa-5de05f928942" # hibernation: swap file
-    "resume_offset=687831040" # hibernation: swap file
     "quiet" # surpress kernel boot messages: still readable via dmesg/journalctl
     "acpi.dump_ecdt=1"  # more EC logging
     "no_console_suspend"  # keep console active during suspend for better logging
-    "kvmfr.static_size_mb=256" # allow memory for KVMFR framebuffer: 256MB covers 4K HDR
+    #"i915.enable_psr=0" # disable panel self refresh (PSR = only refresh panel if frame actually changed)
   ];
-  resumeDevice = "/dev/disk/by-uuid/2ef9551c-28e6-484b-9afa-5de05f928942";
+  #resumeDevice = "/dev/disk/by-uuid/2ef9551c-28e6-484b-9afa-5de05f928942";
   kernel.sysctl."net.ipv4.ip_forward" = 1; # IP forwarding
-  blacklistedKernelModules = [ "k10temp" ];
   extraModprobeConfig = ''
     options cfg80211 ieee80211_regdom=US
-    options vfio-pci ids=10de:2db8
-    options kvmfr static_size_mb=256
-    options thinkpad_acpi fan_control=1
   ''; 
-  # Modprobe config explanation:
   #   - cfg...  = resolve JP/US IR flag mismatch
-  #   - vfio... = let pvfio-pci kernel module claim RTX 1000 at boot
-  #               This means the dGPU is only ever used for VM use
-  #               All NixOS stuff, including gaming, uses the iGPU
-  #               Without "options vfio-pci ids=10de:2db8", the shitty
-  #               nvidia driver owns the GPU at boot. Good luck getting
-  #               it to bind/unbind properly for VMs.
-  #   - kvmfr... = set memory size for video stuff: 128M=4k SDR, 256M=4k HDR, etc 
-  #   - ...fan_control... = enable writing /proc/acpi/ibm/fan
 };
 
 swapDevices = [{
   device = "/var/lib/swapfile";
-  size = 96*1024; # 96 GiB
+  size = 96*1024; # 96 GiB, matching system RAM
 }];
 
 # ============================================
@@ -127,7 +99,7 @@ swapDevices = [{
 # ============================================
 
 networking = {
-  hostName = "P14sG6";
+  hostName = "X210Ai";
   useDHCP = false;
   networkmanager = {
     enable = true;
@@ -146,7 +118,6 @@ systemd.services = {
   vboxnet0.wantedBy = lib.mkForce [];
   libvirtd = {
     stopIfChanged = false;
-    serviceConfig.LimitMEMLOCK = "infinity";
   };
   libvirtd.postStart = ''
     sleep 2
@@ -154,15 +125,6 @@ systemd.services = {
     virsh net-autostart default || true
   ''; # Above: save the trouble of running 'virsh netstart default' each time
 };
-
-systemd.tmpfiles.rules = [
-  "w /sys/module/pcie_aspm/parameters/policy - - - - powersupersave" 
-  # ^ let pci devices negotiate low power state when idle: combos with kernelParam "pcie_aspm=force"
-  "w /sys/bus/pci/devices/0000:01:00.0/power/control - - - - auto"
-  # ^ enable runtime PM on dGPU even under vfio-pci so it can (hopefully) power gate when idle
-  "f /dev/shm/looking-glass 0660 joe kvm -"
-  # ^ Looking Glass setup
-];
 
 # ============================================
 # LOCALIZATION
@@ -193,15 +155,6 @@ console = {
 # ============================================
 
 hardware = {
-  nvidia = { # NOTE: we are not using PRIME, nor finegrained PM, as vfio-pci owns the GPU
-    modesetting.enable = true;
-    open = true; # Required for Blackwell GPUs
-    nvidiaSettings = true;
-    powerManagement = {
-      enable = true;
-    };
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-  };
   graphics = {
     enable = true;
     enable32Bit = true; # for steam/wine/32-bit GL
@@ -212,17 +165,9 @@ hardware = {
   };
   cpu.intel.updateMicrocode = true;
   uinput.enable = true; # B0XX native USB
-  steam-hardware.enable = true; # Swtich controller on Steam
-  bluetooth = {
-    enable = true;
-    hsphfpd.enable = false;
-  };
-  enableAllFirmware = true;
-  trackpoint = {
-    emulateWheel = true;
-    speed = 97;
-    sensitivity = 128;
-  };
+  bluetooth.enable = true;
+  bluetooth.powerOnBoot = true;
+  enableRedistributableFirmware = true;
   sane = {
     enable = true; # for scanning from printer/scanner
     brscan4 = {
@@ -237,10 +182,7 @@ hardware = {
   };
 };
 
-powerManagement = {
-  cpuFreqGovernor = "ondemand";
-  powertop.enable = false; # powertop sometimes randomly enforces weird low power limits on AC
-};
+powerManagement.powertop.enable = false; # powertop sometimes randomly enforces weird low power limits on AC
 
 # ============================================
 # SECURITY
@@ -272,7 +214,7 @@ security = {
 services = {
   xserver = {
     enable = true;
-    videoDrivers = [ "nvidia" ];
+    videoDrivers = [ "modesetting" ];
     xkb = {
       layout = "jp";
       model = "jp106";
@@ -307,6 +249,18 @@ services = {
     };
   };
   joycond.enable = true; # Switch controller
+
+  # Turbostat logging
+  logrotate.settings.turbostat = {
+    files = "/var/log/turbostat/turbostat.log";
+    rotate = 10;        # keep 10 logs
+    size = "500M";       # rotate when file hits 50M
+    compress = true;
+    delaycompress = true;
+    missingok = true;
+    notifempty = true;
+    postrotate = "systemctl restart turbostat";
+  };
 
   # Audio
   pulseaudio.enable = false;
@@ -356,24 +310,13 @@ services = {
   tlp = {
     enable = true;
     settings = { 
-      START_CHARGE_THRESH_BAT0 = 90; 
-      STOP_CHARGE_THRESH_BAT0 = 95; 
-      CPU_ENERGY_PERF_POLICY_ON_BAT = "power"; # Set Intel HWP EPP to power: tells scheduler to bias towards efficiency
-      #CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance"; # Same thing but for AC: "performance" will pin it high (annoying)
-      CPU_ENERGY_PERF_POLICY_ON_AC = "performance"; # Same thing but for AC: "performance" will pin it high (annoying)
-      PLATFORM_PROFILE_ON_BAT = "low-power";  # Talks to Lenovo firmware via ACPI platform profile to request a low-power mode
-      # ^ This affects things like fan curves, PL1/PL2, etc.
-      #PLATFORM_PROFILE_ON_AC = "balanced"; # Same thing but for AC: be sensible rather than pinning at full power
-      PLATFORM_PROFILE_ON_AC = "performance"; # Same thing but for AC: be sensible rather than pinning at full power
-      RUNTIME_PM_ON_AC = "auto"; # Allow runtime PM even on AC (ex: don't power on the dGPU if it's not needed)
-      CPU_SCALING_GOVERNOR_ON_AC  = "performance";
-      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+      RUNTIME_PM_ON_AC = "on"; # Allow runtime PM even on AC (ex: don't power on the dGPU if it's not needed)
     };
   };
   thermald.enable = true; # Intel thermal daemon
   upower.enable = true; # dbus service that abstracts PM hardware an gives a nice API rather than poking /sys directly
   thinkfan = {
-    enable = true;
+    enable = false;
     levels = [
       [ 0                    0  60 ]
       [ 1                   55  68 ]
@@ -384,17 +327,6 @@ services = {
       [ "level full-speed"  95  32767 ]
     ];
   };
-
-  # udev package for KVMFR (for Looking Glass)
-  udev.packages = lib.singleton (pkgs.writeTextFile
-    { 
-      name = "kvmfr";
-      text = ''
-        SUBSYSTEM=="kvmfr", GROUP="kvm", MODE="0660", TAG+="uaccess"
-      '';
-      destination = "/etc/udev/rules.d/70-kvmfr.rules";
-    }
-  );
 
   # USB Device Rules
   udev.extraRules = ''
@@ -423,25 +355,23 @@ services = {
     SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE="0666"
 
     # AC plugged in: full performance (PL1=55W, PL2=65W)
-    SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="${pkgs.bash}/bin/sh -c 'echo 55000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw'"
+    #SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="${pkgs.bash}/bin/sh -c 'echo 55000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw'"
     # On battery: conservative (PL1=35W, PL2=65W)
-    SUBSYSTEM=="power_supply", ATTR{online}=="0", RUN+="${pkgs.bash}/bin/sh -c 'echo 35000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw'"
+    #SUBSYSTEM=="power_supply", ATTR{online}=="0", RUN+="${pkgs.bash}/bin/sh -c 'echo 35000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw'"
 
     # AC plugged in: full performance (PL1=55W, PL2=65W)
-    SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="${pkgs.bash}/bin/sh -c 'echo 55000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw && echo 50000000 > /sys/class/powercap/intel-rapl-mmio:0/constraint_0_power_limit_uw'"
+    #SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="${pkgs.bash}/bin/sh -c 'echo 55000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw && echo 50000000 > /sys/class/powercap/intel-rapl-mmio:0/constraint_0_power_limit_uw'"
 
     # On battery: conservative (PL1=35W, PL2=65W)
-    SUBSYSTEM=="power_supply", ATTR{online}=="0", RUN+="${pkgs.bash}/bin/sh -c 'echo 35000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw && echo 28000000 > /sys/class/powercap/intel-rapl-mmio:0/constraint_0_power_limit_uw'"
+    #SUBSYSTEM=="power_supply", ATTR{online}=="0", RUN+="${pkgs.bash}/bin/sh -c 'echo 35000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw && echo 28000000 > /sys/class/powercap/intel-rapl-mmio:0/constraint_0_power_limit_uw'"
 
-    # Looking Glass
-    SUBSYSTEM=="kvmfr", OWNER="joe", GROUP="kvm", MODE="0660"
   '';
 
   # Printers/scanners: access to scanner
   avahi = {
     enable = true;
     nssmdns4 = true;
-    openFirewall = true;
+    openFirewall = false; # only for printer discovery
   };
 };
 
@@ -450,62 +380,60 @@ systemd.services.turbostat = {
   description = "turbostat background sampler";
   wantedBy = [ "multi-user.target" ];
   script = ''
-    ${pkgs.linuxPackages.turbostat}/bin/turbostat \
-      --quiet --show PkgWatt,CorWatt,GFXWatt,RAMWatt \
-      --interval 1 --no-msr \
-      > /tmp/turbostat.log 2>/dev/null
+    ${pkgs.linuxPackages.turbostat}/bin/turbostat --quiet --interval 1 > /tmp/turbostat.log 2>/dev/null
   '';
   serviceConfig = {
     Restart = "always";
     User = "root";
+    LogsDirectory = "turbostat";
   };
 };
 
 # Set CPU power limits at boot: there's a udev rule for changing it whenever AC adapter is plugged/unplugged too
-systemd.services.rapl-init = {
-  description = "Initialize RAPL limits based on power source";
-  wantedBy = [ "multi-user.target" ];
-  after = [ "systemd-udevd.service" ];
-  script = ''
-    if grep -q 1 /sys/class/power_supply/AC/online 2>/dev/null; then
-      echo 55000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
-      echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw
-    else
-      echo 35000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
-      echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw
-    fi
-  '';
-  serviceConfig.Type = "oneshot";
-};
+#systemd.services.rapl-init = {
+#  description = "Initialize RAPL limits based on power source";
+#  wantedBy = [ "multi-user.target" ];
+#  after = [ "systemd-udevd.service" ];
+#  script = ''
+#    if grep -q 1 /sys/class/power_supply/AC/online 2>/dev/null; then
+#      echo 55000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
+#      echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw
+#    else
+#      echo 35000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
+#      echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw
+#    fi
+#  '';
+#  serviceConfig.Type = "oneshot";
+#};
 
-systemd.services.rapl-pl1 = {
-  description = "Reapply RAPL PL1 limits (EC override workaround)";
-  serviceConfig.Type = "oneshot";
-  script = ''
-    online=$(cat /sys/class/power_supply/AC/online 2>/dev/null || echo 0)
-    if [[ "$online" == "1" ]]; then
-      pl1=55000000
-      pl2=65000000
-    else
-      pl1=28000000
-      pl2=65000000
-    fi
-    echo $pl1 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
-    echo $pl1 > /sys/class/powercap/intel-rapl-mmio:0/constraint_0_power_limit_uw
-    echo $pl2 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw
-    echo $pl2 > /sys/class/powercap/intel-rapl-mmio:0/constraint_1_power_limit_uw
-  '';
-};
+#systemd.services.rapl-pl1 = {
+#  description = "Reapply RAPL PL1 limits (EC override workaround)";
+#  serviceConfig.Type = "oneshot";
+#  script = ''
+#    online=$(cat /sys/class/power_supply/AC/online 2>/dev/null || echo 0)
+#    if [[ "$online" == "1" ]]; then
+#      pl1=55000000
+#      pl2=65000000
+#    else
+#      pl1=28000000
+#      pl2=65000000
+#    fi
+#    echo $pl1 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
+#    echo $pl1 > /sys/class/powercap/intel-rapl-mmio:0/constraint_0_power_limit_uw
+#    echo $pl2 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw
+#    echo $pl2 > /sys/class/powercap/intel-rapl-mmio:0/constraint_1_power_limit_uw
+#  '';
+#};
 
-systemd.timers.rapl-pl1 = {
-  description = "Reapply RAPL PL1 every 5s";
-  wantedBy = [ "timers.target" ];
-  timerConfig = {
-    OnBootSec = "10s";
-    OnUnitActiveSec = "5s";
-    AccuracySec = "1s";
-  };
-};
+#systemd.timers.rapl-pl1 = {
+#  description = "Reapply RAPL PL1 every 5s";
+#  wantedBy = [ "timers.target" ];
+#  timerConfig = {
+#    OnBootSec = "10s";
+#    OnUnitActiveSec = "5s";
+#    AccuracySec = "1s";
+#  };
+#};
 
 systemd.user.timers.fwupd-check = {
   description = "Check for firmware updates after boot";
@@ -609,7 +537,7 @@ environment.variables = {
 };
 
 environment.sessionVariables = {
-  LIBVA_DRIVER_NAME = "iHD";
+#  LIBVA_DRIVER_NAME = "iHD";
   MOZ_ENABLE_WAYLAND = "1";
 #  WLR_RENDERER = "vulkan";
 #  WLR_NO_HARDWARE_CURSORS = "1";
@@ -646,7 +574,6 @@ users = {
       "adbusers"  # access to android debug stuff
       "dialout"   # access to serial ports
       "libvirtd"  # access to libvirt VM management
-      "kvm"       # looking glass
       "plugdev"   # access to USB devices such as rpi flashing
       "audio"     # access to audio devices
       "disk"      # access to raw disk devices
@@ -669,11 +596,10 @@ users = {
 
 environment.systemPackages = with pkgs; [
 
-  # P14sG6-specific stuff
+  # Machine-specific stuff
   freerdp # RDP client on host connects to VM NAT
   intel-gpu-tools # check iGPU resource utilization
   linuxKernel.packages.linux_xanmod.turbostat # CPU power use stats
-  looking-glass-client # KVM frame relay implementation
   virt-manager # manage VMs
 
   # HARDWARE + DRIVERS + EXTERNAL DEVICES

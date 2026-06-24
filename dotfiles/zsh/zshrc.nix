@@ -43,7 +43,7 @@
     notes = "vim ~/.notes.md";
     homeclean = "env --chdir=/home/joe /etc/nixos/dotfiles/scripts/homeclean.sh";
     gc = "git add -A && git commit -m";
-    nxrdp = "xfreerdp /v:192.168.122.188 /u:odinn /dynamic-resolution /sound:sys:pulse";
-    nxlg = "looking-glass-client -f /dev/kvmfr0";
+    nxrdp = "xfreerdp /v:192.168.122.166 /u:odinn /dynamic-resolution /sound:sys:pulse";
+    flashcards = "~/Desktop/wanikani/1to14/flashcard.sh";
   };
 }
