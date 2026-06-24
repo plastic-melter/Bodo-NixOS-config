@@ -65,6 +65,7 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 ## Why X210Ai?
 The X200 is really well engineered, and laptop design has regressed in most aspects since the 2000s (aside from getting a bit thinner/lighter):
 | **Feature** | **X210Ai** | **Modern Laptop (ex: Framework or ThinkPad)** |
+|---|---|---|
 | Keyboard | 7-row, deep travel, full size keys | 6-row, shallow travel, chiclet, missing useful keys |
 | Chassis | Magnesium, latching lid, excellent serviceability | Cheap aluminum and plastic, no lid latch, usually a pain to service |
 | Battery | Removable (latched) 4/6/9-cell up to ~116Whr | Not-removeable (internal), one size, <100Whr |
