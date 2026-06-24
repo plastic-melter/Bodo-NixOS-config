@@ -2,7 +2,7 @@
 
 Backup and reproducible config for my personal [NixOS](https://nixos.org) system, currently configured for an [X210Ai](https://macdat.net/laptops/jxtech/x210ai.php). I don't really know how to use git.
 
-![Desktop Screenshot](./.desktop.png)
+![Desktop Screenshot](./.desktop-screenie.png)
 ![X210Ai](./.x210ai.jpg)
 
 ## Config files for:
