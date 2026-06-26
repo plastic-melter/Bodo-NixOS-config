@@ -20,15 +20,10 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 
 ## To-do list (hardware):
 - get NOS keyboard + palmrest
-- eGPU connector installation + bezel design/print
-- half-size mSATA<>SATA drive installation
-- reclaim the other 48GB SODIMM for 96GB RAM
-- test/resolve trackpoint<>panel interference
 - test JIS keyboard scancodes and Esc/A/Z issue
 - photodiode test backlight PWM
-- 6-cell battery capacity tuning
-- 9-cell battery issues
-- resolve boot issues...
+- 6-cell battery capacity tuning, 9-cell issues
+- troubleshoot long boot times
 - test TB/USB-C port funtionalities
 - speaker upgrade
 - reinforce lid
@@ -47,11 +42,11 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 - set up game launcher/wrapper, WINE tweaks/testing for old game library, plutonium setup 
 
 ## X210Ai EC quirks as of June-ish 2026
-- (FW bug) battery TDP setting isn't possible: currently gimped
-- (FW bug) manual VRAM allocation for iGPU isn't possible
-- (FW bug) <100% boot success rate (takes a minute + reboots)
-- (FW bug) no custom fan curves
-- (FW bug) resuming from suspend/hibernate is not reliable
+- (FW bug) battery TDP setting isn't possible: currently gimped to ~25W package power
+- (FW bug) booting takes ~60sec and includes 2 reboots (??)
+- (FW bug) no custom fan curves, fan tacho not exposed; fan behavior inconsistent
+- (FW bug) resuming from suspend/hibernate might not be reliable
+- (one-off bug) machine decided to idle at ~105C for half an hour while I was getting groceries... why??
 
 ## Why NixOS?
 - **Declarative system configuration**: your entire system lives in version-controlled text files you can read, understand, and modify in one place (no more mystery edits buried deep in /etc, forgotten PPAs, config drift, or "I ran some command 3 years ago and now I can't remember what it was")
@@ -77,8 +72,8 @@ The X200 is really well engineered, and laptop design has regressed in most aspe
 | Storage | PCIe5 NVMe + PCIe4 NVMe + SATA-III SSD (total 20TB max) | 1-2 PCIe4/5 NVMes (8-16TB max) |
 | Platform firmware | Fully exposed AMI BIOS: hundreds of parameters | Extremely limited BIOS configurability |
 
-## What makes the X210Ai so special?
-Designing and producing a modern laptop motherboard is not trivial. Some of the main hurdles are:
+## What makes the X210Ai so unique?
+51nb/JXtech's custom Thinkpads (X62/63, X210/2100/210Ai, T50/70/700) are the only projects of their kind, and that's not likely to change: designing and producing a modern laptop motherboard is not trivial. Some of the main hurdles are:
 
 - **Reference design**: Intel provides a Customer Reference Design (CRD, essentially a complete schematic and layout you can adapt) to select partners. I'm not sure how they got this.
 

@@ -649,6 +649,7 @@ in (with pkgs; [
   lm_sensors # tons of hardware sensors
   lshw # list hardware inventory
   msr-tools # read/write to/from the MSR
+  pulseaudio # gives pactl for steam
   pciutils # contains PCI tools like lspci
   udisks2 # for mounting disks from userland
 

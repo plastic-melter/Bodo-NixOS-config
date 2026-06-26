@@ -57,9 +57,16 @@ window#waybar {
 #custom-refreshrate { color: #__MOD_REFRESHRATE__; }
 #custom-power { color: #__MOD_POWER__; }
 #custom-disk { color: #__MOD_DISK__; }
+
+/*eGPU coloring by state*/
+#custom-egpu.absent { color: @subtext0; }
+#custom-egpu.host   { color: @green; }
+#custom-egpu.vm     { color: @blue; }
+#custom-egpu.unbound { color: @yellow; }
+
 /* Shared background/border for all modules */
 #clock, #battery, #network, #pulseaudio, #temperature, #cpu, #memory,
-#disk, #custom-refreshrate, #custom-hwpower, #custom-power, #custom-cooling,
+#disk, #custom-refreshrate, #custom-hwpower, #custom-power, #custom-cooling, #custom-egpu,
 #tray, #custom-worldclock, #backlight, #custom-playerctl, #custom-playerlabel, #custom-nvidia {
     background-color: rgba(__BG_RGB__, 0.9);
     border-radius: 8px;

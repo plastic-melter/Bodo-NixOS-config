@@ -24,6 +24,7 @@
     "cpu",
     "custom/hwpower",
     "custom/cooling",
+    "custom/egpu",
     "memory",
     "disk",
     "custom/power",
@@ -216,9 +217,11 @@
     "signal": 9,
     "interval": 1
   },
-  "custom/hyprpicker": {
-    "format": "󰈋",
-    "on-click": "hyprpicker -a -f hex",
-    "on-click-right": "hyprpicker -a -f rgb"
+  "custom/egpu": {
+    "exec": "/etc/nixos/dotfiles/scripts/egpu-status.sh",
+    "interval": 3,
+    "return-type": "json",
+    "format": "{}",
+    "on-click": ""
   }
 }
