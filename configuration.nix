@@ -73,20 +73,26 @@ boot = {
     "uinput" # B0XX native USB
     "kvm-intel" # enables hardware-accelerated virtualization (VMX)
     "hid_nintendo" # Switch controller pairing
+    "vfio" # core VFIO framework: lets userspace (QEMU) own PCI devices
+    "vfio_iommu_type1" # IOMMU backend for VFIO, enforces memory isolation between VM and host
+    "vfio_pci" # the actual driver that claims PCI devices on behalf of VFIO
   ];
   kernelPackages = pkgs.linuxPackages_xanmod_latest; # gaming
   kernelParams = [
     "quiet" # surpress kernel boot messages: still readable via dmesg/journalctl
-    "acpi.dump_ecdt=1"  # more EC logging
-    "no_console_suspend"  # keep console active during suspend for better logging
-    #"i915.enable_psr=0" # disable panel self refresh (PSR = only refresh panel if frame actually changed)
+    "acpi.dump_ecdt=1" # more EC logging
+    "no_console_suspend" # keep console active during suspend for better logging
+    "intel_iommu=on" # enable Intel's IOMMU hardware, required for device isolation
+    "iommu=pt" # passthrough mode: devices not assigned to VMs use DMA directly (better performance)
   ];
   #resumeDevice = "/dev/disk/by-uuid/2ef9551c-28e6-484b-9afa-5de05f928942";
   kernel.sysctl."net.ipv4.ip_forward" = 1; # IP forwarding
   extraModprobeConfig = ''
     options cfg80211 ieee80211_regdom=US
   ''; 
-  #   - cfg...  = resolve JP/US IR flag mismatch
+  #   cfg...  = resolve JP/US IR flag mismatch
+  # below: X210Ai AMD eGPU binding at boot for VMs only
+  # options vfio-pci ids=1002:73a5,1002:ab28
 };
 
 swapDevices = [{
@@ -158,9 +164,8 @@ hardware = {
   graphics = {
     enable = true;
     enable32Bit = true; # for steam/wine/32-bit GL
-      extraPackages = with pkgs; [ # drivers not auto-installed
+    extraPackages = with pkgs; [ # drivers not auto-installed
       intel-media-driver  # iHD, for Gen 8+
-      intel-vaapi-driver  # i965 fallback
     ];
   };
   cpu.intel.updateMicrocode = true;
@@ -250,11 +255,20 @@ services = {
   };
   joycond.enable = true; # Switch controller
 
+  # AMD eGPU
+  lact.enable = true;
+
+  # Local AI
+  ollama = {
+    enable = true;
+    package = pkgs.ollama-rocm; # AMD eGPU
+  };
+
   # Turbostat logging
   logrotate.settings.turbostat = {
     files = "/var/log/turbostat/turbostat.log";
-    rotate = 10;        # keep 10 logs
-    size = "500M";       # rotate when file hits 50M
+    rotate = 10;
+    size = "500M";
     compress = true;
     delaycompress = true;
     missingok = true;
@@ -379,12 +393,14 @@ services = {
 systemd.services.turbostat = {
   description = "turbostat background sampler";
   wantedBy = [ "multi-user.target" ];
-  script = ''
-    ${pkgs.linuxPackages.turbostat}/bin/turbostat --quiet --interval 1 > /tmp/turbostat.log 2>/dev/null
-  '';
   serviceConfig = {
     Restart = "always";
     User = "root";
+    ExecStart = "${pkgs.writeShellScript "turbostat-start" ''
+      exec ${pkgs.linuxPackages.turbostat}/bin/turbostat \
+        --interval 1 \
+        >> /var/log/turbostat/turbostat-$(date +%Y-%m-%d_%H-%M-%S).log 2>&1
+    ''}";
     LogsDirectory = "turbostat";
   };
 };
@@ -537,14 +553,8 @@ environment.variables = {
 };
 
 environment.sessionVariables = {
-#  LIBVA_DRIVER_NAME = "iHD";
-  MOZ_ENABLE_WAYLAND = "1";
-#  WLR_RENDERER = "vulkan";
-#  WLR_NO_HARDWARE_CURSORS = "1";
-#  __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-#  LIBVA_DRIVER_NAME = "nvidia";
-#  GBM_BACKENDS_PATH = "/run/opengl-driver/lib/gbm";
-#  FCITX_NO_PREEDIT_ON_PASSWORD = "1";
+  MOZ_ENABLE_WAYLAND = "1"; # firefox wants this
+  AQ_DRM_DEVICES = "/dev/dri/by-path/pci-0000:00:02.0-card"; # make Hyprland use iGPU; NOT eGPU!
 };
 
 # ============================================
@@ -594,12 +604,37 @@ users = {
 # SYSTEM PACKAGES
 # ============================================
 
-environment.systemPackages = with pkgs; [
+environment.systemPackages = let
+  egpu-to-vm = pkgs.writeShellScriptBin "gpu-to-vm" ''
+    set -euo pipefail
+    for dev in 0000:04:00.0 0000:04:00.1; do
+      echo vfio-pci > /sys/bus/pci/devices/$dev/driver_override
+      [ -e /sys/bus/pci/devices/$dev/driver ] && \
+        echo "$dev" > /sys/bus/pci/devices/$dev/driver/unbind
+      echo "$dev" > /sys/bus/pci/drivers/vfio-pci/bind
+    done
+    echo "eGPU -> vfio-pci"
+  '';
+  egpu-to-host = pkgs.writeShellScriptBin "gpu-to-host" ''
+    set -euo pipefail
+    bind() {
+      echo "" > /sys/bus/pci/devices/$1/driver_override
+      [ -e /sys/bus/pci/devices/$1/driver ] && \
+        echo "$1" > /sys/bus/pci/devices/$1/driver/unbind
+      echo "$1" > /sys/bus/pci/drivers/$2/bind
+    }
+    bind 0000:04:00.0 amdgpu
+    bind 0000:04:00.1 snd_hda_intel
+    echo "eGPU -> host (amdgpu)"
+  '';
+in (with pkgs; [
 
-  # Machine-specific stuff
+  # VM and eGPU stuff
   freerdp # RDP client on host connects to VM NAT
   intel-gpu-tools # check iGPU resource utilization
+  lact # GUI for AMD GPU tuning
   linuxKernel.packages.linux_xanmod.turbostat # CPU power use stats
+  radeontop # AMD GPU monitor
   virt-manager # manage VMs
 
   # HARDWARE + DRIVERS + EXTERNAL DEVICES
@@ -655,7 +690,7 @@ environment.systemPackages = with pkgs; [
   vim # the best text editor
   wget # network downloader
   woeusb # writes ISO to drives nicer than dd
-  
+
   # LIBRARIES
   libarchive # tools for tar, zip, etc.
   libguestfs-with-appliance # view/modify VM disk images
@@ -676,7 +711,7 @@ environment.systemPackages = with pkgs; [
     loginBackground = false;
     userIcon = true;
   })
-];
+]) ++ [ egpu-to-vm egpu-to-host ];
 
 ################################################
 ########## DO NOT EVER CHANGE THIS #############
