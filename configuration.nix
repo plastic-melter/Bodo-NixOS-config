@@ -84,6 +84,7 @@ boot = {
     "no_console_suspend" # keep console active during suspend for better logging
     "intel_iommu=on" # enable Intel's IOMMU hardware, required for device isolation
     "iommu=pt" # passthrough mode: devices not assigned to VMs use DMA directly (better performance)
+    "amdgpu.ppfeaturemask=0xfffd7fff" # enables some GPU features for waybar
   ];
   #resumeDevice = "/dev/disk/by-uuid/2ef9551c-28e6-484b-9afa-5de05f928942";
   kernel.sysctl."net.ipv4.ip_forward" = 1; # IP forwarding

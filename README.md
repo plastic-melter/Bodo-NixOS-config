@@ -1,6 +1,6 @@
-# P14sG6 (Intel/NVIDIA) NixOS Config
+# X210Ai NixOS Config
 
-Backup and reproducible config for my personal [NixOS](https://nixos.org) system, currently configured for an [X210Ai](https://macdat.net/laptops/jxtech/x210ai.php). I don't really know how to use git.
+Backup and reproducible config for my personal [NixOS](https://nixos.org) system, currently configured for an [X210Ai](https://macdat.net/laptops/jxtech/x210ai.php). I don't really know how to use git, but it's convenient.
 
 ![Desktop Screenshot](./.desktop.png)
 ![X210Ai with eGPU](./.x210ai-egpu.png)
