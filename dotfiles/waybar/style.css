@@ -74,6 +74,10 @@ window#waybar {
     padding: 0px 10px 0px 17px;
     color: #__MOD_PLAYERCTL__;
 }
+#custom-playerlabel.Paused {
+  opacity: 0.5;
+  font-style: italic;
+}
 #custom-launcher {
     color: #__MOD_LAUNCHER__;
     background-color: rgba(__BG_RGB__, 0.9);

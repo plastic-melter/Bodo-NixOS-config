@@ -45,5 +45,6 @@
     gc = "git add -A && git commit -m";
     nxrdp = "xfreerdp /v:192.168.122.166 /u:odinn /dynamic-resolution /sound:sys:pulse";
     flashcards = "~/Desktop/wanikani/1to14/flashcard.sh";
+    power = "doas python3 /etc/nixos/dotfiles/scripts/powerinfo.py";
   };
 }

@@ -13,6 +13,7 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 - [Waybar](https://github.com/Alexays/Waybar), an extensible status bar.
 - [nwg-shell](https://nwg-piotr.github.io/nwg-shell/), some nice Wayland UI stuff.
 - [Wofi](https://hg.sr.ht/~scoopta/wofi), an application launcher.
+- [rmpc](https://rmpc.mierak.dev/), a clean TUI music player w/ images.
 - [Yazi](https://yazi-rs.github.io), an efficient TUI file browser.
 - [EWW](https://elkowar.github.io/eww/), handy widget maker.
 
@@ -21,9 +22,10 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 ## To-do list (hardware):
 - get NOS keyboard + palmrest
 - test JIS keyboard scancodes and Esc/A/Z issue
+- X220 JP keyboard retrofit cleanup
 - photodiode test backlight PWM
-- 6-cell battery capacity tuning, 9-cell issues
-- troubleshoot long boot times
+- re-celled battery quirks
+- troubleshoot long boot time?
 - test TB/USB-C port funtionalities
 - speaker upgrade
 - reinforce lid

@@ -1,0 +1,49 @@
+#![enable(implicit_some)]
+(
+    default_album_art_path: None,
+    show_song_table_header: true,
+    draw_borders: true,
+    format_tag_separator: " | ",
+    browser_column_widths: [20, 38, 42],
+    background_color: "#303446",
+    text_color: "#c6d0f5",
+    header_background_color: "#292c3c",
+    modal_background_color: "#232634",
+    tab_bar: (
+        enabled: true,
+        active_style: (fg: "#303446", bg: "#8caaee", modifiers: "Bold"),
+        inactive_style: (fg: "#c6d0f5"),
+    ),
+    highlighted_item_style: (fg: "#a6d189", modifiers: "Bold"),
+    current_item_style: (fg: "#303446", bg: "#ca9ee6", modifiers: "Bold"),
+    borders_style: (fg: "#737994"),
+    highlight_border_style: (fg: "#8caaee"),
+    symbols: (song: "🎵", dir: "📁", playlist: "📃", marker: "M"),
+    progress_bar: (
+        symbols: ["█", "", "█"],
+        track_style: (fg: "#414559"),
+        elapsed_style: (fg: "#8caaee"),
+        thumb_style: (fg: "#8caaee"),
+    ),
+    scrollbar: (
+        symbols: ["│", "█", "▲", "▼"],
+        track_style: (fg: "#414559"),
+        ending_style: (fg: "#8caaee"),
+        thumb_style: (fg: "#8caaee"),
+    ),
+    song_table_format: [
+        (prop: (kind: Property(Artist), style: (fg: "#e5c890")), width: "20%"),
+        (prop: (kind: Property(Title), style: (fg: "#c6d0f5")), width: "35%"),
+        (prop: (kind: Property(Album), style: (fg: "#a6d189")), width: "30%"),
+        (prop: (kind: Property(Duration)), width: "15%"),
+    ],
+    layout: Split(direction: Horizontal, panes: [
+        (size: "100%", pane: Pane(TabContent)),
+    ]),
+    header: (
+        rows: [
+            (left: [(kind: Text("["), style: None), (kind: Property(Status(State)), style: (fg: "#a6d189")), (kind: Text("]"), style: None)], center: [(kind: Property(Song(Title)), style: (fg: "#8caaee", modifiers: "Bold"))], right: []),
+            (left: [(kind: Property(Widget(Volume)), style: (fg: "#e5c890"))], center: [], right: [(kind: Property(Status(Elapsed))), (kind: Text(" / ")), (kind: Property(Status(Duration)))]),
+        ],
+    ),
+)

@@ -55,6 +55,8 @@ home.file = {
   ".config/nwg-drawer/settings".source = ./dotfiles/nwg-drawer/settings;
   # nwg-panel
   ".config/nwg-panel/menu-start.css".text = themed ./dotfiles/nwg-panel/menu-start.css;
+  # rmpc
+  ".config/rmpc".source = ./dotfiles/rmpc;
   # waybar
   ".config/waybar/style.css".text = themed ./dotfiles/waybar/style.css;
   ".config/waybar/config".source = ./dotfiles/waybar/config;
@@ -233,6 +235,18 @@ services = {
   playerctld.enable = true;
   syncthing.enable = true;
   dunst.enable = true;
+  mpd = {
+    enable = true;
+    musicDirectory = "/home/joe/Backups/Music";
+    network.startWhenNeeded = true;
+    extraConfig = ''
+      audio_output {
+        type "pipewire"
+        name "PipeWire"
+      }
+    '';
+  };
+  mpd-mpris.enable = true;
 };
 
 # ============================================
@@ -252,14 +266,6 @@ systemd.user = {
       Unit.Description = "udiskie automounter";
       Service.ExecStart = "${pkgs.udiskie}/bin/udiskie --smart-tray";
       Install.WantedBy = [ "default.target" ];
-    };
-
-    hourly-chime = {
-      Unit.Description = "Hourly time notification";
-      Service = {
-        Type = "oneshot";
-        ExecStart = "/etc/nixos/dotfiles/scripts/hourly-chime.sh";
-      };
     };
 
     battery-notify = {
@@ -283,15 +289,6 @@ systemd.user = {
   };
 
   timers = {
-    
-    hourly-chime = {
-      Unit.Description = "Hourly chime timer";
-      Timer = {
-        OnCalendar = "hourly";
-        Persistent = true;
-      };
-      Install.WantedBy = [ "timers.target" ];
-    };
 
     battery-notify = {
       Unit.Description = "Battery low notification timer";
@@ -430,10 +427,10 @@ xdg.mimeApps = {
     "text/markdown" = [ "nvim-wezterm.desktop" ];
     "application/json" = [ "nvim-wezterm.desktop" ];
     "application/x-shellscript" = [ "nvim-wezterm.desktop" ];
-    "x-scheme-handler/http"     = "firefox.desktop";
-    "x-scheme-handler/https"    = "firefox.desktop";
-    "x-scheme-handler/about"    = "firefox.desktop";
-    "x-scheme-handler/unknown"  = "firefox.desktop";
+    "x-scheme-handler/http"     = "firefox-personal.desktop";
+    "x-scheme-handler/https"    = "firefox-personal.desktop";
+    "x-scheme-handler/about"    = "firefox-personal.desktop";
+    "x-scheme-handler/unknown"  = "firefox-personal.desktop";
   };
 };
 
@@ -457,6 +454,7 @@ home.packages = with pkgs; [
   kdePackages.kdenlive # video editing suite
   libreoffice-fresh # office app suite
   moonlight-qt # desktop steaming / remote access
+  mpc # CLI to control MPD
   mpv # simple video player
   obsidian # cross-platform notes program
   obs-studio # desktop recording
@@ -466,6 +464,7 @@ home.packages = with pkgs; [
   prusa-slicer # 3DP slicer
   qbittorrent # peer-to-peer file sharing
   qalculate-gtk # GUI calculator
+  rmpc # TUI music player with images
   signal-desktop # secure messenger
   spotify # music streaming
   tagainijisho # japanese dictionary
@@ -567,6 +566,7 @@ home.packages = with pkgs; [
   python312Packages.huggingface-hub # interface w/ Hugging Face Hub (open-source ML)
   llama-cpp # LLM inference
   llama-up # LLM convenience helper
+  
 
 ];
 

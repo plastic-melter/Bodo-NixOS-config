@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+"""
+powerinfo-eww — run powerinfo.py and emit eww yuck markup so the flyout's
+right-hand panel renders it with styled section headers over monospace bodies.
+
+Drop in: /etc/nixos/dotfiles/scripts/powerinfo-eww   (chmod +x)
+
+RAPL energy + MSR C-states need root. This tries `doas -n` (passwordless) first
+so a poll never blocks; without a NOPASSWD rule it silently falls back to the
+unprivileged run (those two sections just show their own warn lines).
+
+To get the root sections in the panel, add a doas rule, e.g.:
+    permit nopass <user> cmd /run/current-system/sw/bin/python3 \
+        args /etc/nixos/dotfiles/scripts/powerinfo.py --no-color --interval 0.2
+(and `doas modprobe msr` once per boot for package C-state residency)
+"""
+
+import os, re, sys, shutil, subprocess
+
+POWERINFO = "/etc/nixos/dotfiles/scripts/powerinfo.py"
+ARGS = ["--no-color", "--interval", "0.2"]
+ANSI = re.compile(r"\x1b\[[0-9;]*m")
+HEAD = re.compile(r"^\u25b8 (.*?)\s*\u2500+\s*$")  # "▸ Title ────────"
+
+
+def run(cmd):
+    try:
+        p = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
+        return p.stdout or ""
+    except Exception:
+        return ""
+
+
+def get_output():
+    if os.geteuid() != 0 and shutil.which("doas"):
+        out = run(["doas", "-n", sys.executable, POWERINFO, *ARGS])
+        if out.strip():
+            return out
+    return run([sys.executable, POWERINFO, *ARGS])
+
+
+def esc(s):
+    # yuck double-quoted string: escape backslash and quote; newlines pass through
+    return s.replace("\\", "\\\\").replace('"', '\\"')
+
+
+def main():
+    raw = ANSI.sub("", get_output())
+    lines = raw.splitlines()
+
+    preamble, sections = [], []
+    title, body = None, []
+
+    def flush():
+        if title is not None:
+            sections.append((title, "\n".join(body).rstrip("\n")))
+
+    for ln in lines:
+        m = HEAD.match(ln)
+        if m:
+            flush()
+            title, body = m.group(1).strip(), []
+        elif title is None:
+            if ln.strip():
+                preamble.append(ln)
+        else:
+            body.append(ln)
+    flush()
+
+    if not sections and not preamble:
+        print('(label :class "pi-meta" :xalign 0 :text "powerinfo produced no output")')
+        return
+
+    out = ['(box :class "pi" :orientation "v" :space-evenly false :spacing 8']
+    if preamble:
+        out.append(f'  (label :class "pi-meta" :xalign 0 :wrap true '
+                   f':text "{esc(chr(10).join(preamble))}")')
+    for t, b in sections:
+        out.append('  (box :class "pi-section" :orientation "v" '
+                   ':space-evenly false :spacing 2')
+        out.append(f'    (label :class "pi-head" :xalign 0 :text "{esc(t)}")')
+        out.append(f'    (label :class "pi-body" :xalign 0 :text "{esc(b)}"))')
+    out.append(")")
+    print("\n".join(out))
+
+
+if __name__ == "__main__":
+    main()

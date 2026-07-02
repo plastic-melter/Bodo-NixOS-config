@@ -11,19 +11,24 @@
   "cat /sys/class/power_supply/BAT0/capacity")
 (defpoll battery-status :interval "5s"
   "cat /sys/class/power_supply/BAT0/status")
+;; thresholds / health / cycles / draw — pulled from sysfs, no doas needed
+(defpoll battery-extra :interval "30s"
+  "/etc/nixos/dotfiles/eww/scripts/battery-extra")
 
-(defpoll volume :interval "1s"
+(defpoll volume :interval "1s" :initial "50"
   "wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print int($2*100)}'")
 (defpoll volume-muted :interval "1s"
   "wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -q MUTED && echo true || echo false")
 
-(defpoll brightness :interval "2s"
-  "brightnessctl -m | cut -d',' -f4 | tr -d '%'")
+(defpoll brightness :interval "2s" :initial "50"
+  "brightnessctl -m | cut -d',' -f4 | tr -d '%' || echo 50")
 
 (defpoll wifi-name :interval "5s"
   "iwgetid -r 2>/dev/null || echo 'disconnected'")
 (defpoll wifi-signal :interval "5s"
   "awk 'NR==3 {print int($3 * 10 / 7)}' /proc/net/wireless 2>/dev/null || echo 0")
+(defpoll local-ip :interval "10s"
+  "ip route get 1.1.1.1 2>/dev/null | awk '{print $7; exit}' || echo 'n/a'")
 
 (defpoll bt-status :interval "5s"
   "bluetoothctl show | grep -q 'Powered: yes' && echo on || echo off")
@@ -47,18 +52,54 @@
 (defpoll per-app-volume :interval "2s"
   "/etc/nixos/dotfiles/eww/scripts/per-app-volume")
 
+(defpoll damage-blink :interval "3s"
+  "hyprctl getoption debug:damage_blink 2>/dev/null | awk '/int:/ {print $2}' || echo 0")
+(defpoll waybar-running :interval "3s"
+  "pgrep -x waybar >/dev/null && echo on || echo off")
+
+;; runs powerinfo.py and emits ready-to-render yuck (styled sections)
+(defpoll powerinfo :interval "5s"
+                   :initial "(label :class \"pi-meta\" :xalign 0 :text \"loading power overview…\")"
+  "/etc/nixos/dotfiles/scripts/powerinfo-eww")
+
+;; ─── layout helpers ──────────────────────────────────────────────────────
+
+;; a titled card: icon + heading on top, then whatever children you pass
+(defwidget group [title icon]
+  (box :class "group" :orientation "v" :space-evenly false :spacing 6
+    (box :class "group-head" :orientation "h" :space-evenly false :spacing 8
+      (label :class "group-icon" :text icon)
+      (label :class "group-title" :halign "start" :hexpand true :text title))
+    (box :orientation "v" :space-evenly false :spacing 4
+      (children))))
+
 ;; ─── individual widgets ──────────────────────────────────────────────────
 
-(defwidget section [title]
-  (label :class "section-title" :halign "start" :text title))
+(defwidget power-buttons []
+  (box :class "power-row" :orientation "h" :space-evenly false :spacing 6 :halign "end"
+    (button :class "power-btn" :onclick "/etc/nixos/dotfiles/scripts/lock.sh" :tooltip "lock"     "")
+    (button :class "power-btn" :onclick "systemctl suspend"                   :tooltip "suspend"  "")
+    (button :class "power-btn" :onclick "systemctl reboot"                    :tooltip "reboot"   "")
+    (button :class "power-btn power-btn-danger" :onclick "systemctl poweroff" :tooltip "shutdown" "")))
+
+(defwidget header []
+  (box :class "header" :orientation "h" :space-evenly false :spacing 10
+    (box :orientation "v" :space-evenly false :hexpand true :valign "center"
+      (label :class "header-time" :halign "start" :text time)
+      (label :class "header-date" :halign "start" :text date))
+    (power-buttons)))
 
 (defwidget network []
-  (box :class "row" :orientation "h" :space-evenly false :spacing 8
-    (label :class "icon" :text "")
-    (box :orientation "v" :space-evenly false :hexpand true
-      (label :class "row-label" :halign "start" :text wifi-name)
-      (label :class "row-sub" :halign "start"
-             :text "signal: ${wifi-signal}/10"))))
+  (box :orientation "v" :space-evenly false :spacing 4
+    (box :class "row" :orientation "h" :space-evenly false :spacing 8
+      (label :class "icon" :text "")
+      (box :orientation "v" :space-evenly false :hexpand true
+        (label :class "row-label" :halign "start" :text wifi-name)
+        (label :class "row-sub" :halign "start" :text "signal: ${wifi-signal}/10")))
+    (box :class "row" :orientation "h" :space-evenly false :spacing 8
+      (label :class "icon" :text "")
+      (label :class "row-label" :halign "start" :hexpand true :text local-ip)
+      (button :class "icon-btn" :onclick "wl-copy '${local-ip}'" :tooltip "copy IP" ""))))
 
 (defwidget bluetooth []
   (box :class "row" :orientation "h" :space-evenly false :spacing 8
@@ -73,7 +114,6 @@
 
 (defwidget calendar-block []
   (box :class "row" :orientation "v" :space-evenly false :spacing 4
-    (label :class "row-label" :halign "start" :text "${date}")
     (label :class "calendar" :halign "start" :text calendar)))
 
 (defwidget volume-slider []
@@ -145,17 +185,38 @@
       (label :class "row-label" :halign "start"
              :text "${battery}% — ${battery-status}"))))
 
+(defwidget battery-extra-row []
+  (box :class "row" :orientation "h" :space-evenly false :spacing 8
+    (label :class "icon" :text "")
+    (label :class "row-sub" :halign "start" :hexpand true :text battery-extra)
+    (button :class "icon-btn"
+            :onclick "foot -e bash -c 'doas tlp-stat -b; read -n1'"
+            :tooltip "full tlp-stat -b" "")))
+
 (defwidget power-mode []
   (box :class "row todo" :orientation "h" :space-evenly false :spacing 8
     (label :class "icon" :text "")
     (label :class "row-label" :halign "start" :hexpand true :text "power mode (TODO)")))
 
-(defwidget power-menu []
-  (box :orientation "h" :space-evenly true :spacing 8 :class "row"
-    (button :class "power-btn" :onclick "/etc/nixos/dotfiles/scripts/lock.sh" :tooltip "lock"     "")
-    (button :class "power-btn" :onclick "systemctl suspend"                   :tooltip "suspend"  "")
-    (button :class "power-btn" :onclick "systemctl reboot"                    :tooltip "reboot"   "")
-    (button :class "power-btn" :onclick "systemctl poweroff"                  :tooltip "shutdown" "")))
+;; ─── toggles ─────────────────────────────────────────────────────────────
+
+(defwidget damage-blink-toggle []
+  (box :class "row" :orientation "h" :space-evenly false :spacing 8
+    (label :class "icon" :text "")
+    (label :class "row-label" :halign "start" :hexpand true :text "damage_blink")
+    (button :class "toggle ${damage-blink == '1' ? 'toggle-on' : 'toggle-off'}"
+            :onclick "hyprctl keyword debug:damage_blink ${damage-blink == '1' ? '0' : '1'}"
+            :tooltip "toggle hypr damage tracking visualizer"
+            {damage-blink == "1" ? "on" : "off"})))
+
+(defwidget waybar-toggle []
+  (box :class "row" :orientation "h" :space-evenly false :spacing 8
+    (label :class "icon" :text "")
+    (label :class "row-label" :halign "start" :hexpand true :text "waybar")
+    (button :class "toggle ${waybar-running == 'on' ? 'toggle-on' : 'toggle-off'}"
+            :onclick "bash -c '${waybar-running == "on" ? "pkill -x waybar" : "setsid waybar >/dev/null 2>&1 &"}'"
+            :tooltip "spawn / kill waybar"
+            {waybar-running == "on" ? "on" : "off"})))
 
 (defwidget app-launcher []
   (box :class "row" :orientation "h" :space-evenly true :spacing 8
@@ -169,51 +230,177 @@
             :onclick "bash -c 'wofi --show window &'"
             "󰖯 windows")))
 
+;; ─── nixos rebuild + power overview (right column) ───────────────────────
+
+(defwidget rebuild-buttons []
+  (box :orientation "v" :space-evenly false :spacing 6
+    (box :orientation "h" :space-evenly true :spacing 6
+      (button :class "rb-btn"
+              :tooltip "nixos-rebuild boot — stage for next boot"
+              :onclick "wezterm start --class floating-wezterm -- zsh -ic 'doas nixos-rebuild boot; echo; echo [done — press any key]; read -n1 -s'"
+              " boot")
+      (button :class "rb-btn"
+              :tooltip "nixos-rebuild switch — apply now"
+              :onclick "wezterm start --class floating-wezterm -- zsh -ic 'doas nixos-rebuild switch; echo; echo [done — press any key]; read -n1 -s'"
+              " switch"))
+    (button :class "rb-btn rb-btn-accent"
+            :tooltip "megayeet"
+            :onclick "wezterm start --class floating-wezterm -- zsh -ic 'megayeet; echo; echo [done — press any key]; read -n1 -s'"
+            "󱐋 megayeet")))
+
+(defwidget power-overview []
+  (box :class "group" :orientation "v" :vexpand true :space-evenly false :spacing 6
+    (box :class "group-head" :orientation "h" :space-evenly false :spacing 8
+      (label :class "group-icon" :text "")
+      (label :class "group-title" :halign "start" :hexpand true :text "power overview"))
+    (scroll :vscroll true :hscroll true :vexpand true
+      (literal :content powerinfo))))
+
 ;; ─── top-level window ────────────────────────────────────────────────────
 
 (defwindow flyout
   :monitor 0
   :geometry (geometry :x "0px"
-                      :y "60px"
-                      :width "20%"
-                      :height "30%"
-                      :anchor "top left")
+                      :y "0px"
+                      :width "1040px"
+                      :height "88%"
+                      :anchor "center")
   :stacking "overlay"
   :exclusive false
   :focusable "ondemand"
-  (scroll :hscroll false :vscroll true
-    (box :class "flyout" :orientation "v" :space-evenly false :spacing 6
-      (section :title "network")
-      (network)
+  (box :class "flyout" :orientation "h" :space-evenly false :spacing 0
+    ;; ── left: control panel ──────────────────────────────────────
+    (box :class "col-left" :orientation "v" :space-evenly false :spacing 8
+      (header)
 
-      (section :title "bluetooth")
-      (bluetooth)
+      (group :title "network" :icon ""
+        (network))
 
-      (section :title "date")
-      (calendar-block)
+      (group :title "bluetooth" :icon ""
+        (bluetooth))
 
-      (section :title "volume")
-      (volume-slider)
-      (per-app-volume-widget)
+      (group :title "volume" :icon ""
+        (volume-slider)
+        (per-app-volume-widget))
 
-      (section :title "brightness")
-      (brightness-slider)
+      (group :title "brightness" :icon ""
+        (brightness-slider))
 
-      (section :title "display")
-      (display-switcher)
+      (group :title "display" :icon ""
+        (display-switcher))
 
-      (section :title "media")
-      (media-block)
+      (group :title "media" :icon ""
+        (media-block))
 
-      (section :title "system")
-      (system-info)
+      (group :title "system" :icon ""
+        (system-info))
 
-      (section :title "battery")
-      (battery-widget)
-      (power-mode)
+      (group :title "battery" :icon ""
+        (battery-widget)
+        (battery-extra-row)
+        (power-mode))
 
-      (section :title "power")
-      (power-menu)
+      (group :title "toggles" :icon ""
+        (waybar-toggle)
+        (damage-blink-toggle))
 
-      (section :title "launcher")
-      (app-launcher))))
+      (group :title "calendar" :icon ""
+        (calendar-block))
+
+      (group :title "launcher" :icon ""
+        (app-launcher)))
+
+    ;; ── divider ──────────────────────────────────────────────────
+    (box :class "vsep")
+
+    ;; ── right: system overview ───────────────────────────────────
+    (box :class "col-right" :orientation "v" :space-evenly false :spacing 10
+      (group :title "rebuild" :icon "󱄅"
+        (rebuild-buttons))
+      (power-overview))))
+
+;; ─── keybind cheatsheet (Super-H) ────────────────────────────────────────
+
+(defwidget kb [keys desc]
+  (box :class "kb-row" :orientation "h" :space-evenly false :spacing 10
+    (label :class "kb-keys" :text keys)
+    (label :class "kb-desc" :halign "start" :hexpand true :text desc)))
+
+(defwindow help
+  :monitor 0
+  :geometry (geometry :x "0px"
+                      :y "0px"
+                      :width "920px"
+                      :height "78%"
+                      :anchor "center")
+  :stacking "overlay"
+  :exclusive false
+  :focusable "ondemand"
+  (box :class "flyout help" :orientation "v" :space-evenly false :spacing 10
+    (box :class "help-head" :orientation "h" :space-evenly false :spacing 10
+      (label :class "help-title" :halign "start" :hexpand true :text "keybinds")
+      (label :class "help-sub" :halign "end" :text "mod = super   ·   super+h to close"))
+
+    (box :orientation "h" :space-evenly true :spacing 10
+      ;; ── left column ──────────────────────────────────────────────
+      (box :orientation "v" :hexpand true :space-evenly false :spacing 10
+
+        (group :title "launch" :icon ""
+          (kb :keys "mod ⏎"        :desc "terminal (wezterm)")
+          (kb :keys "mod ⇧ ⏎"      :desc "floating terminal")
+          (kb :keys "mod Z"        :desc "app launcher (wofi)")
+          (kb :keys "mod R"        :desc "drawer (nwg)")
+          (kb :keys "mod ⇧ Z"      :desc "drawer overlay")
+          (kb :keys "mod E"        :desc "files (thunar)")
+          (kb :keys "mod V"        :desc "clipboard history")
+          (kb :keys "mod T"        :desc "cycle theme")
+          (kb :keys "mod ⇧ C"      :desc "colour picker")
+          (kb :keys "mod Q"        :desc "control panel")
+          (kb :keys "mod H"        :desc "this help"))
+
+        (group :title "window" :icon ""
+          (kb :keys "mod ⇧ Q"      :desc "close window")
+          (kb :keys "mod F"        :desc "fullscreen")
+          (kb :keys "mod ⇧ Space"  :desc "toggle floating")
+          (kb :keys "mod Space"    :desc "pseudo-tile")
+          (kb :keys "mod C"        :desc "centre window")
+          (kb :keys "mod + LMB"    :desc "drag to move")
+          (kb :keys "mod + RMB"    :desc "drag to resize"))
+
+        (group :title "workspaces" :icon ""
+          (kb :keys "mod 1–5"      :desc "go to workspace")
+          (kb :keys "mod ⇧ 1–5"    :desc "send window there")
+          (kb :keys "mod A / S"    :desc "prev / next workspace")
+          (kb :keys "mod Alt ← →"  :desc "prev / next workspace")
+          (kb :keys "mod scroll"   :desc "cycle workspaces")
+          (kb :keys "mod PgUp/Dn"  :desc "prev / next (hyprnome)")
+          (kb :keys "mod ⇧ PgUp/Dn" :desc "move window + follow")))
+
+      ;; ── right column ─────────────────────────────────────────────
+      (box :orientation "v" :hexpand true :space-evenly false :spacing 10
+
+        (group :title "focus & move" :icon "󰋱"
+          (kb :keys "mod ← ↑ ↓ →"  :desc "move focus")
+          (kb :keys "mod h j k l"  :desc "move focus (vim)")
+          (kb :keys "mod ⇧ arrows" :desc "move / swap window"))
+
+        (group :title "resize" :icon ""
+          (kb :keys "mod ⌃ arrows" :desc "resize active")
+          (kb :keys "mod ⌃ h j k l" :desc "resize active (vim)"))
+
+        (group :title "screenshot" :icon ""
+          (kb :keys "Print"        :desc "whole output")
+          (kb :keys "mod Print"    :desc "region")
+          (kb :keys "mod ⇧ Print"  :desc "active window"))
+
+        (group :title "audio / display" :icon ""
+          (kb :keys "Vol ± / Mute" :desc "output volume")
+          (kb :keys "Mic Mute"     :desc "toggle mic")
+          (kb :keys "Bright ±"     :desc "screen brightness")
+          (kb :keys "mod X"        :desc "toggle waybar")
+          (kb :keys "mod Alt E"    :desc "external monitor"))
+
+        (group :title "system" :icon ""
+          (kb :keys "mod ⇧ L"      :desc "lock screen")
+          (kb :keys "mod ⇧ E"      :desc "logout (wlogout)")
+          (kb :keys "Cancel"       :desc "logout"))))))

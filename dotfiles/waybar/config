@@ -98,7 +98,7 @@
     "tooltip": false
   },
   "custom/playerlabel": {
-    "format": "<span>󰝚  {}</span>",
+    "format": "<span>{icon} {text}</span>",
     "return-type": "json",
     "max-length": 32,
     "exec": "playerctl -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{playerName}} : {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
@@ -106,8 +106,8 @@
     "on-click": "playerctl previous",
     "on-click-right": "playerctl next",
     "format-icons": {
-      "Playing": "<span foreground ='#6791eb'>󰐌 </span>",
-      "Paused": "<span foreground ='#cdd6f4'>󰏥 </span>"
+      "Playing": "<span foreground = '#6791eb'> </span>",
+      "Paused": "<span foreground = '#cdd6f4'> </span>"
     },
     "tooltip": false
   },
@@ -129,7 +129,7 @@
     "format-plugged": "󰂄 {capacity}%",
     "format-alt": "󱧦 {time}",
     "format-icons": ["󰁺 ", "󰁼 ", "󰁾 ", "󰂀 ", "󰁹 "],
-    "interval": 1
+    "interval": 30
   },
   "memory": {
     "format": "󰍛  {percentage}%",
@@ -141,7 +141,7 @@
   "cpu": {
     "format": "󰓅  {usage}%",
     "format-alt": "󰓅  {avg_frequency} GHz",
-    "interval": 5
+    "interval": 3
   },
   "disk": {
     "interval": 5,
@@ -157,17 +157,18 @@
   "custom/nvidia": {
     "format": "  {}",
     "exec": "/etc/nixos/dotfiles/scripts/nvidia.sh",
-    "interval": 1
+    "interval": 10000
   },
   "custom/diskuse": {
     "format": "󰋊  {}",
     "exec": "/etc/nixos/dotfiles/scripts/diskuse.sh",
-    "interval": 1
+    "interval": 10
   },
   "custom/refreshrate": {
     "format": "󰍹  {}Hz",
     "exec": "hyprctl monitors | grep '@' | head -n 1 | cut -d '@' -f 2 | cut -d '.' -f 1",
-    "interval": 1,
+    "interval": "once",
+    "signal": 10,
     "on-click": "/etc/nixos/dotfiles/scripts/x210ai-165hz-toggle.sh"
   },
   "network": {
@@ -197,7 +198,8 @@
     "format": "󰕾  {volume}%",
     "format-muted": "󰝟",
     "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
-    "on-right-click": "pavucontrol",
+    "on-click-middle": "/etc/nixos/dotfiles/scripts/audio-toggle.sh",
+    "on-click-right": "pavucontrol",
     "scroll-step": 5
   },
   "custom/launcher": {
@@ -215,7 +217,7 @@
     "exec": "/etc/nixos/dotfiles/scripts/cooling.sh",
     "on-click": "/etc/nixos/dotfiles/scripts/cooling.sh toggle & pkill -RTMIN+9 waybar",
     "signal": 9,
-    "interval": 1
+    "interval": 3
   },
   "custom/egpu": {
     "exec": "/etc/nixos/dotfiles/scripts/egpu-status.sh",

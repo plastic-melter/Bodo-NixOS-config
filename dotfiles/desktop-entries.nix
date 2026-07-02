@@ -6,10 +6,11 @@
   
   firefox-personal = {
     name = "Firefox (Personal)";
-    exec = "firefox --no-remote -P Personal";
+    exec = "firefox --no-remote -P Personal %U";
     terminal = false;
     icon = "firefox";
     categories = [ "Network" "WebBrowser" ];
+    mimeType = [ "text/html" "x-scheme-handler/http" "x-scheme-handler/https" ];
   };
   
   firefox-work = {

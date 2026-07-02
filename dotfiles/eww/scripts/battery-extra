@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Emits a one-line battery summary similar to the key fields of `tlp-stat -b`,
+# read straight from sysfs so it needs no root / doas.
+# Drop in: /etc/nixos/dotfiles/eww/scripts/battery-extra  (chmod +x)
+
+B=/sys/class/power_supply/BAT0
+
+read -r s 2>/dev/null < "$B/charge_control_start_threshold" || s="?"
+read -r e 2>/dev/null < "$B/charge_control_end_threshold"   || e="?"
+read -r cyc 2>/dev/null < "$B/cycle_count"                  || cyc="?"
+
+# health = full / design capacity
+if [[ -r $B/energy_full && -r $B/energy_full_design ]]; then
+    ef=$(<"$B/energy_full"); ed=$(<"$B/energy_full_design")
+    health=$(( ef * 100 / ed ))
+elif [[ -r $B/charge_full && -r $B/charge_full_design ]]; then
+    cf=$(<"$B/charge_full"); cd=$(<"$B/charge_full_design")
+    health=$(( cf * 100 / cd ))
+else
+    health="?"
+fi
+
+# instantaneous power draw in watts
+if [[ -r $B/power_now ]]; then
+    pw=$(<"$B/power_now")
+    watt=$(awk "BEGIN{printf \"%.1f\", $pw/1000000}")
+elif [[ -r $B/current_now && -r $B/voltage_now ]]; then
+    i=$(<"$B/current_now"); v=$(<"$B/voltage_now")
+    watt=$(awk "BEGIN{printf \"%.1f\", $i*$v/1000000000000}")
+else
+    watt="?"
+fi
+
+echo "health ${health}%  ·  charge ${s}–${e}%  ·  ${cyc} cyc  ·  ${watt}W"

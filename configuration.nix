@@ -52,7 +52,7 @@ boot = {
     timeout = 1;
     systemd-boot = {
       enable = true;
-      configurationLimit = 10;
+      configurationLimit = 20;
       editor = false; # prevent root access by passing kernel param int=/bin/sh
       extraEntries = {
         "reboot.conf" = ''
@@ -188,8 +188,6 @@ hardware = {
   };
 };
 
-powerManagement.powertop.enable = false; # powertop sometimes randomly enforces weird low power limits on AC
-
 # ============================================
 # SECURITY
 # ============================================
@@ -274,7 +272,7 @@ services = {
     delaycompress = true;
     missingok = true;
     notifempty = true;
-    postrotate = "systemctl restart turbostat";
+    copytruncate = true;   # turbostat holds the fd open — truncate in place instead of rename+restart
   };
 
   # Audio
@@ -397,12 +395,13 @@ systemd.services.turbostat = {
   serviceConfig = {
     Restart = "always";
     User = "root";
+    LogsDirectory = "turbostat";                  # makes /var/log/turbostat
     ExecStart = "${pkgs.writeShellScript "turbostat-start" ''
-      exec ${pkgs.linuxPackages.turbostat}/bin/turbostat \
-        --interval 1 \
-        >> /var/log/turbostat/turbostat-$(date +%Y-%m-%d_%H-%M-%S).log 2>&1
+      exec ${pkgs.coreutils}/bin/stdbuf -oL \
+        ${pkgs.linuxPackages.turbostat}/bin/turbostat \
+          --quiet --interval 1 \
+          >> /var/log/turbostat/turbostat.log 2>&1
     ''}";
-    LogsDirectory = "turbostat";
   };
 };
 
@@ -499,6 +498,7 @@ programs = {
   gamescope.enable = true;
   xwayland.enable = true;
   ydotool.enable = true;
+  nix-ld.enable = true; # run things that expect FHS paths
   steam = {
     enable = true;
     extraCompatPackages = [ pkgs.proton-ge-bin ];
@@ -555,7 +555,7 @@ environment.variables = {
 
 environment.sessionVariables = {
   MOZ_ENABLE_WAYLAND = "1"; # firefox wants this
-  AQ_DRM_DEVICES = "/dev/dri/by-path/pci-0000:00:02.0-card"; # make Hyprland use iGPU; NOT eGPU!
+#  AQ_DRM_DEVICES = "/dev/dri/by-path/pci-0000:00:02.0-card"; # make Hyprland use iGPU; NOT eGPU!
 };
 
 # ============================================
@@ -677,6 +677,7 @@ in (with pkgs; [
   nixos-option # query NixOS module options
   ntfs3g # allows to read/write NTFS
   p7zip # 7z/rar/zip compression tool
+  powertop # diagnose and optimize power consumption
   ranger # TUI file browser
   rpiboot # tool to boot Pis over USB
   s-tui # terminal TUI for CPU temp/power/freq

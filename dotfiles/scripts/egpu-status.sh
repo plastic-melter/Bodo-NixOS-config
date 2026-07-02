@@ -20,4 +20,4 @@ BUSY=$(cat /sys/bus/pci/devices/$ADDR/drm/$CARD/device/gpu_busy_percent 2>/dev/n
 TEMP=$(cat /sys/bus/pci/devices/$ADDR/hwmon/hwmon*/temp1_input 2>/dev/null | head -1)
 TEMP=$(( ${TEMP:-0} / 1000 ))
 
-echo "{\"text\": \"󰹑 ${BUSY}% ${TEMP}°C\", \"class\": \"host\"}"
+echo "{\"text\": \"󰹑  ${BUSY}% ${TEMP}°C\", \"class\": \"host\"}"

@@ -7,3 +7,4 @@ else
     hyprctl keyword monitor eDP-1,2560x1600@165,0x0,1
     notify-send "Refresh Rate" "Switched to 165Hz"
 fi
+pkill -RTMIN+10 waybar
