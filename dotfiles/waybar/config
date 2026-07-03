@@ -9,12 +9,12 @@
   "modules-left": [
     "custom/launcher",
     "tray",
+    "network",
     "clock",
     "custom/worldclock",
     "pulseaudio",
     "backlight",
     "custom/refreshrate",
-    "network",
     "custom/playerlabel",
   ],
   "modules-center": [
@@ -106,7 +106,7 @@
     "on-click": "playerctl previous",
     "on-click-right": "playerctl next",
     "format-icons": {
-      "Playing": "<span foreground = '#6791eb'> </span>",
+      "Playing": "<span foreground = '#6791eb'> </span>",
       "Paused": "<span foreground = '#cdd6f4'> </span>"
     },
     "tooltip": false
@@ -172,12 +172,12 @@
     "on-click": "/etc/nixos/dotfiles/scripts/x210ai-165hz-toggle.sh"
   },
   "network": {
-    "format-wifi": "󰤨  {essid}",
+    "format-wifi": "󰤨",
     "format-ethernet": "󰈀  {ifname}",
     "format-linked": "󰈀  {ifname} (No IP)",
     "format-disconnected": "󰤭",
     "format-alt": "󰜷 {bandwidthUpBytes}  󰜮 {bandwidthDownBytes}",
-    "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
+    "tooltip-format": "{essid} {ifname}: {ipaddr}/{cidr}"
   },
   "tray": {
     "icon-size": 28,

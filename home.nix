@@ -9,9 +9,12 @@ let
 
   # LLM convenience launcher
   llama-up = pkgs.writeShellScriptBin "llama-up" ''
-    exec ${pkgs.llama-cpp}/bin/llama-server \
-      -m "$HOME/.models/$(ls ~/.models | ${pkgs.fzf}/bin/fzf)" \
-      -c 16384 -t 14 --mlock \
+    export HSA_OVERRIDE_GFX_VERSION=10.3.0
+    NGL=0
+    ${pkgs.pciutils}/bin/lspci | grep -qi "amd.*navi\|1002:73a5" && NGL=99
+    exec ${(pkgs.llama-cpp.override { rocmSupport = true; })}/bin/llama-server \
+      -m "$HOME/Desktop/AI/models/$(ls ~/Desktop/AI/models | ${pkgs.fzf}/bin/fzf)" \
+      -c 16384 -t 14 --mlock -ngl $NGL \
       --host 127.0.0.1 --port 8080
   '';
 in {

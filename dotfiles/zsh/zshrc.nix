@@ -32,13 +32,11 @@
     yeet = "/etc/nixos/dotfiles/scripts/yeet.sh";
     megayeet = "/etc/nixos/dotfiles/scripts/megayeet.sh";
     sudo = "doas";
-    fetch = "fastfetch";
     sys = "vim /etc/nixos/configuration.nix";
     home = "vim /etc/nixos/home.nix";
     flake = "vim /etc/nixos/flake.nix";
     dots = "yazi /etc/nixos/dotfiles";
     scripts = "yazi /etc/nixos/dotfiles/scripts";
-    clc = "clear";
     kms = "/etc/nixos/dotfiles/scripts/kms.sh";
     notes = "vim ~/.notes.md";
     homeclean = "env --chdir=/home/joe /etc/nixos/dotfiles/scripts/homeclean.sh";
@@ -46,5 +44,7 @@
     nxrdp = "xfreerdp /v:192.168.122.166 /u:odinn /dynamic-resolution /sound:sys:pulse";
     flashcards = "~/Desktop/wanikani/1to14/flashcard.sh";
     power = "doas python3 /etc/nixos/dotfiles/scripts/powerinfo.py";
+    comfy-egpu = "cd ~/Desktop/AI/ComfyUI && source venv/bin/activate && HSA_OVERRIDE_GFX_VERSION=10.3.0 LD_LIBRARY_PATH=$(nix eval --raw nixpkgs#stdenv.cc.cc.lib)/lib:$(nix eval --raw nixpkgs#zstd.out)/lib python main.py --listen";
+    comfy-cpu = "cd ~/Desktop/AI/ComfyUI && source venv/bin/activate && LD_LIBRARY_PATH=$(nix eval --raw nixpkgs#stdenv.cc.cc.lib)/lib:$(nix eval --raw nixpkgs#zstd.out)/lib python main.py --cpu --listen";
   };
 }

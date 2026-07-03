@@ -84,7 +84,11 @@ boot = {
     "no_console_suspend" # keep console active during suspend for better logging
     "intel_iommu=on" # enable Intel's IOMMU hardware, required for device isolation
     "iommu=pt" # passthrough mode: devices not assigned to VMs use DMA directly (better performance)
-    "amdgpu.ppfeaturemask=0xfffd7fff" # enables some GPU features for waybar
+    #"amdgpu.ppfeaturemask=0xfffd7fff" # enables some GPU features for waybar
+    #"pcie_aspm=off" # eGPU troubleshoot: let BIOS determine ASPM
+    #"pcie_aspm.policy=performance" # force disable ASPM
+    "pcie_port_pm=off" # eGPU troubleshot
+    "amdgpu.runpm=0" # eGPU troubleshoot
   ];
   #resumeDevice = "/dev/disk/by-uuid/2ef9551c-28e6-484b-9afa-5de05f928942";
   kernel.sysctl."net.ipv4.ip_forward" = 1; # IP forwarding
@@ -126,19 +130,22 @@ systemd.services = {
   libvirtd = {
     stopIfChanged = false;
   };
+  # Save the trouble of running 'virsh netstart default' each time:
   libvirtd.postStart = ''
     sleep 2
     virsh net-start default || true
     virsh net-autostart default || true
-  ''; # Above: save the trouble of running 'virsh netstart default' each time
+  '';
 };
 
 # ============================================
 # LOCALIZATION
 # ============================================
 
-time.timeZone = "America/Los_Angeles";
-#time.timeZone = "Asia/Tokyo";
+time = { 
+  timeZone = "America/Los_Angeles";
+  hardwareClockInLocalTime = false; # RTC is set to UTC for Windows
+};
 i18n = {
   defaultLocale = "en_US.UTF-8";
   inputMethod = {
@@ -301,15 +308,17 @@ services = {
   };
 
   # System Services
-  udisks2.enable = true;
-  fstrim.enable = true;
-  fwupd.enable = true;
+  udisks2.enable = true; # auto-mount removeable drives
+  fstrim.enable = true; # periodic SSD/NVMe trim for health
+  fwupd.enable = true; # firmware updates via LVFS
+  journald.storage = "persistent"; # persistent journald for troubleshooting things that cause system crashes
+  timesyncd.enable = true; # syncs clock to NTP servers over internet
   printing = {
-    enable = true;
-    drivers = [ pkgs.brlaser ];
+    enable = true; # enable CUPS for using printers
+    drivers = [ pkgs.brlaser ]; # Brother MFC printer-scanner
   };
-  openssh.enable = true;
-  blueman.enable = true;
+  openssh.enable = true; # enable SSH
+  blueman.enable = true; # convenient bluetooth GUI
   gvfs.enable = true; # required for Thunar to use .local/share/Trash
 
   # Syncthing
@@ -319,7 +328,7 @@ services = {
   };
 
   # Power Management / Hardware
-  power-profiles-daemon.enable = false; # don7t fight tlp
+  power-profiles-daemon.enable = false; # don't fight tlp
   tlp = {
     enable = true;
     settings = { 
@@ -356,28 +365,16 @@ services = {
     KERNEL=="ttyACM*", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04*", MODE:="0666"
     KERNEL=="hidraw*", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04*", MODE:="0666"
     SUBSYSTEMS=="usb", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04*", MODE:="0666"
-    
+
     # NXP boards (Teensy 4.x bootloader)
     KERNEL=="hidraw*", ATTRS{idVendor}=="1fc9", ATTRS{idProduct}=="013*", MODE:="0666"
     SUBSYSTEMS=="usb", ATTRS{idVendor}=="1fc9", ATTRS{idProduct}=="013*", MODE:="0666"
-    
+
     # PicoScope
     SUBSYSTEM=="usb", ATTR{idVendor}=="0ce9", MODE="0666"
-    
+
     # STM32 flashing in DFU mode
     SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE="0666"
-
-    # AC plugged in: full performance (PL1=55W, PL2=65W)
-    #SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="${pkgs.bash}/bin/sh -c 'echo 55000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw'"
-    # On battery: conservative (PL1=35W, PL2=65W)
-    #SUBSYSTEM=="power_supply", ATTR{online}=="0", RUN+="${pkgs.bash}/bin/sh -c 'echo 35000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw'"
-
-    # AC plugged in: full performance (PL1=55W, PL2=65W)
-    #SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="${pkgs.bash}/bin/sh -c 'echo 55000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw && echo 50000000 > /sys/class/powercap/intel-rapl-mmio:0/constraint_0_power_limit_uw'"
-
-    # On battery: conservative (PL1=35W, PL2=65W)
-    #SUBSYSTEM=="power_supply", ATTR{online}=="0", RUN+="${pkgs.bash}/bin/sh -c 'echo 35000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw && echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw && echo 28000000 > /sys/class/powercap/intel-rapl-mmio:0/constraint_0_power_limit_uw'"
-
   '';
 
   # Printers/scanners: access to scanner
@@ -405,59 +402,12 @@ systemd.services.turbostat = {
   };
 };
 
-# Set CPU power limits at boot: there's a udev rule for changing it whenever AC adapter is plugged/unplugged too
-#systemd.services.rapl-init = {
-#  description = "Initialize RAPL limits based on power source";
-#  wantedBy = [ "multi-user.target" ];
-#  after = [ "systemd-udevd.service" ];
-#  script = ''
-#    if grep -q 1 /sys/class/power_supply/AC/online 2>/dev/null; then
-#      echo 55000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
-#      echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw
-#    else
-#      echo 35000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
-#      echo 65000000 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw
-#    fi
-#  '';
-#  serviceConfig.Type = "oneshot";
-#};
-
-#systemd.services.rapl-pl1 = {
-#  description = "Reapply RAPL PL1 limits (EC override workaround)";
-#  serviceConfig.Type = "oneshot";
-#  script = ''
-#    online=$(cat /sys/class/power_supply/AC/online 2>/dev/null || echo 0)
-#    if [[ "$online" == "1" ]]; then
-#      pl1=55000000
-#      pl2=65000000
-#    else
-#      pl1=28000000
-#      pl2=65000000
-#    fi
-#    echo $pl1 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
-#    echo $pl1 > /sys/class/powercap/intel-rapl-mmio:0/constraint_0_power_limit_uw
-#    echo $pl2 > /sys/devices/virtual/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw
-#    echo $pl2 > /sys/class/powercap/intel-rapl-mmio:0/constraint_1_power_limit_uw
-#  '';
-#};
-
-#systemd.timers.rapl-pl1 = {
-#  description = "Reapply RAPL PL1 every 5s";
-#  wantedBy = [ "timers.target" ];
-#  timerConfig = {
-#    OnBootSec = "10s";
-#    OnUnitActiveSec = "5s";
-#    AccuracySec = "1s";
-#  };
-#};
-
-systemd.user.timers.fwupd-check = {
-  description = "Check for firmware updates after boot";
-  wantedBy = [ "timers.target" ];
-  timerConfig = {
-    OnBootSec = "5min";
-    OnUnitActiveSec = "1week";
-  };
+# After NTP syncs, write the correct time to the RTC chip
+systemd.services.rtc-writeback = {
+  after = [ "systemd-timesyncd.service" "time-sync.target" ];
+  wants = [ "time-sync.target" ];
+  wantedBy = [ "time-sync.target" ];
+  serviceConfig = { Type = "oneshot"; ExecStart = "${pkgs.util-linux}/bin/hwclock --systohc"; };
 };
 
 # ============================================
@@ -498,7 +448,13 @@ programs = {
   gamescope.enable = true;
   xwayland.enable = true;
   ydotool.enable = true;
-  nix-ld.enable = true; # run things that expect FHS paths
+  nix-ld = {
+    enable = true; # run things that expect FHS paths
+    libraries = with pkgs; [
+      stdenv.cc.cc.lib
+      zstd
+    ];
+  };
   steam = {
     enable = true;
     extraCompatPackages = [ pkgs.proton-ge-bin ];

@@ -20,35 +20,30 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 ...and more, along with some useful scripts. 
 
 ## To-do list (hardware):
-- get NOS keyboard + palmrest
-- test JIS keyboard scancodes and Esc/A/Z issue
-- X220 JP keyboard retrofit cleanup
+- test X200 JP106 keyboard scancodes and Esc/A/Z issue
+- SK-8855 retrofit cleanup, wire power/ThinkLight buttons
 - photodiode test backlight PWM
-- re-celled battery quirks
-- troubleshoot long boot time?
-- test TB/USB-C port funtionalities
-- speaker upgrade
-- reinforce lid
+- re-celled battery capacity adjustment
+- troubleshoot long boot time
+- troubleshoot eGPU PCIe dropout during VAE decode
+- speaker upgrad?
+- reinforce lid?
+- integrate USB hub in drive bay?
 
 ## To-do list (software)
-- see if PL limits can be set properly in BIOS and userspace
-- test cooling system max load + set PL values accordingly
 - suspend testing and optimization (Meteor Lake doesn't do s3)
-- Win10LTSC installation + config on mSATA<>SATA drive
-- resolve hypr compositing CPU util
-- eww panel/buttons
-- local AI optimization
-- help menu for other ppl
-- fcitx5 mozc IME issues (??)
+- diagnose 30W hotel load at max power (??)
+- fix fcitx5 mozc IME
 - make things look nicer (ongoing skill issue)
-- set up game launcher/wrapper, WINE tweaks/testing for old game library, plutonium setup 
+- test PL adjustment in BIOS
 
 ## X210Ai EC quirks as of June-ish 2026
-- (FW bug) battery TDP setting isn't possible: currently gimped to ~25W package power
-- (FW bug) booting takes ~60sec and includes 2 reboots (??)
-- (FW bug) no custom fan curves, fan tacho not exposed; fan behavior inconsistent
+- (FW bug) PL values cannot be manually set in userspace
+- (FW bug) booting takes ~60sec and includes 2 reboots 99% of the time
+- (FW bug) no custom fan curves, fan tacho not exposed
 - (FW bug) resuming from suspend/hibernate might not be reliable
-- (one-off bug) machine decided to idle at ~105C for half an hour while I was getting groceries... why??
+
+---
 
 ## Why NixOS?
 - **Declarative system configuration**: your entire system lives in version-controlled text files you can read, understand, and modify in one place (no more mystery edits buried deep in /etc, forgotten PPAs, config drift, or "I ran some command 3 years ago and now I can't remember what it was")
