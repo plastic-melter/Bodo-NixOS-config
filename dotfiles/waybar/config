@@ -9,13 +9,12 @@
   "modules-left": [
     "custom/launcher",
     "tray",
-    "network",
     "clock",
     "custom/worldclock",
     "pulseaudio",
     "backlight",
     "custom/refreshrate",
-    "custom/playerlabel",
+    "custom/mpris",
   ],
   "modules-center": [
     "hyprland/workspaces"
@@ -27,6 +26,7 @@
     "custom/egpu",
     "memory",
     "disk",
+    "network",
     "custom/power",
     "battery"
   ],
@@ -111,6 +111,26 @@
     },
     "tooltip": false
   },
+  "mpris": {
+    "format": "<i>󰎇 {title} ({position})</i>",
+    "format-paused": "<i>󰎇 {title}</i>",
+    "format-stopped": "<i>󰎇</i>",
+    "status-icons": {"playing": "󰎇", "paused": "", "stopped": "󰝛"},
+    "max-length": 36,
+    "title-len": 28,
+    "interval": 1,
+    "on-click-middle": "playerctl play-pause",
+    "on-click": "playerctl previous",
+    "on-click-right": "playerctl next",
+  },
+  "custom/mpris": {
+    "exec": "/etc/nixos/dotfiles/scripts/mpris.sh",
+    "return-type": "json",
+    "max-length": 36,
+    "on-click-middle": "playerctl play-pause",
+    "on-click": "playerctl previous",
+    "on-click-right": "playerctl next"
+  },
   "custom/worldclock": {
     "format": "{}",
     "exec": "/etc/nixos/dotfiles/scripts/worldclock.sh",
@@ -152,7 +172,7 @@
   "custom/hwpower": {
     "format": "  {}",
     "exec": "/etc/nixos/dotfiles/scripts/hwpower.sh",
-    "interval": 1
+    "interval": 3
   },
   "custom/nvidia": {
     "format": "  {}",

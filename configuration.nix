@@ -6,6 +6,7 @@
 
 imports = [
   ./hardware-configuration.nix
+  ./dotfiles/power-logging.nix
 ];
 
 # ============================================
@@ -49,24 +50,32 @@ nixpkgs.config = {
 boot = {
   loader = {
     efi.canTouchEfiVariables = true;
-    timeout = 1;
-    systemd-boot = {
+    grub = {
       enable = true;
+      device = "nodev";
+      efiSupport = true;
+      useOSProber = true;
+      enableCryptodisk = true;
       configurationLimit = 20;
-      editor = false; # prevent root access by passing kernel param int=/bin/sh
-      extraEntries = {
-        "reboot.conf" = ''
-          title Reboot
-          efi /EFI/systemd/systemd-bootx64.efi
-          options systemd.unit=reboot.target
-        '';
-        "poweroff.conf" = ''
-          title Power Off
-          efi /EFI/systemd/systemd-bootx64.efi
-          options systemd.unit=poweroff.target
-        '';
+      default = "2";
+      gfxmodeEfi = "2560x1600";
+      theme = pkgs.stdenv.mkDerivation {
+        pname = "distro-grub-themes";
+        version = "3.1";
+        src = pkgs.fetchFromGitHub {
+          owner = "AdisonCavani";
+          repo = "distro-grub-themes";
+          rev = "v3.1";
+          hash = "sha256-ZcoGbbOMDDwjLhsvs77C7G7vINQnprdfI37a9ccrmPs=";
+        };
+        installPhase = "cp -r customize/thinkpad $out";
       };
+      extraConfig = ''
+        menuentry "Reboot" { reboot }
+        menuentry "Poweroff" { halt }
+      '';
     };
+    timeout = 1;
   };
   kernelModules = [ 
     "ntsync" # CoD WaW performance
@@ -87,8 +96,8 @@ boot = {
     #"amdgpu.ppfeaturemask=0xfffd7fff" # enables some GPU features for waybar
     #"pcie_aspm=off" # eGPU troubleshoot: let BIOS determine ASPM
     #"pcie_aspm.policy=performance" # force disable ASPM
-    "pcie_port_pm=off" # eGPU troubleshot
-    "amdgpu.runpm=0" # eGPU troubleshoot
+    #"pcie_port_pm=off" # eGPU troubleshot
+    #"amdgpu.runpm=0" # eGPU troubleshoot
   ];
   #resumeDevice = "/dev/disk/by-uuid/2ef9551c-28e6-484b-9afa-5de05f928942";
   kernel.sysctl."net.ipv4.ip_forward" = 1; # IP forwarding
@@ -260,6 +269,31 @@ services = {
     };
   };
   joycond.enable = true; # Switch controller
+  keyd = {
+    enable = true;
+    keyboards.default = {
+      ids = [ "*" ];
+      settings = {
+        main = { # Hold = layer, tap = original key
+          muhenkan = "overload(nav, muhenkan)";
+          henkan   = "overload(sym, henkan)";
+        };
+        # 無変換 as layer 1
+        nav = {
+          i = "up";
+          j = "left";
+          k = "down";
+          l = "right";
+          u = "back";
+          o = "forward";
+        };
+        # 変換 as layer 2
+        sym = {
+          # m = "mute";
+        };
+      };
+    };
+  };
 
   # AMD eGPU
   lact.enable = true;
@@ -268,18 +302,6 @@ services = {
   ollama = {
     enable = true;
     package = pkgs.ollama-rocm; # AMD eGPU
-  };
-
-  # Turbostat logging
-  logrotate.settings.turbostat = {
-    files = "/var/log/turbostat/turbostat.log";
-    rotate = 10;
-    size = "500M";
-    compress = true;
-    delaycompress = true;
-    missingok = true;
-    notifempty = true;
-    copytruncate = true;   # turbostat holds the fd open — truncate in place instead of rename+restart
   };
 
   # Audio
@@ -331,14 +353,27 @@ services = {
   power-profiles-daemon.enable = false; # don't fight tlp
   tlp = {
     enable = true;
-    settings = { 
-      RUNTIME_PM_ON_AC = "on"; # Allow runtime PM even on AC (ex: don't power on the dGPU if it's not needed)
+    settings = {
+      RUNTIME_PM_ON_AC = "on"; # "on" = PCI(e) devices always on
+      RUNTIME_PM_ON_BAT = "auto"; # "auto" = let devices suspend to low-power states
+      # Governor: powersave still boosts; performance pins max P-states
+      CPU_SCALING_GOVERNOR_ON_AC  = "performance";
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+      # EPP (the main efficiency tweak on Meteor Lake)
+      CPU_ENERGY_PERF_POLICY_ON_AC  = "performance";
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "power"; # "power" is more aggressive than "balance_power"
+      # Turbo: disable it on battery
+      CPU_BOOST_ON_AC  = 1;
+      CPU_BOOST_ON_BAT = 0;
+      # ThinkPad platform_profile (ACPI)
+      PLATFORM_PROFILE_ON_AC  = "performance";
+      PLATFORM_PROFILE_ON_BAT = "low-power"; # "low-power" is more aggressive than "balanced"
     };
   };
   thermald.enable = true; # Intel thermal daemon
   upower.enable = true; # dbus service that abstracts PM hardware an gives a nice API rather than poking /sys directly
   thinkfan = {
-    enable = false;
+    enable = false; # not supported on X210Ai "yet" (-Frank, 2025) (how long has it been...?)
     levels = [
       [ 0                    0  60 ]
       [ 1                   55  68 ]
@@ -375,6 +410,9 @@ services = {
 
     # STM32 flashing in DFU mode
     SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE="0666"
+
+    # SK-8855 Sensitivity
+    ACTION=="add|change", SUBSYSTEM=="hid", ATTRS{idVendor}=="17ef", ATTRS{idProduct}=="6009", ATTR{sensitivity}="255"
   '';
 
   # Printers/scanners: access to scanner
@@ -382,23 +420,6 @@ services = {
     enable = true;
     nssmdns4 = true;
     openFirewall = false; # only for printer discovery
-  };
-};
-
-# Run turbostat in the background: can pull Intel CPU/iGPU power data from this
-systemd.services.turbostat = {
-  description = "turbostat background sampler";
-  wantedBy = [ "multi-user.target" ];
-  serviceConfig = {
-    Restart = "always";
-    User = "root";
-    LogsDirectory = "turbostat";                  # makes /var/log/turbostat
-    ExecStart = "${pkgs.writeShellScript "turbostat-start" ''
-      exec ${pkgs.coreutils}/bin/stdbuf -oL \
-        ${pkgs.linuxPackages.turbostat}/bin/turbostat \
-          --quiet --interval 1 \
-          >> /var/log/turbostat/turbostat.log 2>&1
-    ''}";
   };
 };
 
@@ -511,6 +532,7 @@ environment.variables = {
 
 environment.sessionVariables = {
   MOZ_ENABLE_WAYLAND = "1"; # firefox wants this
+  NIXOS_OZONE_WL = "1"; # make eletron apps run native wayland
 #  AQ_DRM_DEVICES = "/dev/dri/by-path/pci-0000:00:02.0-card"; # make Hyprland use iGPU; NOT eGPU!
 };
 
@@ -625,6 +647,7 @@ in (with pkgs; [
   inetutils # network tools such as telnet
   iotop # view disk usage/processes
   kdePackages.audex # CD ripper for videos
+  keyd # key remapping daemon at evdev level
   killall # allows for killing processes by name
   lsof # shows which processes have files/devices open
   moreutils # useful UNIX tools: ts, sponge, vidir, etc.

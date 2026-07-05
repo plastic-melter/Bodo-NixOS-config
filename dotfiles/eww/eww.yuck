@@ -70,7 +70,7 @@
     (box :class "group-head" :orientation "h" :space-evenly false :spacing 8
       (label :class "group-icon" :text icon)
       (label :class "group-title" :halign "start" :hexpand true :text title))
-    (box :orientation "v" :space-evenly false :spacing 4
+    (box :class "group-body" :orientation "v" :space-evenly false :spacing 4
       (children))))
 
 ;; ─── individual widgets ──────────────────────────────────────────────────

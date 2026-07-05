@@ -3,7 +3,7 @@
 Backup and reproducible config for my personal [NixOS](https://nixos.org) system, currently configured for an [X210Ai](https://macdat.net/laptops/jxtech/x210ai.php). I don't really know how to use git, but it's convenient.
 
 ![Desktop Screenshot](./.desktop.png)
-![X210Ai with eGPU](./.x210ai-egpu.png)
+![X210Ai](./.X210Ai.png)
 
 ## Config files for:
 - [Hyprland](https://hyprland.org) a spicy wayland compositor.
@@ -24,11 +24,9 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 - SK-8855 retrofit cleanup, wire power/ThinkLight buttons
 - photodiode test backlight PWM
 - re-celled battery capacity adjustment
-- troubleshoot long boot time
 - troubleshoot eGPU PCIe dropout during VAE decode
-- speaker upgrad?
+- speaker upgrade?
 - reinforce lid?
-- integrate USB hub in drive bay?
 
 ## To-do list (software)
 - suspend testing and optimization (Meteor Lake doesn't do s3)
@@ -36,12 +34,15 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 - fix fcitx5 mozc IME
 - make things look nicer (ongoing skill issue)
 - test PL adjustment in BIOS
+- undervolting
 
-## X210Ai EC quirks as of June-ish 2026
-- (FW bug) PL values cannot be manually set in userspace
-- (FW bug) booting takes ~60sec and includes 2 reboots 99% of the time
-- (FW bug) no custom fan curves, fan tacho not exposed
-- (FW bug) resuming from suspend/hibernate might not be reliable
+## X210Ai EC/BIOS bugs/quirks as of July-ish 2026
+- PL values cannot be manually set in userspace
+- booting takes ~60sec and includes 2 reboots 99% of the time
+- no custom fan curves, fan tacho not exposed
+- resuming from suspend/hibernate might not be reliable
+- sometimes the fan locks at low speed (-> temps >100C)
+- disabling OC/CFG locks pins all cores at 400MHz (??)
 
 ---
 

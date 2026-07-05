@@ -240,7 +240,7 @@ services = {
   dunst.enable = true;
   mpd = {
     enable = true;
-    musicDirectory = "/home/joe/Backups/Music";
+    musicDirectory = "/home/joe/Music";
     network.startWhenNeeded = true;
     extraConfig = ''
       audio_output {
@@ -507,6 +507,7 @@ home.packages = with pkgs; [
   vips # fast image processing for large images
   wofi # app launcher
   xfburn # GUI for burning CDs
+  yt-dlp # youtube downloader
 
   # WAYLAND, HYPRLAND, RICE
   awww # swww got renamed upstream (wayland desktop background)

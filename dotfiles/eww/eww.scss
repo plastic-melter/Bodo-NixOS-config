@@ -8,10 +8,17 @@
 }
 
 .flyout {
-    background-color: rgba(__BG_RGB__, 0.95);
+    background-color: rgba(#__BG__, 0.97);
     border: 2px solid #__BORDER__;
-    border-radius: 16px;
-    padding: 14px 16px;
+    border-radius: 18px;
+    padding: 14px;
+}
+
+.col-left, .col-right {
+    background-color: rgba(#__BG_ALT__, 0.18);
+    border: 1px solid rgba(#__BORDER_INACTIVE__, 0.5);
+    border-radius: 14px;
+    padding: 12px;
 }
 
 /* ─── header ─────────────────────────────────────────────────────────── */
@@ -42,17 +49,19 @@
 /* ─── groups (cards) ─────────────────────────────────────────────────── */
 
 .group {
-    background-color: rgba(__BG_ALT_RGB__, 0.22);
+    background-color: rgba(#__BG_ALT__, 0.45);
     border: 1px solid #__BORDER_INACTIVE__;
     border-left: 3px solid #__ACCENT__;
     border-radius: 12px;
-    padding: 8px 10px;
+    padding: 0px 0px 8px 0px;
 }
 
 .group-head {
-    padding-bottom: 5px;
-    margin-bottom: 2px;
-    border-bottom: 1px solid rgba(__BORDER_INACTIVE_RGB__, 0.6);
+    background-color: rgba(#__ACCENT__, 0.14);
+    padding: 6px 10px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid rgba(#__ACCENT__, 0.35);
+    border-radius: 9px 9px 0px 0px;
 }
 
 .group-icon {
@@ -70,8 +79,8 @@
 }
 
 .row {
-    background-color: rgba(__BG_ALT_RGB__, 0.4);
-    border: 1px solid rgba(__BORDER_INACTIVE_RGB__, 0.5);
+    background-color: rgba(#__BG_ALT__, 0.4);
+    border: 1px solid rgba(#__BORDER_INACTIVE__, 0.5);
     border-radius: 10px;
     padding: 6px 10px;
 }
@@ -106,7 +115,7 @@
     border-radius: 6px;
 }
 .icon-btn:hover {
-    background-color: rgba(__ACCENT_RGB__, 0.25);
+    background-color: rgba(#__ACCENT__, 0.25);
 }
 
 /* ─── toggle pill ────────────────────────────────────────────────────── */
@@ -121,7 +130,7 @@
 }
 .toggle-off {
     color: #__TEXT_DIM__;
-    background-color: rgba(__BG_ALT_RGB__, 0.6);
+    background-color: rgba(#__BG_ALT__, 0.6);
     border: 1px solid #__BORDER_INACTIVE__;
 }
 .toggle-on {
@@ -135,7 +144,7 @@
 
 /* sliders (gtk scale widget) */
 scale trough {
-    background-color: rgba(__BG_ALT_RGB__, 0.6);
+    background-color: rgba(#__BG_ALT__, 0.6);
     border-radius: 6px;
     min-height: 6px;
 }
@@ -168,10 +177,10 @@ scale slider:hover {
     font-size: 18px;
     padding: 4px 12px;
     border-radius: 8px;
-    background-color: rgba(__BG_ALT_RGB__, 0.4);
+    background-color: rgba(#__BG_ALT__, 0.4);
 }
 .media-btn:hover {
-    background-color: rgba(__ACCENT_RGB__, 0.3);
+    background-color: rgba(#__ACCENT__, 0.3);
 }
 
 .power-btn {
@@ -180,11 +189,11 @@ scale slider:hover {
     font-size: 16px;
     padding: 6px 10px;
     border-radius: 8px;
-    background-color: rgba(__BG_ALT_RGB__, 0.5);
+    background-color: rgba(#__BG_ALT__, 0.5);
     border: 1px solid #__BORDER_INACTIVE__;
 }
 .power-btn:hover {
-    background-color: rgba(__ACCENT_RGB__, 0.35);
+    background-color: rgba(#__ACCENT__, 0.35);
     border-color: #__BORDER_ACTIVE__;
 }
 .power-btn-danger:hover {
@@ -197,10 +206,10 @@ scale slider:hover {
     font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font";
     padding: 6px 10px;
     border-radius: 8px;
-    background-color: rgba(__BG_ALT_RGB__, 0.4);
+    background-color: rgba(#__BG_ALT__, 0.4);
 }
 .launcher-btn:hover {
-    background-color: rgba(__ACCENT_RGB__, 0.3);
+    background-color: rgba(#__ACCENT__, 0.3);
 }
 
 button {
@@ -208,7 +217,7 @@ button {
 }
 button:hover {
     color: #__TEXT__;
-    background-color: rgba(__ACCENT_RGB__, 0.25);
+    background-color: rgba(#__ACCENT__, 0.25);
     border-radius: 6px;
 }
 
@@ -244,7 +253,7 @@ button:hover {
     font-family: "JetBrains Mono", monospace;
     font-size: 12px;
     color: #__ACCENT__;
-    background-color: rgba(__BG_ALT_RGB__, 0.6);
+    background-color: rgba(#__BG_ALT__, 0.6);
     border: 1px solid #__BORDER_INACTIVE__;
     border-radius: 6px;
     padding: 2px 8px;
@@ -267,7 +276,7 @@ button:hover {
 }
 
 .vsep {
-    background-color: rgba(__ACCENT_RGB__, 0.55);
+    background-color: rgba(#__ACCENT__, 0.55);
     min-width: 2px;
     margin: 4px 14px;
     border-radius: 2px;
@@ -281,11 +290,11 @@ button:hover {
     font-size: 13px;
     padding: 8px 12px;
     border-radius: 8px;
-    background-color: rgba(__BG_ALT_RGB__, 0.5);
+    background-color: rgba(#__BG_ALT__, 0.5);
     border: 1px solid #__BORDER_INACTIVE__;
 }
 .rb-btn:hover {
-    background-color: rgba(__ACCENT_RGB__, 0.28);
+    background-color: rgba(#__ACCENT__, 0.28);
     border-color: #__BORDER_ACTIVE__;
 }
 .rb-btn-accent {
@@ -328,4 +337,12 @@ button:hover {
     font-family: "JetBrains Mono", monospace;
     font-size: 11px;
     color: #__TEXT__;
+}
+
+.pi-gap {
+    min-height: 6px;
+}
+
+.group-body {
+    padding: 0px 10px;
 }

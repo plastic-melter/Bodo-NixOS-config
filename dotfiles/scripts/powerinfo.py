@@ -425,6 +425,32 @@ def sec_daemons():
     elif clash:
         good(f"single power-profile daemon: {next(iter(clash))}")
 
+def sec_summary():
+    hdr("Tweakable knobs (current / available)")
+    cf0 = first(sorted(glob.glob("/sys/devices/system/cpu/cpu[0-9]*/cpufreq")))
+    ac = None
+    for s in (glob.glob("/sys/class/power_supply/AC*/online") +
+              glob.glob("/sys/class/power_supply/ADP*/online")):
+        v = r(s)
+        if v is not None:
+            ac = "yes" if v == "1" else "no"
+            break
+    kv("on AC", ac)
+    if cf0:
+        kv("governor", r(os.path.join(cf0, "scaling_governor")),
+           "avail: " + (r(os.path.join(cf0, "scaling_available_governors")) or "?"))
+        epp = r(os.path.join(cf0, "energy_performance_preference"))
+        if epp is not None:
+            kv("EPP", epp, "avail: " +
+               (r(os.path.join(cf0, "energy_performance_available_preferences")) or "?"))
+    nt = r("/sys/devices/system/cpu/intel_pstate/no_turbo")
+    if nt is not None:
+        kv("turbo", "off" if nt == "1" else "on")
+    pp = r("/sys/firmware/acpi/platform_profile")
+    if pp is not None:
+        kv("platform profile", pp,
+           "avail: " + (r("/sys/firmware/acpi/platform_profile_choices") or "?"))
+
 # ----------------------------------------------------------------------------- main
 
 def main():
@@ -467,6 +493,7 @@ def main():
     sec_amdgpu(cards)
     sec_battery()
     sec_daemons()
+    sec_summary()
     print()
 
 if __name__ == "__main__":

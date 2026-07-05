@@ -60,7 +60,7 @@ window#waybar {
 #custom-disk { color: #__MOD_DISK__; }
 
 /* Shared background/border for all modules */
-#clock, #battery, #network, #pulseaudio, #temperature, #cpu, #memory,
+#clock, #battery, #network, #pulseaudio, #temperature, #cpu, #memory, #mpris, #custom-mpris,
 #disk, #custom-refreshrate, #custom-hwpower, #custom-power, #custom-cooling, #custom-egpu,
 #tray, #custom-worldclock, #backlight, #custom-playerctl, #custom-playerlabel, #custom-nvidia {
     background-color: rgba(__BG_RGB__, 0.9);
@@ -77,6 +77,23 @@ window#waybar {
 #custom-playerlabel.Paused {
   opacity: 0.5;
   font-style: italic;
+}
+#custom-mpris.paused {
+    opacity: 0.85;
+}
+#custom-mpris.playing {
+    opacity: 1.0;
+}
+#mpris.paused {
+  opacity: 0.75;
+  font-style: italic;
+}
+#mpris.stopped {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0;
 }
 #custom-launcher {
     color: #__MOD_LAUNCHER__;
