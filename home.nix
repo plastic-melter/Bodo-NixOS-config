@@ -170,6 +170,11 @@ programs = {
     nix-direnv.enable = true;
   };
 
+  waybar = {
+    enable = true;
+    systemd.enable = true;
+  };
+
   git = {
     enable = true;
     package = pkgs.git;
@@ -513,6 +518,7 @@ home.packages = with pkgs; [
   awww # swww got renamed upstream (wayland desktop background)
   catppuccin-gtk # archived, but might work
   catppuccin-kvantum # qt theme, apply with kvantum
+  gammastep # screen dimmer
   grim # grab images from wayland compositors
   gsettings-desktop-schemas # check on GTK stuff
   hyprdim # dims inactive windows

@@ -1,14 +1,18 @@
 #!/usr/bin/env zsh
-LOG=/var/log/turbostat/turbostat.log
-pkg=$(tail -n 600 "$LOG" | awk -F'\t' '
-  /(^|\t)PkgWatt(\t|$)/ {            # header line: locate the column
-    for (i=1;i<=NF;i++) if ($i=="PkgWatt") c=i
-    sawhdr=1; next
-  }
-  sawhdr {                          # first row after a header = summary (the totals)
-    if ($c != "") v=$c
-    sawhdr=0
-  }
-  END { print v }
+# newest matching log by mtime; N=nullglob, .=regular file, om=mtime order
+LOG=(/var/log/turbostat/turbostat*212c.log(N.om[1]))
+(( $#LOG )) || { print -u2 "hwpower: no turbostat log"; exit 1 }
+pkg=$(tail -n 600 $LOG | awk -F'\t' '
+  $1=="Time_Of_Day_Seconds" { for(i=1;i<=NF;i++) if($i=="PkgWatt") c=i; next }
+  $2=="-" && c        { v=$c }   # summary row carries package totals
+  END                 { print v }
 ')
-printf "%.1fW\n" "${pkg:-0}"
+
+# glyph reflects power state (governor as proxy)
+if [[ "$(</sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)" == performance ]]; then
+  glyph=" "   # AC / performance
+else
+  glyph="󰌪 "   # battery save
+fi
+
+printf "%s %.1fW\n" "$glyph" "${pkg:-0}"

@@ -5,6 +5,8 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 ![Desktop Screenshot](./.desktop.png)
 ![X210Ai](./.X210Ai.png)
 
+---
+
 ## Config files for:
 - [Hyprland](https://hyprland.org) a spicy wayland compositor.
 - [WezTerm](https://wezfurlong.org/wezterm/), a fast cool terminal.

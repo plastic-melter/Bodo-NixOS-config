@@ -51,7 +51,7 @@ window#waybar {
 #pulseaudio { color: #__MOD_PULSEAUDIO__; }
 #pulseaudio.muted { color: #__TEXT__; }
 #cpu { color: #__MOD_CPU__; }
-#memory { color: #__MOD_MEMORY__; }
+#custom-memory { color: #__MOD_MEMORY__; }
 #temperature { color: #__MOD_TEMP__; }
 #temperature.critical { color: #__MOD_TEMP_CRIT__; }
 #backlight { color: #__MOD_BACKLIGHT__; }
@@ -60,8 +60,8 @@ window#waybar {
 #custom-disk { color: #__MOD_DISK__; }
 
 /* Shared background/border for all modules */
-#clock, #battery, #network, #pulseaudio, #temperature, #cpu, #memory, #mpris, #custom-mpris,
-#disk, #custom-refreshrate, #custom-hwpower, #custom-power, #custom-cooling, #custom-egpu,
+#clock, #battery, #network, #pulseaudio, #temperature, #cpu, #custom-memory, #mpris, #custom-mpris,
+#custom-disk, #custom-refreshrate, #custom-hwpower, #custom-power, #custom-cooling, #custom-egpu,
 #tray, #custom-worldclock, #backlight, #custom-playerctl, #custom-playerlabel, #custom-nvidia {
     background-color: rgba(__BG_RGB__, 0.9);
     border-radius: 8px;
