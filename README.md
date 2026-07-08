@@ -10,7 +10,7 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 ## Config files for:
 Wayland stuff:
 - [Hyprland](https://hyprland.org) a great wayland compositor.
-- [Waybar](https://github.com/Alexays/Waybar), [nwg-shell](https://nwg-piotr.github.io/nwg-shell/), [wlogout](https://github.com/ArtsyMacaw/wlogout), [dunst](https://github.com/dunst-project/dunst), [wofi](https://hg.sr.ht/~scoopta/wofi), [eww](https://elkowar.github.io/eww/)
+- UI stuff: [waybar](https://github.com/Alexays/Waybar), [nwg-shell](https://nwg-piotr.github.io/nwg-shell/), [wlogout](https://github.com/ArtsyMacaw/wlogout), [dunst](https://github.com/dunst-project/dunst), [wofi](https://hg.sr.ht/~scoopta/wofi), [eww](https://elkowar.github.io/eww/), etc.
 
 Workflow stuff:
 - [WezTerm](https://wezfurlong.org/wezterm/), a fast terminal.
@@ -63,9 +63,7 @@ The original X200 laptop from 2008 is really well engineered, and laptop design 
 - awesome chassis (cast + machined magnesium exoskeleton, excellent serviceability)
 - latching clamshell lid
 - hot-swappable battery, 4/6/9-cell options up to ~113Whr (9x 3500mAh 18650)
-- status LEDs (10x)
-- reading light
-- RF kill switch
+- amenities: status LEDs (10x), reading light, RF kill switch
 - spill-proof keyboard (pan + drain holes)
 - hackability:
     - 100s of exposed BIOS settings
@@ -77,6 +75,7 @@ The original X200 laptop from 2008 is really well engineered, and laptop design 
     - 13.3" 1920x1200, 13" 3000x2000, 12.6" 2880x1920, 12.5" 1920x1080, 12.1" 1440x900 and 1280x800
     - ...literally any eDP panel, wire it up yourself
 - lots of ports, and room to add your own (I added 64Gbps Oculink and an extra USB-A)
+- 60W cooling capacity in a 13" chassis
 - coreboot "soon"(TM)
 
 
