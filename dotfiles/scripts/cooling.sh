@@ -11,5 +11,5 @@ CPUTEMP=$(sensors | grep 'id 0' | awk '{print $4}' | cut -d '+' -f 2 | cut -d '.
 if [[ -f "$STATE_FILE" ]]; then
     echo -n "${CPUTEMP} (L${FAN_LEVEL}) ${FAN_AVG}rpm"
 else
-    echo -n "${CPUTEMP}°C"
+    echo -n "${CPUTEMP}°"
 fi

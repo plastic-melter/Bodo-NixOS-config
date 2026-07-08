@@ -8,42 +8,42 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 ---
 
 ## Config files for:
-- [Hyprland](https://hyprland.org) a spicy wayland compositor.
-- [WezTerm](https://wezfurlong.org/wezterm/), a fast cool terminal.
+Wayland stuff:
+- [Hyprland](https://hyprland.org) a great wayland compositor.
+- [Waybar](https://github.com/Alexays/Waybar), [nwg-shell](https://nwg-piotr.github.io/nwg-shell/), [wlogout](https://github.com/ArtsyMacaw/wlogout), [dunst](https://github.com/dunst-project/dunst), [wofi](https://hg.sr.ht/~scoopta/wofi), [eww](https://elkowar.github.io/eww/)
+
+Workflow stuff:
+- [WezTerm](https://wezfurlong.org/wezterm/), a fast terminal.
 - [Neovim](https://neovim.io), my preferred text editor.
-- [Zsh](https://ohmyz.sh/), a great shell with cool wrappers.
-- [Waybar](https://github.com/Alexays/Waybar), an extensible status bar.
-- [nwg-shell](https://nwg-piotr.github.io/nwg-shell/), some nice Wayland UI stuff.
-- [Wofi](https://hg.sr.ht/~scoopta/wofi), an application launcher.
-- [rmpc](https://rmpc.mierak.dev/), a clean TUI music player w/ images.
+- [Zsh](https://ohmyz.sh/), a feature-rich shell.
 - [Yazi](https://yazi-rs.github.io), an efficient TUI file browser.
-- [EWW](https://elkowar.github.io/eww/), handy widget maker.
+- [Starship](https://starship.rs/), a fast shell prompt.
 
 ...and more, along with some useful scripts. 
 
-## To-do list (hardware):
+## X210Ai To-do List (hardware):
 - test X200 JP106 keyboard scancodes and Esc/A/Z issue
-- SK-8855 retrofit cleanup, wire power/ThinkLight buttons
+- SK-8855 ThinkLight/power button wiring (major PITA)
 - photodiode test backlight PWM
 - re-celled battery capacity adjustment
-- troubleshoot eGPU PCIe dropout during VAE decode
+- troubleshoot Oculink eGPU (PCIe dropout during VAE decode)
+- troubleshoot 35W cooling capacity: should be closer to 60W?
+  - test on other X210Ai machines
 - speaker upgrade?
-- reinforce lid?
+- lid reinforcement
 
 ## To-do list (software)
 - suspend testing and optimization (Meteor Lake doesn't do s3)
-- diagnose 30W hotel load at max power (??)
+- diagnose package power discrepency between Windows and Linux
 - fix fcitx5 mozc IME
 - make things look nicer (ongoing skill issue)
-- test PL adjustment in BIOS
-- undervolting
+- test PL adjustment and undervolting
 
 ## X210Ai EC/BIOS bugs/quirks as of July-ish 2026
 - PL values cannot be manually set in userspace
-- booting takes ~60sec and includes 2 reboots 99% of the time
 - no custom fan curves, fan tacho not exposed
 - resuming from suspend/hibernate might not be reliable
-- sometimes the fan locks at low speed (-> temps >100C)
+- sometimes the fan locks at low speed (--> temps>100C)
 - disabling OC/CFG locks pins all cores at 400MHz (??)
 
 ---
@@ -58,22 +58,30 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 - **Nix-shell**: per-project environments on the fly, without all the annoying complex overhead of things like docker
 
 ## Why X210Ai?
-The X200 is really well engineered, and laptop design has regressed in most aspects since the 2000s (aside from getting a bit thinner/lighter):
-| **Feature** | **X210Ai** | **Modern Laptop (ex: Framework or ThinkPad)** |
-|---|---|---|
-| Keyboard | 7-row, deep travel, full size keys | 6-row, shallow travel, chiclet, missing useful keys |
-| Chassis | Magnesium, latching lid, excellent serviceability | Cheap aluminum and plastic, no lid latch, usually a pain to service |
-| Battery | Removable (latched) 4/6/9-cell up to ~116Whr | Not-removeable (internal), one size, <100Whr |
-| Trackpoint | Exists. Has nice click buttons. | Doesn't exist, or has uncomfortable thin buttons |
-| Amenities | 10 status LEDs, reading light, underglow, keyboard drain pan | 0 or 1 status LED, backlit keyboard, not safe against spills |
-| Screen | Literally any eDP panel that fits | Maybe decent panel(s)? Not always |
-| Extensibility | Internal space + PCIe lanes for: eGPU adapter, DAQ/amp, USB hubs, etc; touchpad + FP reader optional | Framework: hot-swap USB-C port thingies. Other laptops: ...nothing |
-| Ports | More | Less |
-| Storage | PCIe5 NVMe + PCIe4 NVMe + SATA-III SSD (total 20TB max) | 1-2 PCIe4/5 NVMes (8-16TB max) |
-| Platform firmware | Fully exposed AMI BIOS: hundreds of parameters | Extremely limited BIOS configurability |
+The original X200 laptop from 2008 is really well engineered, and laptop design has actually regressed in most aspects since the 2000s (aside from getting a bit thinner/lighter, and some cooling system improvements). The X210Ai has perks that no other modern laptop does:
+- awesome keyboard (7-row, deep travel, raised TrackPoint click buttons)
+- awesome chassis (cast + machined magnesium exoskeleton, excellent serviceability)
+- latching clamshell lid
+- hot-swappable battery, 4/6/9-cell options up to ~113Whr (9x 3500mAh 18650)
+- status LEDs (10x)
+- reading light
+- RF kill switch
+- spill-proof keyboard (pan + drain holes)
+- hackability:
+    - 100s of exposed BIOS settings
+    - full control of PL settings, overclocking, undervolting, etc.
+    - extra chassis space to fit things
+- 3 drive slots (PCIe 5, PCIe 4, SATA-III) = 20TB max storage
+- many screen options
+    - 13.4" 165Hz 2560x1600, 100% DPI-P3, 500nits, Pantone validated, 6msec black-to-white, DC dimming
+    - 13.3" 1920x1200, 13" 3000x2000, 12.6" 2880x1920, 12.5" 1920x1080, 12.1" 1440x900 and 1280x800
+    - ...literally any eDP panel, wire it up yourself
+- lots of ports, and room to add your own (I added 64Gbps Oculink and an extra USB-A)
+- coreboot "soon"(TM)
+
 
 ## What makes the X210Ai so unique?
-51nb/JXtech's custom Thinkpads (X62/63, X210/2100/210Ai, T50/70/700) are the only projects of their kind, and that's not likely to change: designing and producing a modern laptop motherboard is not trivial. Some of the main hurdles are:
+51nb/JXtech's custom Thinkpads (X62/63, X210/2100/210Ai, T50/70/700) are the only projects of their kind, and that's not likely to change: designing and producing a modern laptop motherboard is not trivial and gets more complex every year. Some of the main hurdles are:
 
 - **Reference design**: Intel provides a Customer Reference Design (CRD, essentially a complete schematic and layout you can adapt) to select partners. I'm not sure how they got this.
 

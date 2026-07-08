@@ -8,5 +8,5 @@ for h in /sys/class/hwmon/hwmon*; do
   [[ "$(<$h/name)" == spd5118 ]] && ram=$(( $(<$h/temp1_input)/1000 )) && break
 done
 
-printf '{"text":"  %s%%  %s°C","tooltip":"%sG / %sG\\nDIMM %s°C"}\n' \
+printf '{"text":"  %s%%  %s°","tooltip":"%sG / %sG\\nDIMM %s°"}\n' \
   "$pct" "$ram" "$used" "$total" "$ram"

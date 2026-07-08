@@ -13,6 +13,8 @@
     "custom/worldclock",
     "pulseaudio",
     "backlight",
+    "gamma-brightness",
+    "gamma-warmth",
     "custom/refreshrate",
     "custom/mpris",
   ],
@@ -122,7 +124,7 @@
     "on-click": "/etc/nixos/dotfiles/scripts/x210ai-165hz-toggle.sh"
   },
   "network": {
-    "format-wifi": "󰤨",
+    "format-wifi": "󰤨 ",
     "format-ethernet": "󰈀  {ifname}",
     "format-linked": "󰈀  {ifname} (No IP)",
     "format-disconnected": "󰤭",
@@ -137,6 +139,24 @@
     "format": "  {percent}%",
     "format-icons": ["", "", "", "", "", "", "", "", ""],
     "tooltip-format": ""
+  },
+  "custom/gamma-brightness": {
+    "format": "{}",
+    "exec": "~/.config/waybar/gamma-brightness.sh",
+    "interval": "once",
+    "signal": 11,
+    "on-scroll-up": "~/.config/waybar/gamma-brightness.sh up",
+    "on-scroll-down": "~/.config/waybar/gamma-brightness.sh down",
+    "on-click": "~/.config/waybar/gamma-brightness.sh reset"
+  },
+  "custom/gamma-warmth": {
+    "format": "{}",
+    "exec": "~/.config/waybar/gamma-warmth.sh",
+    "interval": "once",
+    "signal": 12,
+    "on-scroll-up": "~/.config/waybar/gamma-warmth.sh up",
+    "on-scroll-down": "~/.config/waybar/gamma-warmth.sh down",
+    "on-click-middle": "~/.config/waybar/gamma-warmth.sh toggle"
   },
   "pulseaudio": {
     "format": "󰕾  {volume}%",

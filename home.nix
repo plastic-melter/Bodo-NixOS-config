@@ -270,10 +270,17 @@ systemd.user = {
   };
 
   services = {
+
     udiskie = {
       Unit.Description = "udiskie automounter";
       Service.ExecStart = "${pkgs.udiskie}/bin/udiskie --smart-tray";
       Install.WantedBy = [ "default.target" ];
+    };
+
+    wl-gammarelay-rs = {
+      Unit.Description = "wl-gammarelay-rs";
+      Install.WantedBy = [ "graphical-session.target" ];
+      Service.ExecStart = "${pkgs.wl-gammarelay-rs}/bin/wl-gammarelay-rs";
     };
 
     battery-notify = {
@@ -307,6 +314,7 @@ systemd.user = {
       };
       Install.WantedBy = [ "timers.target" ];
     };
+
   };
 };
 
@@ -466,7 +474,7 @@ home.packages = with pkgs; [
   mpv # simple video player
   obsidian # cross-platform notes program
   obs-studio # desktop recording
-  #openscad # text-based 3D parametric model compiler (CAD)
+  openscad # text-based 3D parametric model compiler (CAD)
   picoscope # pocket oscilloscope
   platformio # arduino TUI + utils
   prusa-slicer # 3DP slicer
