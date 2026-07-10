@@ -13,8 +13,8 @@
     "custom/worldclock",
     "pulseaudio",
     "backlight",
-    "gamma-brightness",
-    "gamma-warmth",
+    "custom/gamma-brightness",
+    "custom/gamma-warmth",
     "custom/refreshrate",
     "custom/mpris",
   ],
@@ -124,7 +124,7 @@
     "on-click": "/etc/nixos/dotfiles/scripts/x210ai-165hz-toggle.sh"
   },
   "network": {
-    "format-wifi": "󰤨 ",
+    "format-wifi": "󰤨",
     "format-ethernet": "󰈀  {ifname}",
     "format-linked": "󰈀  {ifname} (No IP)",
     "format-disconnected": "󰤭",
@@ -138,25 +138,28 @@
   "backlight": {
     "format": "  {percent}%",
     "format-icons": ["", "", "", "", "", "", "", "", ""],
-    "tooltip-format": ""
+    "tooltip-format": "",
+    "on-click": "/etc/nixos/dotfiles/scripts/brightnessctl.sh down",
+    "on-click-right": "/etc/nixos/dotfiles/scripts/brightnessctl.sh up",
+    "on-click-middle": "/etc/nixos/dotfiles/scripts/gamma-brightness.sh toggle && sleep 0.4 && pkill -RTMIN+11 waybar; pkill -RTMIN+12 waybar"
   },
   "custom/gamma-brightness": {
     "format": "{}",
-    "exec": "~/.config/waybar/gamma-brightness.sh",
+    "exec": "/etc/nixos/dotfiles/scripts/gamma-brightness.sh",
     "interval": "once",
     "signal": 11,
-    "on-scroll-up": "~/.config/waybar/gamma-brightness.sh up",
-    "on-scroll-down": "~/.config/waybar/gamma-brightness.sh down",
-    "on-click": "~/.config/waybar/gamma-brightness.sh reset"
+    "on-click":       "/etc/nixos/dotfiles/scripts/gamma-brightness.sh down  && pkill -RTMIN+11 waybar",
+    "on-click-right": "/etc/nixos/dotfiles/scripts/gamma-brightness.sh up    && pkill -RTMIN+11 waybar",
+    "on-click-middle":"/etc/nixos/dotfiles/scripts/gamma-brightness.sh reset && pkill -RTMIN+11 waybar"
   },
   "custom/gamma-warmth": {
     "format": "{}",
-    "exec": "~/.config/waybar/gamma-warmth.sh",
+    "exec": "/etc/nixos/dotfiles/scripts/gamma-warmth.sh",
     "interval": "once",
     "signal": 12,
-    "on-scroll-up": "~/.config/waybar/gamma-warmth.sh up",
-    "on-scroll-down": "~/.config/waybar/gamma-warmth.sh down",
-    "on-click-middle": "~/.config/waybar/gamma-warmth.sh toggle"
+    "on-click":       "/etc/nixos/dotfiles/scripts/gamma-warmth.sh down   && pkill -RTMIN+12 waybar",
+    "on-click-right": "/etc/nixos/dotfiles/scripts/gamma-warmth.sh up     && pkill -RTMIN+12 waybar",
+    "on-click-middle":"/etc/nixos/dotfiles/scripts/gamma-warmth.sh toggle && pkill -RTMIN+12 waybar"
   },
   "pulseaudio": {
     "format": "󰕾  {volume}%",

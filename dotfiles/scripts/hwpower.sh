@@ -1,18 +1,9 @@
 #!/usr/bin/env zsh
-# newest matching log by mtime; N=nullglob, .=regular file, om=mtime order
-LOG=(/var/log/turbostat/turbostat*212c.log(N.om[1]))
-(( $#LOG )) || { print -u2 "hwpower: no turbostat log"; exit 1 }
-pkg=$(tail -n 600 $LOG | awk -F'\t' '
-  $1=="Time_Of_Day_Seconds" { for(i=1;i<=NF;i++) if($i=="PkgWatt") c=i; next }
-  $2=="-" && c        { v=$c }   # summary row carries package totals
-  END                 { print v }
-')
-
-# glyph reflects power state (governor as proxy)
+W=/run/pkg_watts
+[[ -r $W ]] || { print -u2 "hwpower: rapl-watts not running"; exit 1 }
 if [[ "$(</sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)" == performance ]]; then
-  glyph=" "   # AC / performance
+  glyph=" "
 else
-  glyph="󰌪 "   # battery save
+  glyph="󰌪 "
 fi
-
-printf "%s %.1fW\n" "$glyph" "${pkg:-0}"
+printf "%s %.1fW\n" "$glyph" "$(<$W)"

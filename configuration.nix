@@ -6,7 +6,6 @@
 
 imports = [
   ./hardware-configuration.nix
-  ./dotfiles/power-logging.nix
 ];
 
 # ============================================
@@ -59,17 +58,7 @@ boot = {
       configurationLimit = 20;
       default = "2";
       gfxmodeEfi = "2560x1600";
-      theme = pkgs.stdenv.mkDerivation {
-        pname = "distro-grub-themes";
-        version = "3.1";
-        src = pkgs.fetchFromGitHub {
-          owner = "AdisonCavani";
-          repo = "distro-grub-themes";
-          rev = "v3.1";
-          hash = "sha256-ZcoGbbOMDDwjLhsvs77C7G7vINQnprdfI37a9ccrmPs=";
-        };
-        installPhase = "cp -r customize/thinkpad $out";
-      };
+      theme = ./dotfiles/grub;
       extraConfig = ''
         menuentry "Reboot" { reboot }
         menuentry "Poweroff" { halt }
@@ -85,6 +74,7 @@ boot = {
     "vfio" # core VFIO framework: lets userspace (QEMU) own PCI devices
     "vfio_iommu_type1" # IOMMU backend for VFIO, enforces memory isolation between VM and host
     "vfio_pci" # the actual driver that claims PCI devices on behalf of VFIO
+    "thinkpad_acpi" # ...odds X210Ai supports this..?
   ];
   kernelPackages = pkgs.linuxPackages_xanmod_latest; # gaming
   kernelParams = [
@@ -98,8 +88,9 @@ boot = {
     #"pcie_aspm.policy=performance" # force disable ASPM
     #"pcie_port_pm=off" # eGPU troubleshot
     #"amdgpu.runpm=0" # eGPU troubleshoot
+    "resume_offset=22767" # resume from hibernate
   ];
-  #resumeDevice = "/dev/disk/by-uuid/2ef9551c-28e6-484b-9afa-5de05f928942";
+  resumeDevice = "/dev/disk/by-uuid/dddf90ad-ef56-45bd-9fdb-f7d6f4393555"; # hibernate to swap file
   kernel.sysctl."net.ipv4.ip_forward" = 1; # IP forwarding
   extraModprobeConfig = ''
     options cfg80211 ieee80211_regdom=US
@@ -111,7 +102,7 @@ boot = {
 
 swapDevices = [{
   device = "/var/lib/swapfile";
-  size = 96*1024; # 96 GiB, matching system RAM
+  size = 128*1024; # 128 GiB: need to be able to write 96GB during hibernate
 }];
 
 # ============================================
@@ -131,6 +122,8 @@ systemd.network = {
   wait-online.enable = false;
 };
 
+systemd.sleep.settings.Sleep.HibernateDelaySec = "2h";
+
 systemd.services = {
   dhcpcd.enable = false;
   NetworkManager-wait-online.enable = false;
@@ -145,6 +138,25 @@ systemd.services = {
     virsh net-start default || true
     virsh net-autostart default || true
   '';
+  # Read energy_uj as root and present a user-readable average over 2sec
+  # This allows for estimating CPU PkgWatt in userspace w/o enabling Platypus vulnerability
+  rapl-watts = {
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = { Restart = "always"; RestartSec = 2; };
+    script = ''
+      D=/sys/devices/virtual/powercap/intel-rapl/intel-rapl:0
+      max=$(cat $D/max_energy_range_uj)
+      e0=$(cat $D/energy_uj)
+      while sleep 2; do
+        e1=$(cat $D/energy_uj)
+        de=$(( e1 - e0 )); [ $de -lt 0 ] && de=$(( de + max ))
+        e0=$e1
+        w10=$(( de / 200000 ))          # µJ / 2 s → deciwatts
+        printf '%d.%d\n' $(( w10 / 10 )) $(( w10 % 10 )) > /run/pkg_watts.tmp
+        mv /run/pkg_watts.tmp /run/pkg_watts
+      done
+    '';
+  };
 };
 
 # ============================================
@@ -196,7 +208,7 @@ hardware = {
       enable = true; # for Brother MFC printer/scanner
       netDevices = {
         brother = {
-          ip = "192.168.1.16";
+          ip = "192.168.1.39";
           model = "MFC-L2820DW";
         };
       };
@@ -230,8 +242,9 @@ security = {
 # SERVICES
 # ============================================
 
-# Display and Desktop
 services = {
+
+  # Xorg
   xserver = {
     enable = true;
     videoDrivers = [ "modesetting" ];
@@ -241,6 +254,8 @@ services = {
     };
     desktopManager.runXdgAutostartIfNone = true;
   };
+
+  # Login Manager + Autologin
   displayManager = {
     sddm = {
       enable = true;
@@ -254,6 +269,12 @@ services = {
       enable = true;
       user = "joe";
     };
+  };
+
+  # Lid Switch Action (hyprlock will run first, still)
+  logind.settings.Login = {
+    HandleLidSwitch = "suspend-then-hibernate";
+    HandleLidSwitchExternalPower = "suspend-then-hibernate";
   };
 
   # Input
@@ -469,6 +490,20 @@ programs = {
   gamescope.enable = true;
   xwayland.enable = true;
   ydotool.enable = true;
+  firefox = {
+    enable = true;
+    preferences = {
+      # Don't discard tabs under memory pressure
+      #"browser.tabs.unloadOnLowMemory" = false;
+      # Load all tabs at startup, no click-to-load placeholders
+      #"browser.sessionstore.restore_on_demand" = false;
+      # Clamp background-tab timer interval (default 1000msec) to cut idle wakeups
+      #"dom.min_background_timeout_value" = 100000;
+      # Pre-render tabs on hover so switching paints instantly
+      #"browser.tabs.remote.warmup.enabled" = true;
+    };
+    preferencesStatus = "user";
+  };
   nix-ld = {
     enable = true; # run things that expect FHS paths
     libraries = with pkgs; [

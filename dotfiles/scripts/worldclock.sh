@@ -20,5 +20,5 @@ HST=$(TZ="Pacific/Honolulu" date +"%H:%M")
 if [[ -f "$STATE_FILE" ]]; then
   echo "$JST JST  $HST HST  $PST PST  $EST EST  $BST BST"
 else
-  echo "$PST PST"
+  echo "$PST"
 fi

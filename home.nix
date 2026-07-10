@@ -400,6 +400,7 @@ xresources.properties = {
 };
 
 home.pointerCursor = {
+  enable = true;
   gtk.enable = true;
   package = pkgs.adwaita-icon-theme;
   name = "Adwaita";
@@ -524,8 +525,8 @@ home.packages = with pkgs; [
 
   # WAYLAND, HYPRLAND, RICE
   awww # swww got renamed upstream (wayland desktop background)
-  catppuccin-gtk # archived, but might work
-  catppuccin-kvantum # qt theme, apply with kvantum
+  #catppuccin-gtk # archived, but might work
+  #catppuccin-kvantum # qt theme, apply with kvantum
   gammastep # screen dimmer
   grim # grab images from wayland compositors
   gsettings-desktop-schemas # check on GTK stuff
@@ -556,12 +557,15 @@ home.packages = with pkgs; [
   wlogout # wayang logout menu
   wlr-randr # like xrandr but for wayland
   wl-clipboard # enable copy-paste in wayland
+  wl-gammarelay-applet # applet to control display temp/brightness
+  wl-gammarelay-rs # dbus interface to control display temp/brightness
 
   # GAMING
   appimage-run # just for Slippi
   discord # sucks
   dolphin-emu # GameCube/Wii emulator
   mame # arcade emulator
+  mangohud # game performance HUD
   nsnake # terminal snake game
   protontricks # allows for Steam proton prefixes
   vencord # stuff
