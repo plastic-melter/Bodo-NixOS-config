@@ -1,0 +1,20 @@
+[General]
+Background="Backgrounds/custom.jpg"
+DimBackgroundImage="0.0"
+ScaleImageCropped="true"
+
+FormPosition="left"
+PartialBlur="true"
+FullBlur="false"
+BlurRadius="60"
+HaveFormBackground="true"
+
+BackgroundColor="#24273a"
+MainColor="#cad3f5"
+AccentColor="#c6a0f6"
+
+RoundCorners="20"
+ScreenPadding="0"
+Font="Noto Sans"
+FontSize="9"
+ForceHideCompletePassword="true"

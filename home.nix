@@ -80,6 +80,11 @@ home.file = {
   ".config/wofi/config".source = ./dotfiles/wofi/config;
   # wezterm
   ".config/wezterm/wezterm.lua".text = themed ./dotfiles/wezterm/wezterm.lua;
+  # GTK
+  ".config/gtk-4.0" = {
+    source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0";
+    recursive = true;
+  };
   # misc
   ".config/plutonium".source = ./dotfiles/plutonium;
   ".config/scripts".source = ./dotfiles/scripts;
@@ -116,7 +121,7 @@ xdg.configFile = {
     force = true;
     text = ''
       [Appearance]
-      style=Fusion
+      style=Adwaita-Dark
       icon_theme=Papirus-Dark
     '';
   };
@@ -124,7 +129,7 @@ xdg.configFile = {
     force = true;
     text = ''
       [Appearance]
-      style=Fusion
+      style=Adwaita-Dark
       icon_theme=Papirus-Dark
     '';
   };
@@ -329,8 +334,6 @@ home.sessionVariables = {
   EDITOR = "nvim";
   VISUAL = "nvim";
   SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/keyring/ssh";
-#  QT_IM_MODULE  = "fcitx";
-#  XMODIFIERS    = "@im=fcitx";
 };
 
 systemd.user.sessionVariables = {
@@ -365,8 +368,13 @@ dconf.settings = {
 gtk = {
   enable = true;
   theme = {
-    name = "catppuccin-frappe-blue-standard";
-    package = pkgs.magnetic-catppuccin-gtk;
+    name = "Colloid-Dark-Catppuccin";
+    package = pkgs.colloid-gtk-theme.override {
+      themeVariants = [ "default" ];
+      colorVariants = [ "dark" ];
+      sizeVariants  = [ "standard" ];
+      tweaks        = [ "catppuccin" ];
+    };
   };
   iconTheme = {
     name = "Papirus-Dark";
@@ -391,7 +399,7 @@ gtk = {
 qt = {
   enable = true;
   platformTheme.name = "qt5ct";
-  style.name = "kvantum";
+  style.name = "Adwaita-Dark";
 };
 
 xresources.properties = {
@@ -524,9 +532,9 @@ home.packages = with pkgs; [
   yt-dlp # youtube downloader
 
   # WAYLAND, HYPRLAND, RICE
+  adwaita-qt # Qt5 Adwaita-Dark
+  adwaita-qt6 # Qt6 Adwaita-Dark
   awww # swww got renamed upstream (wayland desktop background)
-  #catppuccin-gtk # archived, but might work
-  #catppuccin-kvantum # qt theme, apply with kvantum
   gammastep # screen dimmer
   grim # grab images from wayland compositors
   gsettings-desktop-schemas # check on GTK stuff
@@ -538,8 +546,6 @@ home.packages = with pkgs; [
   hyprpaper # wallpaper util
   hyprpicker # color picker tool
   hyprshot # screenshot util
-  libsForQt5.qtstyleplugin-kvantum # check on QT stuff
-  magnetic-catppuccin-gtk # catppuccin-gtk was archived, this is more recent
   nwg-clipman # clipboard manager for wayland
   nwg-dock-hyprland # dock for hyprland
   nwg-drawer # app launcher

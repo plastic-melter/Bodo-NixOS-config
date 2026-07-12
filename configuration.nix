@@ -36,14 +36,6 @@ nixpkgs.config = {
   allowUnfree = true;
   allowBroken = false;
   allowInsecure = false;
-  qt5 = {
-    enable = true;
-    platformTheme = "qt5ct";
-    style = {
-      package = pkgs.kvantum-catppuccin;
-      name = "kvantum";
-    };
-  };
 };
 
 boot = {
@@ -260,8 +252,22 @@ services = {
     sddm = {
       enable = true;
       wayland.enable = true;
-      theme = "catppuccin-mocha-mauve";
       package = pkgs.kdePackages.sddm;
+      theme = "sddm-astronaut-theme";
+      extraPackages = [
+        pkgs.kdePackages.qtmultimedia
+        (pkgs.sddm-astronaut.override {
+          embeddedTheme = "astronaut";
+          themeConfig = {
+            Background = "/etc/nixos/dotfiles/wallpapers/misc/jellyfish-dark.jpg";
+            FormPosition = "left";
+            PartialBlur = "true";
+            MainColor = "#cad3f5";
+            AccentColor = "#c6a0f6";
+            BackgroundColor = "#24273a";
+          };
+        })
+      ];
     };
     sessionPackages = [ pkgs.hyprland ];
     defaultSession = "hyprland";
@@ -714,20 +720,6 @@ in (with pkgs; [
   libnotify # desktop notification library
   libusb1 # various; flash STM32s
   libva-utils # power management stuff
-  libsForQt5.qtstyleplugin-kvantum # kvantum = qt config tool
-  libsForQt5.qt5ct # qt config tool
-
-  # LOGIN STUFF FOR USERS
-  catppuccin-sddm # nice sddm themes
-  (catppuccin-sddm.override {
-    flavor = "macchiato";
-    accent = "mauve";
-    font = "Noto Sans";
-    fontSize = "14";
-    background = "/etc/nixos/dotfiles/wallpapers/apple-dark.jpg";
-    loginBackground = false;
-    userIcon = true;
-  })
 ]) ++ [ egpu-to-vm egpu-to-host ];
 
 ################################################
