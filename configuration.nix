@@ -196,9 +196,7 @@ hardware = {
       vpl-gpu-rt # QSV encode (ffmpeg, OBS, etc)
     ];
   };
-  cpu.intel. = {
-    updateMicrocode = true;
-  };
+  cpu.intel.updateMicrocode = true;
   uinput.enable = true; # B0XX native USB
   bluetooth.enable = true;
   bluetooth.powerOnBoot = true;
