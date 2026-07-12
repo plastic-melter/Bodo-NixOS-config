@@ -80,8 +80,6 @@ home.file = {
   ".config/wofi/config".source = ./dotfiles/wofi/config;
   # wezterm
   ".config/wezterm/wezterm.lua".text = themed ./dotfiles/wezterm/wezterm.lua;
-  # XDG desktop portal
-  ".config/xdg-desktop-portal".source = ./dotfiles/xdg-desktop-portal;
   # GTK
   ".config/gtk-4.0" = {
     source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0";
@@ -91,7 +89,6 @@ home.file = {
   ".config/plutonium".source = ./dotfiles/plutonium;
   ".config/scripts".source = ./dotfiles/scripts;
   ".config/waypaper".source = ./dotfiles/waypaper;
-  ".config/xdg-desktop-portal".source = ./dotfiles/xdg-desktop-portal;
   ".config/yazi".source = ./dotfiles/yazi;
   ".vim/undodir/.keep".text = ""; # creates ~/.vim/undodir
 };
