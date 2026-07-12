@@ -80,9 +80,7 @@ boot = {
     "vfio_pci" # the actual driver that claims PCI devices on behalf of VFIO
     "thinkpad_acpi" # ...odds X210Ai supports this..?
   ];
-  kernelPackages = [
-    pkgs.linuxPackages_xanmod_latest; # gaming
-  ];
+  kernelPackages = pkgs.linuxPackages_xanmod_latest; # gaming
   kernelParams = [
     "quiet" # surpress kernel boot messages: still readable via dmesg/journalctl
     "acpi.dump_ecdt=1" # more EC logging
