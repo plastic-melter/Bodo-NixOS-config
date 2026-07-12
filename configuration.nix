@@ -1,4 +1,18 @@
-{ inputs, outputs, lib, config, pkgs, ... }: {
+{ inputs, outputs, lib, config, pkgs, ... }: 
+
+let
+  sddm-astronaut-themed = pkgs.sddm-astronaut.override {
+    embeddedTheme = "astronaut";
+    themeConfig = {
+      Background = "/etc/nixos/dotfiles/wallpapers/misc/jellyfish-dark.jpg";
+      FormPosition = "left";
+      PartialBlur = "true";
+      MainColor = "#cad3f5";
+      AccentColor = "#c6a0f6";
+      BackgroundColor = "#24273a";
+    };
+  };
+in {
 
 #############################################
 ############# X210Ai CONFIG #################
@@ -254,20 +268,7 @@ services = {
       wayland.enable = true;
       package = pkgs.kdePackages.sddm;
       theme = "sddm-astronaut-theme";
-      extraPackages = [
-        pkgs.kdePackages.qtmultimedia
-        (pkgs.sddm-astronaut.override {
-          embeddedTheme = "astronaut";
-          themeConfig = {
-            Background = "/etc/nixos/dotfiles/wallpapers/misc/jellyfish-dark.jpg";
-            FormPosition = "left";
-            PartialBlur = "true";
-            MainColor = "#cad3f5";
-            AccentColor = "#c6a0f6";
-            BackgroundColor = "#24273a";
-          };
-        })
-      ];
+      extraPackages = [ pkgs.kdePackages.qtmultimedia sddm-astronaut-themed ];
     };
     sessionPackages = [ pkgs.hyprland ];
     defaultSession = "hyprland";
@@ -649,12 +650,13 @@ environment.systemPackages = let
   '';
 in (with pkgs; [
 
-  # VM and eGPU stuff
+  # Login, VM and eGPU stuff
   freerdp # RDP client on host connects to VM NAT
   intel-gpu-tools # check iGPU resource utilization
   lact # GUI for AMD GPU tuning
   linuxKernel.packages.linux_xanmod.turbostat # CPU power use stats
   radeontop # AMD GPU monitor
+  sddm-astronaut-themed # sddm login screen theme
   virt-manager # manage VMs
 
   # HARDWARE + DRIVERS + EXTERNAL DEVICES
