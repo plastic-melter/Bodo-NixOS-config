@@ -1,30 +1,28 @@
 {
-  description = "rescription";
 
-  inputs = {
+description = "No description needed";
+
+inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    hyprland.url = "github:hyprwm/Hyprland";
   };
 
-  outputs = { self, nixpkgs, home-manager, hyprland, ...}@inputs: {
+  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
     nixosConfigurations = {
       X210Ai = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
         system = "x86_64-linux";
         modules = [
           ./configuration.nix
-	  hyprland.nixosModules.default
-	  { programs.hyprland.enable = true; }
           home-manager.nixosModules.home-manager
           {
             home-manager = {
-	      useGlobalPkgs = true;
+              useGlobalPkgs = true;
               useUserPackages = true;
               users.joe = import ./home.nix;
-	      extraSpecialArgs = { inherit inputs; };
-	    };
+              extraSpecialArgs = { inherit inputs; };
+            };
           }
         ];
       };

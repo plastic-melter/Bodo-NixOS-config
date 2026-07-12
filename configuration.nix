@@ -33,7 +33,6 @@ nix = {
     trusted-users = [ "root" "joe" ];
     extra-substituters = [
       "https://cache.nixos.org"
-      "https://hyprland.cachix.org"
       "https://nix-community.cachix.org"
     ];
     require-sigs = true;
@@ -42,7 +41,6 @@ nix = {
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     ];
-    accept-flake-config = true;
   };
 };
 
@@ -62,7 +60,7 @@ boot = {
       useOSProber = true;
       enableCryptodisk = true;
       configurationLimit = 20;
-      default = "2";
+      default = "saved"; # default to last-used boot entry
       gfxmodeEfi = "2560x1600";
       theme = ./dotfiles/grub;
       extraConfig = ''
@@ -82,7 +80,9 @@ boot = {
     "vfio_pci" # the actual driver that claims PCI devices on behalf of VFIO
     "thinkpad_acpi" # ...odds X210Ai supports this..?
   ];
-  kernelPackages = pkgs.linuxPackages_xanmod_latest; # gaming
+  kernelPackages = [
+    pkgs.linuxPackages_xanmod_latest; # gaming
+  ];
   kernelParams = [
     "quiet" # surpress kernel boot messages: still readable via dmesg/journalctl
     "acpi.dump_ecdt=1" # more EC logging
@@ -101,9 +101,10 @@ boot = {
   extraModprobeConfig = ''
     options cfg80211 ieee80211_regdom=US
   ''; 
-  #   cfg...  = resolve JP/US IR flag mismatch
-  # below: X210Ai AMD eGPU binding at boot for VMs only
-  # options vfio-pci ids=1002:73a5,1002:ab28
+  # cfg...  = resolve JP/US IR flag mismatch
+  # Below: X210Ai AMD eGPU binding at boot for VMs only
+  #options vfio-pci ids=1002:73a5,1002:ab28
+  initrd.availableKernelModules = [ "usb_storage" ];
 };
 
 swapDevices = [{
@@ -123,18 +124,11 @@ networking = {
   };
 };
 
-systemd.network = {
-  enable = true;
-  wait-online.enable = false;
-};
-
 systemd.sleep.settings.Sleep.HibernateDelaySec = "2h";
 
 systemd.services = {
-  dhcpcd.enable = false;
   NetworkManager-wait-online.enable = false;
   "systemd-networkd-wait-online".enable = false;
-  vboxnet0.wantedBy = lib.mkForce [];
   libvirtd = {
     stopIfChanged = false;
   };
@@ -201,9 +195,12 @@ hardware = {
     enable32Bit = true; # for steam/wine/32-bit GL
     extraPackages = with pkgs; [ # drivers not auto-installed
       intel-media-driver  # iHD, for Gen 8+
+      vpl-gpu-rt # QSV encode (ffmpeg, OBS, etc)
     ];
   };
-  cpu.intel.updateMicrocode = true;
+  cpu.intel. = {
+    updateMicrocode = true;
+  };
   uinput.enable = true; # B0XX native USB
   bluetooth.enable = true;
   bluetooth.powerOnBoot = true;
@@ -234,10 +231,8 @@ security = {
   sudo.enable = false;
   doas = {
     enable = true;
-    wheelNeedsPassword = false;
     extraRules = [{
-      groups = [ "doas" ];
-      noPass = true;
+      persist = true; # save time typing passwords
       keepEnv = true;
       users = [ "joe" ];
     }];
@@ -270,7 +265,6 @@ services = {
       theme = "sddm-astronaut-theme";
       extraPackages = [ pkgs.kdePackages.qtmultimedia sddm-astronaut-themed ];
     };
-    sessionPackages = [ pkgs.hyprland ];
     defaultSession = "hyprland";
     autoLogin = {
       enable = true;
@@ -367,15 +361,12 @@ services = {
     enable = true; # enable CUPS for using printers
     drivers = [ pkgs.brlaser ]; # Brother MFC printer-scanner
   };
-  openssh.enable = true; # enable SSH
+  openssh = {
+    enable = true; # enable SSH
+    settings.PasswordAuthentication = false; # key-only for security reasons
+  };
   blueman.enable = true; # convenient bluetooth GUI
   gvfs.enable = true; # required for Thunar to use .local/share/Trash
-
-  # Syncthing
-  syncthing = {
-    enable = true;
-    openDefaultPorts = true;
-  };
 
   # Power Management / Hardware
   power-profiles-daemon.enable = false; # don't fight tlp
@@ -529,7 +520,6 @@ programs = {
   };
   hyprland = {
     enable = true;
-    portalPackage = pkgs.xdg-desktop-portal-hyprland;
   };
 };
 
@@ -587,8 +577,10 @@ xdg.portal = {
   extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
   config = {
     common = {
-      default = "hyprland";
+      default = [ "hyprland" "gtk" ]; 
+      # ^ Each interface gets the first portal that implements it; hyprland for screenshare, gtk for all else
       "org.freedesktop.impl.portal.FileChooser" = "gtk";
+      "org.freedesktop.impl.portal.Settings" = "gtk";
     };
   };
 };
@@ -607,7 +599,6 @@ users = {
       "libvirtd"  # access to libvirt VM management
       "plugdev"   # access to USB devices such as rpi flashing
       "audio"     # access to audio devices
-      "disk"      # access to raw disk devices
       "video"     # access to video devices
       "power"     # access to power management
       "scanner"   # access to scanner
@@ -654,7 +645,6 @@ in (with pkgs; [
   freerdp # RDP client on host connects to VM NAT
   intel-gpu-tools # check iGPU resource utilization
   lact # GUI for AMD GPU tuning
-  linuxKernel.packages.linux_xanmod.turbostat # CPU power use stats
   radeontop # AMD GPU monitor
   sddm-astronaut-themed # sddm login screen theme
   virt-manager # manage VMs
@@ -679,6 +669,7 @@ in (with pkgs; [
   bc # calculations
   btop # like htop but nicer
   cachix # binary cache
+  config.boot.kernelPackages.turbostat # Intel monitoring tool
   cpufrequtils # cpu frequency control/query
   curl # download web stuff
   dislocker # unlock Bitlocker encryption

@@ -80,6 +80,8 @@ home.file = {
   ".config/wofi/config".source = ./dotfiles/wofi/config;
   # wezterm
   ".config/wezterm/wezterm.lua".text = themed ./dotfiles/wezterm/wezterm.lua;
+  # XDG desktop portal
+  ".config/xdg-desktop-portal".source = ./dotfiles/xdg-desktop-portal;
   # GTK
   ".config/gtk-4.0" = {
     source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0";
@@ -139,16 +141,6 @@ xdg.configFile = {
   "dunst/dunstrc".text = themed ./dotfiles/dunst/dunstrc;
   # ZSH prompt (themed)
   "starship.toml".text = themed ./dotfiles/starship/starship.toml;
-};
-
-xdg.portal = {
-  enable = true;
-  extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-  config.common = {
-    default = [ "hyprland" "gtk" ];
-    "org.freedesktop.impl.portal.Settings" = [ "gtk" ];
-    "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
-  };
 };
 
 # ============================================
@@ -224,20 +216,6 @@ manual = {
   html.enable = false;
   json.enable = false;
   manpages.enable = false;
-};
-
-# ============================================
-# WAYLAND COMPOSITOR
-# ============================================
-
-wayland.windowManager = {
-  hyprland = {
-    enable = true;
-    xwayland.enable = true;
-    systemd.enable = false;
-    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-    configType = "hyprlang";
-  };
 };
 
 # ============================================
@@ -428,7 +406,7 @@ xdg.desktopEntries = import ./dotfiles/desktop-entries.nix;
 xdg.mimeApps = {
   enable = true;
   defaultApplications = {
-    # Images → imv
+    # Images → nsxiv
     "image/png"  = [ "nsxiv.desktop" ];
     "image/jpeg" = [ "nsxiv.desktop" ];
     "image/jpg"  = [ "nsxiv.desktop" ];
@@ -574,7 +552,6 @@ home.packages = with pkgs; [
   mangohud # game performance HUD
   nsnake # terminal snake game
   protontricks # allows for Steam proton prefixes
-  vencord # stuff
   vitetris # terminal tetris
   wineWow64Packages.waylandFull # wine for wayland
   winetricks # install DLLs/etc into wine prefixes
