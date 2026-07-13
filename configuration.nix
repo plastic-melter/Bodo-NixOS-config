@@ -38,7 +38,6 @@ nix = {
     require-sigs = true;
     extra-trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     ];
   };
@@ -369,6 +368,8 @@ services = {
   tlp = {
     enable = true;
     settings = {
+      START_CHARGE_THRESH_BAT0 = "85";
+      STOP_CHARGE_THRESH_BAT0 = "90";
       RUNTIME_PM_ON_AC = "on"; # "on" = PCI(e) devices always on
       RUNTIME_PM_ON_BAT = "auto"; # "auto" = let devices suspend to low-power states
       # Governor: powersave still boosts; performance pins max P-states

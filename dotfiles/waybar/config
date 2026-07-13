@@ -80,7 +80,7 @@
   "custom/mpris": {
     "exec": "/etc/nixos/dotfiles/scripts/mpris.sh",
     "return-type": "json",
-    "max-length": 36,
+    "max-length": 3,
     "on-click-middle": "playerctl play-pause",
     "on-click": "playerctl previous",
     "on-click-right": "playerctl next"
