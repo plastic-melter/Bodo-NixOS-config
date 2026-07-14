@@ -50,6 +50,7 @@ nixpkgs.config = {
 };
 
 boot = {
+  plymouth.enable = false; # disable ugly grey nixos bootsplash
   loader = {
     efi.canTouchEfiVariables = true;
     grub = {
@@ -197,8 +198,10 @@ hardware = {
   };
   cpu.intel.updateMicrocode = true;
   uinput.enable = true; # B0XX native USB
-  bluetooth.enable = true;
-  bluetooth.powerOnBoot = true;
+  bluetooth = {
+    enable = true;
+    powerOnBoot = false;
+  };
   enableRedistributableFirmware = true;
   sane = {
     enable = true; # for scanning from printer/scanner
@@ -358,7 +361,8 @@ services = {
   };
   openssh = {
     enable = true; # enable SSH
-    settings.PasswordAuthentication = false; # key-only for security reasons
+    settings.PasswordAuthentication = false; # key-only for security reasons, bleh
+    kbdInteractiveAuthentication = false; # closes the PAM side-door that can still accept passwords
   };
   blueman.enable = true; # convenient bluetooth GUI
   gvfs.enable = true; # required for Thunar to use .local/share/Trash
@@ -605,6 +609,9 @@ users = {
       "wheel"     # access to sudo
       "input"     # access to input devices
       "uinput"    # access to virtual input devices
+    ];
+    openssh.authorizedKeys.keys = [
+    #  "ssh-ed69420 ABC67..."
     ];
   };
 }; 

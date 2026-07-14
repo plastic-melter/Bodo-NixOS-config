@@ -46,5 +46,6 @@
     power = "doas python3 /etc/nixos/dotfiles/scripts/powerinfo.py";
     comfy-egpu = "cd ~/Desktop/AI/ComfyUI && source venv/bin/activate && HSA_OVERRIDE_GFX_VERSION=10.3.0 LD_LIBRARY_PATH=$(nix eval --raw nixpkgs#stdenv.cc.cc.lib)/lib:$(nix eval --raw nixpkgs#zstd.out)/lib python main.py --listen";
     comfy-cpu = "cd ~/Desktop/AI/ComfyUI && source venv/bin/activate && LD_LIBRARY_PATH=$(nix eval --raw nixpkgs#stdenv.cc.cc.lib)/lib:$(nix eval --raw nixpkgs#zstd.out)/lib python main.py --cpu --listen";
+    ytdl = "yt-dlp -f bestaudio -x --audio-format opus --audio-quality 0 --embed-thumbnail --embed-metadata --convert-thumbnails jpg --sleep-interval 3 --max-sleep-interval 10 --sleep-requests 1 -i --no-warnings";
   };
 }

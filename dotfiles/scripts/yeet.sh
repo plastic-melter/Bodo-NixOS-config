@@ -39,12 +39,9 @@ if [ "$PUSH_FLAG" = true ]; then
 fi
 
 echo -e "${CYAN}Rebuilding NixOS system...${NC}"
-BUILD_OUTPUT=$(doas nixos-rebuild switch --flake /etc/nixos 2>&1 | tee /dev/tty)
-
-if echo "$BUILD_OUTPUT" | grep -q "activating the configuration" && \
-   ! echo "$BUILD_OUTPUT" | grep -q "the following units failed"; then
+if doas nixos-rebuild switch --flake /etc/nixos; then
     echo -e "${GREEN}Rebuild succeeded${NC}"
-    
+
     # Only push if --push flag was provided and online
     if [ "$PUSH_FLAG" = true ]; then
       if ping -c 1 -W 1 8.8.8.8 &> /dev/null; then

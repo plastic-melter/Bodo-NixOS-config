@@ -85,6 +85,8 @@ home.file = {
     source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0";
     recursive = true;
   };
+  # fcitx
+  ".config/fcitx5/profile".source = ./dotfiles/fcitx5/profile; # link just profile, so the home dir is still writeable
   # misc
   ".config/plutonium".source = ./dotfiles/plutonium;
   ".config/scripts".source = ./dotfiles/scripts;
@@ -492,6 +494,7 @@ home.packages = with pkgs; [
   mission-center # system monitoring GUI
   networkmanagerapplet # nm-applet tray utility
   nsxiv # image viewer, more features than imv
+  opustags # view and edit OPUS metadata
   pavucontrol # audio control GUI
   playerctl # audio playback control utility
   poppler # PDF previews in TUi file manager
