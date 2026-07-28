@@ -101,7 +101,7 @@ boot = {
     #"pcie_aspm=off" # eGPU troubleshoot: let BIOS determine ASPM
     #"pcie_aspm.policy=performance" # force disable ASPM
     #"pcie_port_pm=off" # eGPU troubleshot
-    #"amdgpu.runpm=0" # eGPU troubleshoot
+    "amdgpu.runpm=0" # eGPU troubleshoot
     "resume_offset=22767" # resume from hibernate
   ];
   resumeDevice = "/dev/disk/by-uuid/dddf90ad-ef56-45bd-9fdb-f7d6f4393555"; # hibernate to swap file

@@ -1,5 +1,6 @@
 { inputs, config, pkgs, lib, ... }:
 let
+
   # Some dotfiles will source color codes (by pywal) from palette.nix
   # ...base and overrides are split, and merged here:
   palette = (import ./dotfiles/palette-base.nix)
@@ -19,6 +20,37 @@ let
       -c 16384 -t 14 --mlock -ngl $NGL \
       --host 127.0.0.1 --port 8080
   '';
+
+  # Let GTK use palette colors pulled from wallpaper
+  themeDir = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
+  gtkNamedColors = ''
+    @define-color window_bg_color #${palette.BG};
+    @define-color window_fg_color #${palette.TEXT};
+    @define-color view_bg_color #${palette.BG_ALT};
+    @define-color view_fg_color #${palette.TEXT};
+    @define-color headerbar_bg_color #${palette.SURFACE};
+    @define-color headerbar_fg_color #${palette.TEXT};
+    @define-color headerbar_backdrop_color #${palette.BG};
+    @define-color sidebar_bg_color #${palette.BG_ALT};
+    @define-color sidebar_fg_color #${palette.TEXT};
+    @define-color sidebar_backdrop_color #${palette.BG};
+    @define-color secondary_sidebar_bg_color #${palette.BG_ALT};
+    @define-color card_bg_color #${palette.SURFACE};
+    @define-color dialog_bg_color #${palette.BG_ALT};
+    @define-color popover_bg_color #${palette.SURFACE};
+    @define-color thumbnail_bg_color #${palette.SURFACE};
+    @define-color accent_bg_color #${palette.ACCENT};
+    @define-color accent_fg_color #${palette.TEXT};
+    @define-color accent_color #${palette.ACCENT};
+    @define-color borders #${palette.BORDER};
+    @define-color theme_bg_color #${palette.BG};
+    @define-color theme_fg_color #${palette.TEXT};
+    @define-color theme_base_color #${palette.BG_ALT};
+    @define-color theme_text_color #${palette.TEXT};
+    @define-color theme_selected_bg_color #${palette.ACCENT};
+    @define-color theme_selected_fg_color #${palette.TEXT};
+  '';
+
 in {
 
 #################################################
@@ -58,10 +90,8 @@ home.file = {
   # fastfetch
   ".config/fastfetch".source = ./dotfiles/fastfetch;
   # GTK
-  ".config/gtk-4.0" = {
-    source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0";
-    recursive = true;
-  };
+  ".config/gtk-4.0/assets".source = "${themeDir}/gtk-4.0/assets";
+  ".config/gtk-4.0/gtk.css".text = builtins.readFile "${themeDir}/gtk-4.0/gtk.css" + "\n" + gtkNamedColors;
   # Hyprland
   ".config/hypr/hyprland.conf".text = themed ./dotfiles/hypr/hyprland.conf;
   ".config/hypr/hypridle.conf".source = ./dotfiles/hypr/hypridle.conf;
@@ -139,18 +169,30 @@ xdg.configFile = {
     force = true;
     text = ''
       [Appearance]
-      style=Adwaita-Dark
+      style=Fusion
       icon_theme=Papirus-Dark
+      custom_palette=true
+      color_scheme_path=/home/joe/.config/qt5ct/colors/wal.conf
     '';
   };
   "qt6ct/qt6ct.conf" = {
     force = true;
     text = ''
       [Appearance]
-      style=Adwaita-Dark
+      style=Fusion
       icon_theme=Papirus-Dark
+      custom_palette=true
+      color_scheme_path=/home/joe/.config/qt6ct/colors/wal.conf
     '';
   };
+  "qt5ct/colors/wal.conf".text = let p = palette; in ''
+    [ColorScheme]
+    active_colors=#ff${p.TEXT}, #ff${p.SURFACE}, #ff${p.SURFACE}, #ff${p.SURFACE}, #ff${p.BG}, #ff${p.BORDER}, #ff${p.TEXT}, #ff${p.TEXT}, #ff${p.TEXT}, #ff${p.BG_ALT}, #ff${p.BG}, #ff${p.BG}, #ff${p.ACCENT}, #ff${p.BG}, #ff${p.ACCENT}, #ff${p.TEXT_DIM}, #ff${p.SURFACE}, #ff${p.BG}, #ff${p.SURFACE}, #ff${p.TEXT}, #ff${p.TEXT_DIM}
+    disabled_colors=#ff${p.TEXT_DIM}, #ff${p.SURFACE}, #ff${p.SURFACE}, #ff${p.SURFACE}, #ff${p.BG}, #ff${p.BORDER}, #ff${p.TEXT_DIM}, #ff${p.TEXT}, #ff${p.TEXT_DIM}, #ff${p.BG_ALT}, #ff${p.BG}, #ff${p.BG}, #ff${p.SURFACE}, #ff${p.TEXT_DIM}, #ff${p.ACCENT}, #ff${p.TEXT_DIM}, #ff${p.SURFACE}, #ff${p.BG}, #ff${p.SURFACE}, #ff${p.TEXT_DIM}, #ff${p.TEXT_DIM}
+    inactive_colors=#ff${p.TEXT}, #ff${p.SURFACE}, #ff${p.SURFACE}, #ff${p.SURFACE}, #ff${p.BG}, #ff${p.BORDER}, #ff${p.TEXT}, #ff${p.TEXT}, #ff${p.TEXT}, #ff${p.BG_ALT}, #ff${p.BG}, #ff${p.BG}, #ff${p.SURFACE}, #ff${p.TEXT}, #ff${p.ACCENT}, #ff${p.TEXT_DIM}, #ff${p.SURFACE}, #ff${p.BG}, #ff${p.SURFACE}, #ff${p.TEXT}, #ff${p.TEXT_DIM}
+  '';
+  "qt6ct/colors/wal.conf".source =
+    config.xdg.configFile."qt5ct/colors/wal.conf".source;
   # Make thunar use wezterm
   "xfce4/helpers.rc".text = "TerminalEmulator=wezterm";
   # Dunst config file (themed)
@@ -507,23 +549,16 @@ gtk = {
       accent = "lavender";
     };
   };
-  gtk4.theme = config.gtk.theme;
   gtk3.extraConfig.gtk-application-prefer-dark-theme = true;
   gtk4.extraConfig.gtk-application-prefer-dark-theme = true;
-  # Below: make Mission Center's top bar not go blindingly white
-  gtk4.extraCss = ''
-    headerbar:backdrop,
-    headerbar {
-      background-color: #303446;
-      background-image: none;
-    }
-  '';
+  gtk4.theme = null; # required for stateVersion <26.05
+  gtk3.extraCss = gtkNamedColors; # use colors from dotfiles/palette.nix
 };
 
 qt = {
   enable = true;
   platformTheme.name = "qt5ct";
-  style.name = "Adwaita-Dark";
+  style.name = "Fusion";
 };
 
 xresources.properties = {

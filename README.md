@@ -1,47 +1,32 @@
 # X210Ai NixOS Config
 
-Backup and reproducible config for my personal [NixOS](https://nixos.org) system, currently configured for an [X210Ai](https://macdat.net/laptops/jxtech/x210ai.php).
+Backup and reproducible config for my personal [NixOS](https://nixos.org) system, currently configured for an [X210Ai](https://macdat.net/laptops/jxtech/x210ai.php). Also some notes.
 
 ![Desktop Screenshot](./.desktop.png)
 ![X210Ai](./.X210Ai.png)
 
 ---
 
-## Config files for:
-Wayland stuff:
-- [Hyprland](https://hyprland.org), [waybar](https://github.com/Alexays/Waybar), [nwg-shell](https://nwg-piotr.github.io/nwg-shell/), [wlogout](https://github.com/ArtsyMacaw/wlogout), [dunst](https://github.com/dunst-project/dunst), [wofi](https://hg.sr.ht/~scoopta/wofi), [eww](https://elkowar.github.io/eww/), etc.
-
-Other stuff:
-- [WezTerm](https://wezfurlong.org/wezterm/), a fast terminal.
-- [Neovim](https://neovim.io), my preferred text editor.
-- [Zsh](https://ohmyz.sh/), a feature-rich shell.
-- [Yazi](https://yazi-rs.github.io), an efficient TUI file browser.
-- [Starship](https://starship.rs/), a fast shell prompt.
-
-...and more, along with some useful scripts. 
-
 ## X210Ai To-do List (hardware):
 - test X200 JP106 keyboard scancodes and Esc/A/Z issue
-- SK-8855 ThinkLight/power button wiring (major PITA)
+- SK-8855 ThinkLight/power button wiring
 - photodiode test backlight PWM
-- re-celled battery capacity adjustment
-- troubleshoot Oculink eGPU (PCIe dropout during VAE decode)
+- ...lots and lots of battery testing...
+- troubleshoot eGPU PCIe dropout during VAE decode
 - troubleshoot 35W cooling capacity: should be closer to 60W?
   - test on other X210Ai machines
-- speaker upgrade?
-- lid reinforcement
+- lid reinforcement + panel replacement
+- test PL adjustment and undervolting
 
 ## To-do list (software)
 - de-Mozilla
 - make things look nicer (ongoing skill issue)
-- test PL adjustment and undervolting
 
 ## X210Ai EC/BIOS bugs/quirks as of July-ish 2026
-- PL values cannot be manually set in userspace
+- PL values (probably) cannot be manually set in userspace
 - no custom fan curves, fan tacho not exposed
-- hibernate doesn't resume properly on Windows (Linux OK)
-- sometimes the fan locks at low speed (--> temps>100C)
-- disabling OC/CFG locks pins all cores at 400MHz (??)
+- resuming from hibernate-to-disk might be iffy on Windows
+- disabling OC/CFG locks pins all cores at 400MHz (??) (skill issue?)
 
 ## Why NixOS?
 - **Declarative system configuration**: your entire system lives in version-controlled text files you can read, understand, and modify in one place (no more mystery edits buried deep in /etc, forgotten PPAs, config drift, or "I ran some command 3 years ago and now I can't remember what it was")
