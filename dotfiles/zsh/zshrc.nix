@@ -12,6 +12,7 @@
       [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
       rm -f -- "$tmp"
     }
+  [[ -f "$HOME/.cache/wal/sequences" ]] && (cat "$HOME/.cache/wal/sequences" &)
   '';
   envExtra = ''
     if [[ -z "$__NIXOS_SET_ENVIRONMENT_DONE" ]]; then
@@ -42,6 +43,7 @@
     homeclean = "env --chdir=/home/joe /etc/nixos/dotfiles/scripts/homeclean.sh";
     gc = "git add -A && git commit -m";
     nxrdp = "xfreerdp /v:192.168.122.166 /u:odinn /dynamic-resolution /sound:sys:pulse";
+    fetch = "fastfetch";
     flashcards = "~/Desktop/wanikani/1to14/flashcard.sh";
     power = "doas python3 /etc/nixos/dotfiles/scripts/powerinfo.py";
     comfy-egpu = "cd ~/Desktop/AI/ComfyUI && source venv/bin/activate && HSA_OVERRIDE_GFX_VERSION=10.3.0 LD_LIBRARY_PATH=$(nix eval --raw nixpkgs#stdenv.cc.cc.lib)/lib:$(nix eval --raw nixpkgs#zstd.out)/lib python main.py --listen";

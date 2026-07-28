@@ -18,6 +18,6 @@ build() {
 
 last=""
 out() { local o=$(build); [[ $o != $last ]] && { print -r -- "$o"; last=$o; }; }
-
 out
-playerctl -a -F metadata --format '{{status}}' 2>/dev/null | while read -r _; do out; done
+playerctl -a -F metadata --format '{{status}}{{mpris:trackid}}' 2>/dev/null \
+  | while read -r _; do out; done

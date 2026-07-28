@@ -80,7 +80,7 @@
   "custom/mpris": {
     "exec": "/etc/nixos/dotfiles/scripts/mpris.sh",
     "return-type": "json",
-    "max-length": 3,
+    "max-length": 30,
     "on-click-middle": "playerctl play-pause",
     "on-click": "playerctl previous",
     "on-click-right": "playerctl next"
@@ -118,10 +118,12 @@
   },
   "custom/refreshrate": {
     "format": "󰍹  {}Hz",
-    "exec": "hyprctl monitors | grep '@' | head -n 1 | cut -d '@' -f 2 | cut -d '.' -f 1",
+    "exec": "hyprctl -j monitors | jq -r '.[] | select(.name==\"eDP-1\") | .refreshRate|round'",
     "interval": "once",
     "signal": 10,
-    "on-click": "/etc/nixos/dotfiles/scripts/x210ai-165hz-toggle.sh"
+    "on-click": "/etc/nixos/dotfiles/scripts/display.zsh hz",
+    "tooltip": true,
+    "tooltip-format": "Left: cycle 60/120/165"
   },
   "network": {
     "format-wifi": "󰤨",
@@ -136,30 +138,30 @@
     "spacing": 5
   },
   "backlight": {
-    "format": "  {percent}%",
+    "format": " {percent}%",
     "format-icons": ["", "", "", "", "", "", "", "", ""],
     "tooltip-format": "",
     "on-click": "/etc/nixos/dotfiles/scripts/brightnessctl.sh down",
     "on-click-right": "/etc/nixos/dotfiles/scripts/brightnessctl.sh up",
-    "on-click-middle": "/etc/nixos/dotfiles/scripts/gamma-brightness.sh toggle && sleep 0.4 && pkill -RTMIN+11 waybar; pkill -RTMIN+12 waybar"
+    "on-click-middle": "/etc/nixos/dotfiles/scripts/gamma-toggle.sh"
   },
   "custom/gamma-brightness": {
     "format": "{}",
     "exec": "/etc/nixos/dotfiles/scripts/gamma-brightness.sh",
     "interval": "once",
     "signal": 11,
-    "on-click":       "/etc/nixos/dotfiles/scripts/gamma-brightness.sh down  && pkill -RTMIN+11 waybar",
-    "on-click-right": "/etc/nixos/dotfiles/scripts/gamma-brightness.sh up    && pkill -RTMIN+11 waybar",
-    "on-click-middle":"/etc/nixos/dotfiles/scripts/gamma-brightness.sh reset && pkill -RTMIN+11 waybar"
+    "on-click":        "/etc/nixos/dotfiles/scripts/gamma-brightness.sh down",
+    "on-click-right":  "/etc/nixos/dotfiles/scripts/gamma-brightness.sh up",
+    "on-click-middle": "/etc/nixos/dotfiles/scripts/gamma-brightness.sh reset"
   },
   "custom/gamma-warmth": {
     "format": "{}",
     "exec": "/etc/nixos/dotfiles/scripts/gamma-warmth.sh",
     "interval": "once",
     "signal": 12,
-    "on-click":       "/etc/nixos/dotfiles/scripts/gamma-warmth.sh down   && pkill -RTMIN+12 waybar",
-    "on-click-right": "/etc/nixos/dotfiles/scripts/gamma-warmth.sh up     && pkill -RTMIN+12 waybar",
-    "on-click-middle":"/etc/nixos/dotfiles/scripts/gamma-warmth.sh toggle && pkill -RTMIN+12 waybar"
+    "on-click":        "/etc/nixos/dotfiles/scripts/gamma-warmth.sh down",
+    "on-click-right":  "/etc/nixos/dotfiles/scripts/gamma-warmth.sh up",
+    "on-click-middle": "/etc/nixos/dotfiles/scripts/gamma-warmth.sh toggle"
   },
   "pulseaudio": {
     "format": "󰕾  {volume}%",
@@ -178,7 +180,7 @@
     "format": "{}",
     "exec": "/etc/nixos/dotfiles/scripts/watts.sh",
     "interval": 3,
-    "on-click": "/etc/nixos/dotfiles/scripts/power-toggle.sh"
+    "on-click": "power-toggle"
   },
   "custom/cooling": {
     "format": "󰏈  {}",

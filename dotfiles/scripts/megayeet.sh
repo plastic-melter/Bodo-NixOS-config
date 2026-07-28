@@ -50,8 +50,8 @@ echo -e "\e[3m~ Flake updated successfully ~\e[0m"
 sleep 0.3
 
 # --- SYSTEM REBUILD -----------------------------------------------------------
-echo -e "${PURPLE}Rebuilding system with flake...${NC}"
-doas nixos-rebuild switch --upgrade --flake /etc/nixos
+echo -e "${PURPLE}Rebuilding system in-place with flake...${NC}"
+doas nixos-rebuild switch --flake /etc/nixos
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}nixos-rebuild failed.${NC}"
@@ -81,4 +81,4 @@ else
 fi
 
 # --- DONE ---------------------------------------------------------------------
-echo -e "${PURPLE}Full system upgrade complete.${NC}"
+echo -e "${PURPLE}Full in-place system upgrade complete.${NC}"

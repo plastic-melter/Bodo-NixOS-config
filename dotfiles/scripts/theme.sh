@@ -8,7 +8,7 @@
 # usage:
 #   theme.sh                  use current awww wallpaper
 #   theme.sh -i path/img.png  use arbitrary image
-#   theme.sh -y               auto-accept (skip prompt)
+#   theme.sh --recolor --field XX --value YY
 #   theme.sh --preview        show palette only, do not write
 #   theme.sh --dry-run        write palette.nix but skip yeet
 #   theme.sh -h | --help
@@ -16,7 +16,8 @@
 set -euo pipefail
 
 DOTFILES="/etc/nixos/dotfiles"
-PALETTE_NIX="$DOTFILES/palette.nix"
+PALETTE_NIX="$DOTFILES/palette-base.nix"
+OVERRIDES="$DOTFILES/palette-overrides.nix"
 WAL_CACHE="$HOME/.cache/wal/colors.sh"
 WAL_BIN="/etc/profiles/per-user/joe/bin/wal"
 YEET="$DOTFILES/scripts/yeet.sh"
@@ -268,6 +269,36 @@ reload_live() {
         echo "  ✓ dunst restarted"
     fi
 }
+
+if [[ "${1:-}" == "--recolor" ]]; then
+    shift
+    field="" value=""
+    while [[ $# -gt 0 ]]; do case "$1" in
+        --field) field="${2^^}"; shift 2 ;;
+        --value) value="$(strip "$2")"; shift 2 ;;
+        --clear) field="${2^^}"; value="__CLEAR__"; shift 2 ;;
+        *) echo "unknown: $1" >&2; exit 1 ;;
+    esac; done
+    [[ -n "$field" ]] || { echo "need --field" >&2; exit 1; }
+    [[ -f "$OVERRIDES" ]] || echo '{ }' > "$OVERRIDES"
+
+    if [[ "$value" == "__CLEAR__" ]]; then
+        sed -i -E "/^[[:space:]]*$field[[:space:]]*=/d" "$OVERRIDES"
+        echo "→ cleared override $field"
+    else
+        [[ "$value" =~ ^[0-9a-fA-F]{6}$ ]] || { echo "value must be 6 hex digits" >&2; exit 1; }
+        value="${value,,}"
+        if grep -qE "^[[:space:]]*$field[[:space:]]*=" "$OVERRIDES"; then
+            sed -i -E "s|^([[:space:]]*$field[[:space:]]*=[[:space:]]*\").*(\";)|\1$value\2|" "$OVERRIDES"
+        else
+            sed -i -E "s|^[[:space:]]*\}|  $field = \"$value\";\n}|" "$OVERRIDES"
+        fi
+        echo "→ override $field = $value"
+    fi
+    "$YEET"
+    reload_live
+    exit 0
+fi
 
 while [[ $# -gt 0 ]]; do
     case "$1" in

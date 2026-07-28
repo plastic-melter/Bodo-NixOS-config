@@ -13,5 +13,5 @@ for h in /sys/class/hwmon/hwmon*; do
   break
 done
 
-printf '{"text":"󰋊  %s%%  %s°","tooltip":"%sG / %sG used\\nNVMe %s°"}\n' \
+printf '{"text":"󰋊  %s%%  %s°","tooltip":"%sG / %sG used\\nNVMe %s°"}\n' \
   "$pct" "$nvme" "$used" "$total" "$nvme"

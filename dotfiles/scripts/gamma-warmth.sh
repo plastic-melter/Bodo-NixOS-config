@@ -1,6 +1,5 @@
 #!/usr/bin/env zsh
-D=rs.wl-gammarelay; P=/; I=rs.wl.gammarelay
-running() { pgrep -f wl-gammarelay-rs >/dev/null; }
+source /etc/nixos/dotfiles/scripts/gamma-common.zsh
 
 case $1 in
   up)    running && busctl --user -- call $D $P $I UpdateTemperature n  500 ;;
@@ -9,15 +8,18 @@ case $1 in
   night) running && busctl --user -- set-property $D $P $I Temperature q 4000 ;;
   toggle)
     if running; then
-      t=$(busctl --user get-property $D $P $I Temperature | awk '{print $2}')
-      (( t > 5000 )) \
-        && busctl --user -- set-property $D $P $I Temperature q 4000 \
-        || busctl --user -- set-property $D $P $I Temperature q 6500
+      t=$(prop Temperature)
+      if (( t > 5000 )); then
+        busctl --user -- set-property $D $P $I Temperature q 4000
+      else
+        busctl --user -- set-property $D $P $I Temperature q 6500
+      fi
     fi ;;
 esac
+[[ -n $1 ]] && pkill -RTMIN+12 waybar
 
 if running; then
-  t=$(busctl --user get-property $D $P $I Temperature 2>/dev/null | awk '{print $2}')
+  t=$(prop Temperature)
   [[ -n $t ]] && printf '󰖙  %d%%\n' $(( t * 100 / 6500 )) || print -r -- '󰖙  NA'
 else
   print -r -- '󰖙  NA'

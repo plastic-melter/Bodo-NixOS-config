@@ -1,0 +1,5 @@
+{
+  "label": "custom",
+  "light": { "fg": "#C6C1D4", "bg": "#0A0810", "link": "#9A8CC4" },
+  "dark":  { "fg": "#C6C1D4", "bg": "#0A0810", "link": "#9A8CC4" }
+}

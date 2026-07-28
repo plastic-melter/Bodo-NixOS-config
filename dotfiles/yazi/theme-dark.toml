@@ -3,18 +3,25 @@ separator_open  = ""
 separator_close = ""
 
 [status.overall]
-bg = "#1e1e2e"  # base (catppuccin mocha)
+#bg = "#1e1e2e"  # base (catppuccin mocha)
+bg = "#__BG__"
 
 [status.mode_normal]
-bg = "#cba6f7"  # mauve
-fg = "#1e1e2e"
+#bg = "#cba6f7"  # mauve
+#fg = "#1e1e2e"
+bg = "#__BORDER_ACTIVE__"
+fg = "#__BG__"
 
 [status.mode_select]
-bg = "#a6e3a1"  # green
-fg = "#1e1e2e"
+#bg = "#a6e3a1"  # green
+#fg = "#1e1e2e"
+bg = "#__MOD_BATTERY__"   # green-family identity
+fg = "#__BG__"
 
 [status.mode_unset]
-bg = "#f38ba8"  # red
-fg = "#1e1e2e"
+#bg = "#f38ba8"  # red
+#fg = "#1e1e2e"
+bg = "#__BORDER_ACTIVE__" # red-family (wal color1)
+fg = "#__BG__"
 
 # nice colors: 7c6f9f (darker) and b4a0e5 (lighter) purples

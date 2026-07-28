@@ -1,11 +1,17 @@
-{
+{ description = "X210Ai system flake";
 
-description = "No description needed";
-
-inputs = {
+  inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    ags = {
+      url = "github:aylur/ags";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    astal = {
+      url = "github:aylur/astal";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs: {
@@ -22,10 +28,12 @@ inputs = {
               useUserPackages = true;
               users.joe = import ./home.nix;
               extraSpecialArgs = { inherit inputs; };
+              backupFileExtension = "hmbak";
             };
           }
         ];
       };
     };
   };
+
 }

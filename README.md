@@ -32,15 +32,14 @@ Other stuff:
 - lid reinforcement
 
 ## To-do list (software)
-- diagnose package power discrepency between Windows and Linux
-- fix fcitx5 mozc IME
+- de-Mozilla
 - make things look nicer (ongoing skill issue)
 - test PL adjustment and undervolting
 
 ## X210Ai EC/BIOS bugs/quirks as of July-ish 2026
 - PL values cannot be manually set in userspace
 - no custom fan curves, fan tacho not exposed
-- resuming from suspend/hibernate might not be reliable
+- hibernate doesn't resume properly on Windows (Linux OK)
 - sometimes the fan locks at low speed (--> temps>100C)
 - disabling OC/CFG locks pins all cores at 400MHz (??)
 

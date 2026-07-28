@@ -1,7 +1,9 @@
 { inputs, config, pkgs, lib, ... }:
 let
   # Some dotfiles will source color codes (by pywal) from palette.nix
-  palette = import ./dotfiles/palette.nix;
+  # ...base and overrides are split, and merged here:
+  palette = (import ./dotfiles/palette-base.nix)
+         // (import ./dotfiles/palette-overrides.nix);
   themed = path: builtins.replaceStrings
     (map (k: "__${k}__") (builtins.attrNames palette))
     (builtins.attrValues palette)
@@ -23,6 +25,11 @@ in {
 ################## HOME.NIX #####################
 #################################################
 
+
+imports = [
+  inputs.ags.homeManagerModules.default 
+];
+
 home = {
   stateVersion = "25.11"; # DO NOT EVER EDIT THIS
   username = "joe";
@@ -33,14 +40,28 @@ home = {
 # DOTFILE SOURCING
 # ============================================
 home.file = {
-  # Eww
+  # ags
+  ".config/ags/app.tsx".source          = ./dotfiles/ags/app.tsx;
+  ".config/ags/widget/Panel.tsx".source = ./dotfiles/ags/widget/Panel.tsx;
+  ".config/ags/widget/Help.tsx".source  = ./dotfiles/ags/widget/Help.tsx;
+  ".config/ags/lib/system.ts".source    = ./dotfiles/ags/lib/system.ts;
+  ".config/ags/style.scss".text       = themed ./dotfiles/ags/style.scss;
+  # eww
   ".config/eww/eww.yuck".source = ./dotfiles/eww/eww.yuck;
-  ".config/eww/eww.scss".text   = themed ./dotfiles/eww/eww.scss;
+  ".config/eww/eww.scss".text = themed ./dotfiles/eww/eww.scss;
   ".config/eww/scripts" = {
     source = ./dotfiles/eww/scripts;
     recursive = true;
   };
+  # fcitx
+  ".config/fcitx5/profile".source = ./dotfiles/fcitx5/profile; # link just profile, so the home dir is still writeable
+  # fastfetch
   ".config/fastfetch".source = ./dotfiles/fastfetch;
+  # GTK
+  ".config/gtk-4.0" = {
+    source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0";
+    recursive = true;
+  };
   # Hyprland
   ".config/hypr/hyprland.conf".text = themed ./dotfiles/hypr/hyprland.conf;
   ".config/hypr/hypridle.conf".source = ./dotfiles/hypr/hypridle.conf;
@@ -80,18 +101,14 @@ home.file = {
   ".config/wofi/config".source = ./dotfiles/wofi/config;
   # wezterm
   ".config/wezterm/wezterm.lua".text = themed ./dotfiles/wezterm/wezterm.lua;
-  # GTK
-  ".config/gtk-4.0" = {
-    source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0";
-    recursive = true;
-  };
-  # fcitx
-  ".config/fcitx5/profile".source = ./dotfiles/fcitx5/profile; # link just profile, so the home dir is still writeable
-  # misc
+  # yazi
+  ".config/yazi/yazi.toml".source = ./dotfiles/yazi/yazi.toml;
+  ".config/yazi/open.toml".source = ./dotfiles/yazi/open.toml;
+  ".config/yazi/theme.toml".text  = themed ./dotfiles/yazi/theme-dark.toml;
+  # MISC THINGS
   ".config/plutonium".source = ./dotfiles/plutonium;
   ".config/scripts".source = ./dotfiles/scripts;
   ".config/waypaper".source = ./dotfiles/waypaper;
-  ".config/yazi".source = ./dotfiles/yazi;
   ".vim/undodir/.keep".text = ""; # creates ~/.vim/undodir
 };
 
@@ -140,6 +157,8 @@ xdg.configFile = {
   "dunst/dunstrc".text = themed ./dotfiles/dunst/dunstrc;
   # ZSH prompt (themed)
   "starship.toml".text = themed ./dotfiles/starship/starship.toml;
+  # Foliate color schemes (epub reader)
+  "com.github.johnfactotum.Foliate/themes/gruvbox.json".source = ./dotfiles/foliate/custom.json;
 };
 
 # ============================================
@@ -147,6 +166,15 @@ xdg.configFile = {
 # ============================================
 
 programs = {
+
+  ags = {
+    enable = true;
+    configDir = null;
+    extraPackages = with inputs.astal.packages.${pkgs.stdenv.hostPlatform.system}; [
+      network bluetooth wireplumber mpris battery
+      powerprofiles hyprland apps notifd tray cava
+    ];
+  };
 
   aichat = {
     enable = true;
@@ -166,11 +194,6 @@ programs = {
     nix-direnv.enable = true;
   };
 
-  waybar = {
-    enable = true;
-    systemd.enable = true;
-  };
-
   git = {
     enable = true;
     package = pkgs.git;
@@ -181,9 +204,23 @@ programs = {
     };
   };
 
-  starship = {
+  mangohud = {
     enable = true;
-    enableZshIntegration = true;
+    settings = {
+      fps = true;
+      frametime = true;
+      gpu_stats = true;
+      gpu_power = true;
+      gpu_core_clock = true;
+      cpu_stats = true;
+      cpu_power = true;
+      cpu_mhz = true;
+      core_load = true;
+      vram = true;
+      frame_timing = true;
+      fps_metrics = "avg,1%,0.1%";
+      histogram = true;
+    };
   };
 
   neovim = {
@@ -208,7 +245,23 @@ programs = {
     initLua = builtins.readFile ./dotfiles/neovim/init.lua;
   };
 
+  obs-studio = {
+    enable = true;
+    plugins = with pkgs.obs-studio-plugins; [ obs-vkcapture ];
+  };
+
+  starship = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
+  waybar = {
+    enable = true;
+    systemd.enable = true;
+  };
+
   zsh = import ./dotfiles/zsh/zshrc.nix { inherit pkgs lib; };
+
 };
 
 manual = {
@@ -222,9 +275,14 @@ manual = {
 # ============================================
 
 services = {
-  playerctld.enable = true;
-  syncthing.enable = true;
+  blueman-applet.enable = true;
+  cliphist.enable = true;
   dunst.enable = true;
+  gnome-keyring = {
+    enable = true;
+    components = [ "secrets" "ssh" ];
+  };
+  hypridle.enable = true;
   mpd = {
     enable = true;
     musicDirectory = "/home/joe/Music";
@@ -237,13 +295,17 @@ services = {
     '';
   };
   mpd-mpris.enable = true;
+  network-manager-applet.enable = true;
+  playerctld.enable = true;
+  syncthing.enable = true;
 };
 
 # ============================================
-# SYSTEMD USER SERVICES
+# SYSTEMD USER SERVICES, TIMERS, ETC
 # ============================================
 
 systemd.user = {
+
   targets.tray = {
     Unit = {
       Description = "Home Manager System Tray";
@@ -251,42 +313,7 @@ systemd.user = {
     };
   };
 
-  services = {
-
-    udiskie = {
-      Unit.Description = "udiskie automounter";
-      Service.ExecStart = "${pkgs.udiskie}/bin/udiskie --smart-tray";
-      Install.WantedBy = [ "default.target" ];
-    };
-
-    wl-gammarelay-rs = {
-      Unit.Description = "wl-gammarelay-rs";
-      Install.WantedBy = [ "graphical-session.target" ];
-      Service.ExecStart = "${pkgs.wl-gammarelay-rs}/bin/wl-gammarelay-rs";
-    };
-
-    battery-notify = {
-       Unit.Description = "Battery low notification";
-       Service = {
-         Type = "oneshot";
-         ExecStart = let
-           script = pkgs.writeShellScript "battery-notify" ''
-             BAT=$(cat /sys/class/power_supply/BAT0/capacity)
-             STATUS=$(cat /sys/class/power_supply/BAT0/status)
-             if [ "$STATUS" != "Charging" ] && [ "$BAT" -le 20 ]; then
-               ${pkgs.libnotify}/bin/notify-send \
-                 -u critical \
-                 -i battery-low \
-                 "Battery Low" "Battery at ''${BAT}%"
-            fi
-          '';
-        in "${script}";
-      };
-    };
-  };
-
   timers = {
-
     battery-notify = {
       Unit.Description = "Battery low notification timer";
       Timer = {
@@ -296,8 +323,128 @@ systemd.user = {
       };
       Install.WantedBy = [ "timers.target" ];
     };
-
   };
+
+  services = {
+    awww = {
+      Unit = {
+        Description = "awww daemon";
+        PartOf = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" ];
+      };
+      Service = {
+        Type = "forking";
+        ExecStart = "awww-daemon";
+        Restart = "on-failure";
+      };
+      Install.WantedBy = [ "graphical-session.target" ];
+    };
+  
+    battery-notify = {
+      Unit.Description = "Battery low notification";
+      Service = {
+        Type = "oneshot";
+        ExecStart = let
+          script = pkgs.writeShellScript "battery-notify" ''
+            BAT=$(cat /sys/class/power_supply/BAT0/capacity)
+            STATUS=$(cat /sys/class/power_supply/BAT0/status)
+            if [ "$STATUS" != "Charging" ] && [ "$BAT" -le 20 ]; then
+              ${pkgs.libnotify}/bin/notify-send \
+                -u critical \
+                -i battery-low \
+                "Battery Low" "Battery at ''${BAT}%"
+            fi
+          '';
+        in "${script}";
+      };
+    };
+  
+    fcitx5 = {
+      Unit = {
+        Description = "Fcitx5 input method";
+        PartOf = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.fcitx5}/bin/fcitx5";
+        Restart = "on-failure";
+      };
+      Install.WantedBy = [ "graphical-session.target" ];
+    };
+  
+    homeclean = {
+      Unit = {
+        Description = "Home cleanup";
+        PartOf = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" ];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = "/etc/nixos/dotfiles/scripts/homeclean.sh";
+      };
+      Install.WantedBy = [ "graphical-session.target" ];
+    };
+  
+    nwg-dock = {
+      Unit = {
+        Description = "nwg-dock-hyprland";
+        PartOf = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.nwg-dock-hyprland}/bin/nwg-dock-hyprland -d -p bottom";
+        Restart = "on-failure";
+      };
+      Install.WantedBy = [ "graphical-session.target" ];
+    };
+  
+    udiskie = {
+      Unit.Description = "udiskie automounter";
+      Service.ExecStart = "${pkgs.udiskie}/bin/udiskie --smart-tray";
+      Install.WantedBy = [ "default.target" ];
+    };
+  
+    waypaper-restore = {
+      Unit = {
+        Description = "Restore wallpaper";
+        PartOf = [ "graphical-session.target" ];
+        Requires = [ "awww.service" ];
+        After = [ "awww.service" ];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.bash}/bin/sh -c 'until awww query >/dev/null 2>&1; do sleep 0.05; done; ${pkgs.waypaper}/bin/waypaper --restore'";
+      };
+      Install.WantedBy = [ "graphical-session.target" ];
+    };
+  
+    wl-gammarelay-rs = {
+      Unit = {
+        Description = "wl-gammarelay-rs gamma/temp/brightness daemon";
+        PartOf = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.wl-gammarelay-rs}/bin/wl-gammarelay-rs";
+        Restart = "on-failure";
+      };
+      Install.WantedBy = [ "graphical-session.target" ];
+    };
+  
+    xrdb = {
+      Unit = {
+        Description = "Load Xresources";
+        PartOf = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" ];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.xorg.xrdb}/bin/xrdb -load %h/.Xresources";
+      };
+      Install.WantedBy = [ "graphical-session.target" ];
+    };
+  };
+
 };
 
 # ============================================
@@ -443,23 +590,25 @@ xdg.mimeApps = {
 
 home.packages = with pkgs; [
 
-  # PROGRAMS
+  # USER APPLICATIONS / PROGRAMS
   arduino # arduino suite incl. GUI
   arduino-cli # CLI arduino tools
   audacious # music player
   bolt-launcher # OSRS RuneLite launcher
   drawio # flowchart/diagram tool
-  firefox # the best web browser
+  firefox # to be replaced soon
+  foliate # epub reader
   gimp # GNU image manipulation program
   grayjay # youtube frontend
   kdePackages.kcolorchooser # hex color tool GUI
   kdePackages.kdenlive # video editing suite
+  kicad # open-source IDE for PCB design
   libreoffice-fresh # office app suite
   moonlight-qt # desktop steaming / remote access
   mpc # CLI to control MPD
   mpv # simple video player
   obsidian # cross-platform notes program
-  obs-studio # desktop recording
+  obs-studio-plugins.obs-vkcapture # speedier vulkan screen recording
   openscad # text-based 3D parametric model compiler (CAD)
   picoscope # pocket oscilloscope
   platformio # arduino TUI + utils
@@ -482,7 +631,6 @@ home.packages = with pkgs; [
   cdrdao # burn CDs
   cdrkit # burn CDs
   cliphist # wayland clipboard history manager
-  eww # widgets and stuff
   fastfetch # quickly fetch general system info
   fd # better file finding
   ffmpeg # video re-encoding CLI
@@ -513,6 +661,7 @@ home.packages = with pkgs; [
   adwaita-qt # Qt5 Adwaita-Dark
   adwaita-qt6 # Qt6 Adwaita-Dark
   awww # swww got renamed upstream (wayland desktop background)
+  eww # widgets and stuff
   gammastep # screen dimmer
   grim # grab images from wayland compositors
   gsettings-desktop-schemas # check on GTK stuff
@@ -549,7 +698,6 @@ home.packages = with pkgs; [
   discord # sucks
   dolphin-emu # GameCube/Wii emulator
   mame # arcade emulator
-  mangohud # game performance HUD
   nsnake # terminal snake game
   protontricks # allows for Steam proton prefixes
   vitetris # terminal tetris
@@ -571,7 +719,10 @@ home.packages = with pkgs; [
   python312Packages.huggingface-hub # interface w/ Hugging Face Hub (open-source ML)
   llama-cpp # LLM inference
   llama-up # LLM convenience helper
-  
+
+  # ags
+  dart-sass # ags compiles scss through this
+  inputs.astal.packages.${pkgs.stdenv.hostPlatform.system}.io # astal CLI
 
 ];
 

@@ -1,10 +1,12 @@
 { inputs, outputs, lib, config, pkgs, ... }: 
 
 let
+
+  # Make the login screen (SDDM) look nice
   sddm-astronaut-themed = pkgs.sddm-astronaut.override {
     embeddedTheme = "astronaut";
     themeConfig = {
-      Background = "/etc/nixos/dotfiles/wallpapers/misc/jellyfish-dark.jpg";
+      Background = "/etc/nixos/dotfiles/wallpapers/misc/jellyfish-dark-flipped.jpg";
       FormPosition = "left";
       PartialBlur = "true";
       MainColor = "#cad3f5";
@@ -12,6 +14,14 @@ let
       BackgroundColor = "#24273a";
     };
   };
+
+  # Dispatch scripts for toggling X210Ai power settings (triggered by waybar module)
+  powerToggleApply = pkgs.writeShellScript "power-toggle-apply"
+    (builtins.readFile ./dotfiles/scripts/power-toggle-apply.sh);
+  powerToggle = pkgs.writeShellScriptBin "power-toggle"
+    (builtins.replaceStrings [ "@apply@" ] [ "${powerToggleApply}" ]
+      (builtins.readFile ./dotfiles/scripts/power-toggle-readout.sh));
+
 in {
 
 #############################################
@@ -68,7 +78,7 @@ boot = {
         menuentry "Poweroff" { halt }
       '';
     };
-    timeout = 1;
+    timeout = 2;
   };
   kernelModules = [ 
     "ntsync" # CoD WaW performance
@@ -124,7 +134,28 @@ networking = {
 
 systemd.sleep.settings.Sleep.HibernateDelaySec = "2h";
 
+# Make these files user-writeable so a waybar module can toggle them
+systemd.tmpfiles.rules = [
+  "z /sys/devices/system/cpu/intel_pstate/no_turbo 0664 root bodo -"
+  "z /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor 0664 root bodo -"
+  "z /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference 0664 root bodo -"
+];
+
 systemd.services = {
+  # Set SK-8855 sensitivity on startup and resume
+  trackpoint-sensitivity = {
+    description = "Set SK-8855 TrackPoint sensitivity";
+    wantedBy = [ "multi-user.target" "post-resume.target" ];
+    after = [ "post-resume.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "tp-sens" ''
+        for f in /sys/bus/hid/devices/*17EF:6009*/sensitivity; do
+          [ -e "$f" ] && echo 255 > "$f"
+        done
+      '';
+    };
+  };
   NetworkManager-wait-online.enable = false;
   "systemd-networkd-wait-online".enable = false;
   libvirtd = {
@@ -223,17 +254,23 @@ hardware = {
 
 security = {
   rtkit.enable = true;
-  polkit = {
-    enable = true;
-  };
+  polkit.enable = true;
   sudo.enable = false;
   doas = {
     enable = true;
-    extraRules = [{
-      persist = true; # save time typing passwords
-      keepEnv = true;
-      users = [ "joe" ];
-    }];
+    extraRules = [
+      {
+        users = [ "joe" ];
+        persist = true; # password once per tty, then cached ~5 min
+        keepEnv = true;
+      }
+      {
+        users = [ "joe" ];
+        noPass = true;
+        cmd = "${powerToggleApply}";
+        args = [ ]; # and only with no arguments
+      }
+    ];
   };
 };
 
@@ -263,7 +300,7 @@ services = {
       theme = "sddm-astronaut-theme";
       extraPackages = [ pkgs.kdePackages.qtmultimedia sddm-astronaut-themed ];
     };
-    defaultSession = "hyprland";
+    defaultSession = "hyprland-uwsm";
     autoLogin = {
       enable = true;
       user = "joe";
@@ -314,9 +351,6 @@ services = {
       };
     };
   };
-
-  # AMD eGPU
-  lact.enable = true;
 
   # Local AI
   ollama = {
@@ -430,25 +464,14 @@ services = {
 
     # STM32 flashing in DFU mode
     SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE="0666"
-
-    # SK-8855 Sensitivity
-    ACTION=="add|change", SUBSYSTEM=="hid", ATTRS{idVendor}=="17ef", ATTRS{idProduct}=="6009", ATTR{sensitivity}="255"
   '';
 
   # Printers/scanners: access to scanner
   avahi = {
     enable = true;
     nssmdns4 = true;
-    openFirewall = false; # only for printer discovery
+    openFirewall = false; # enable briefly only for printer discovery on LAN
   };
-};
-
-# After NTP syncs, write the correct time to the RTC chip
-systemd.services.rtc-writeback = {
-  after = [ "systemd-timesyncd.service" "time-sync.target" ];
-  wants = [ "time-sync.target" ];
-  wantedBy = [ "time-sync.target" ];
-  serviceConfig = { Type = "oneshot"; ExecStart = "${pkgs.util-linux}/bin/hwclock --systohc"; };
 };
 
 # ============================================
@@ -513,6 +536,10 @@ programs = {
   steam = {
     enable = true;
     extraCompatPackages = [ pkgs.proton-ge-bin ];
+    extraPackages = with pkgs; [
+      mangohud
+      obs-studio-plugins.obs-vkcapture
+    ];
     package = pkgs.steam.override {
       extraEnv = {
         SDL_KEYBOARD_LAYOUT = "jp";
@@ -521,6 +548,7 @@ programs = {
   };
   hyprland = {
     enable = true;
+    withUWSM = true; # prevent zombie xdg-desktop-portal-hyprland hammering CPU after logout/-in
   };
 };
 
@@ -544,9 +572,9 @@ fonts = {
     ttf_bitstream_vera
   ];
   fontconfig.defaultFonts = {
-    monospace = [ "DejaVu Sans Mono" "IPAGothic" ];
-    sansSerif = [ "DejaVu Sans" "IPAPGothic" ];
-    serif = [ "DejaVu Serif" "IPAPMincho" ];
+    monospace = [ "FiraCode Nerd Font Mono" "Symbols Nerd Font Mono" "DejaVu Sans Mono" "IPAGothic" ];
+    sansSerif = [ "DejaVu Sans" "Symbols Nerd Font" "IPAPGothic" ];
+    serif     = [ "DejaVu Serif" "IPAPMincho" ];
   };
 };
 
@@ -568,6 +596,15 @@ environment.sessionVariables = {
   NIXOS_OZONE_WL = "1"; # make eletron apps run native wayland
 #  AQ_DRM_DEVICES = "/dev/dri/by-path/pci-0000:00:02.0-card"; # make Hyprland use iGPU; NOT eGPU!
 };
+
+environment.etc."libinput/local-overrides.quirks".text = ''
+  [Lenovo SK-8855 TrackPoint]
+  MatchBus=usb
+  MatchVendor=0x17EF
+  MatchProduct=0x6009
+  MatchUdevType=pointingstick
+  AttrTrackpointMultiplier=2.5
+'';
 
 # ============================================
 # XDG PORTAL
@@ -595,6 +632,7 @@ users = {
   users.joe = {
     isNormalUser = true;
     extraGroups = [
+      "bodo"      # ...special group for special people
       "adbusers"  # access to android debug stuff
       "dialout"   # access to serial ports
       "libvirtd"  # access to libvirt VM management
@@ -611,7 +649,8 @@ users = {
       "uinput"    # access to virtual input devices
     ];
     openssh.authorizedKeys.keys = [
-    #  "ssh-ed69420 ABC67..."
+    # "ssh-ed69420 ABC67..."
+    # ssh keys will go here...
     ];
   };
 }; 
@@ -648,7 +687,6 @@ in (with pkgs; [
   # Login, VM and eGPU stuff
   freerdp # RDP client on host connects to VM NAT
   intel-gpu-tools # check iGPU resource utilization
-  lact # GUI for AMD GPU tuning
   radeontop # AMD GPU monitor
   sddm-astronaut-themed # sddm login screen theme
   virt-manager # manage VMs
@@ -661,7 +699,6 @@ in (with pkgs; [
   dfu-util # flash STM32s in DFU mode
   efibootmgr # manage boot entries on EUFI NVRAM
   exfatprogs # format stuff as exfat
-  jmtpfs # allows for Android MTP; use instead of mtpfs
   lm_sensors # tons of hardware sensors
   lshw # list hardware inventory
   msr-tools # read/write to/from the MSR
@@ -677,6 +714,7 @@ in (with pkgs; [
   cpufrequtils # cpu frequency control/query
   curl # download web stuff
   dislocker # unlock Bitlocker encryption
+  drm_info # dump info about drm devices, such as laptop panels
   file # determines file type/info
   git # distributed version control system
   htop # view resource usage
@@ -717,7 +755,7 @@ in (with pkgs; [
   libnotify # desktop notification library
   libusb1 # various; flash STM32s
   libva-utils # power management stuff
-]) ++ [ egpu-to-vm egpu-to-host ];
+]) ++ [ egpu-to-vm egpu-to-host powerToggle ];
 
 ################################################
 ########## DO NOT EVER CHANGE THIS #############

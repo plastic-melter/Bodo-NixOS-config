@@ -28,6 +28,12 @@ done
 echo -e "${CYAN}Staging new files...${NC}"
 git -C /etc/nixos add -A
 
+# Catch nix refs to missing files early
+if ! doas nixos-rebuild dry-build --flake /etc/nixos 2>/tmp/yeet-err; then
+    grep -oE "Path '[^']+' does not exist" /tmp/yeet-err && \
+      echo -e "${RED}↑ referenced file missing on disk${NC}"
+fi
+
 # Only commit if --push flag is provided
 if [ "$PUSH_FLAG" = true ]; then
   if git -C /etc/nixos diff-index --quiet HEAD --; then

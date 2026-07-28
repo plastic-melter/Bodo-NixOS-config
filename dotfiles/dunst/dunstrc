@@ -32,3 +32,9 @@
     font = "NotoSansCJK 18"
     min_icon_size = 128
     max_icon_size = 128
+[urgency_low]
+    timeout = 2
+[urgency_normal]
+    timeout = 4
+[urgency_critical]
+    timeout = 0   # 0 = never expires; this is the default
