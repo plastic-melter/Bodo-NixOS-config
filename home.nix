@@ -548,13 +548,14 @@ dconf.settings = {
 gtk = {
   enable = true;
   theme = {
-    name = "Colloid-Dark-Catppuccin";
+    #name = "Colloid-Dark-Catppuccin";
     #package = pkgs.colloid-gtk-theme.override {
     #  themeVariants = [ "default" ];
     #  colorVariants = [ "dark" ];
     #  sizeVariants  = [ "standard" ];
     #  tweaks        = [ "catppuccin" ];
     #};
+    name = "adw-gtk3-dark"; # sources from named palette colors
     package = pkgs.adw-gtk3;
   };
   iconTheme = {
