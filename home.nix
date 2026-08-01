@@ -13,11 +13,17 @@ let
   # LLM convenience launcher
   llama-up = pkgs.writeShellScriptBin "llama-up" ''
     export HSA_OVERRIDE_GFX_VERSION=10.3.0
-    NGL=0
-    ${pkgs.pciutils}/bin/lspci | grep -qi "amd.*navi\|1002:73a5" && NGL=99
+    MODEL="$HOME/Desktop/AI/models/$(ls ~/Desktop/AI/models | ${pkgs.fzf}/bin/fzf)"
+    # GPU present: let -fit auto-place as many layers as fit (partial offload).
+    # No GPU: pin to CPU.
+    if ${pkgs.pciutils}/bin/lspci | grep -qi "amd.*navi\|1002:73a5"; then
+      GPU=(-fit on)
+    else
+      GPU=(-ngl 0)
+    fi
     exec ${(pkgs.llama-cpp.override { rocmSupport = true; })}/bin/llama-server \
-      -m "$HOME/Desktop/AI/models/$(ls ~/Desktop/AI/models | ${pkgs.fzf}/bin/fzf)" \
-      -c 16384 -t 14 --mlock -ngl $NGL \
+      -m "$MODEL" \
+      -c 16384 -t 14 --load-mode mlock "''${GPU[@]}" \
       --host 127.0.0.1 --port 8080
   '';
 
@@ -93,7 +99,7 @@ home.file = {
   ".config/gtk-4.0/assets".source = "${themeDir}/gtk-4.0/assets";
   ".config/gtk-4.0/gtk.css".text = builtins.readFile "${themeDir}/gtk-4.0/gtk.css" + "\n" + gtkNamedColors;
   # Hyprland
-  ".config/hypr/hyprland.conf".text = themed ./dotfiles/hypr/hyprland.conf;
+  ".config/hypr/hyprland.lua".text = themed ./dotfiles/hypr/hyprland.lua;
   ".config/hypr/hypridle.conf".source = ./dotfiles/hypr/hypridle.conf;
   ".config/hypr/hyprlock.conf".source = ./dotfiles/hypr/hyprlock.conf;
   ".config/hypr/hyprpaper.conf".source = ./dotfiles/hypr/hyprpaper.conf;
@@ -251,17 +257,25 @@ programs = {
     settings = {
       fps = true;
       frametime = true;
+      gpu_mem_clock = true;
+      ram = true;
+      throttling_status = true;   # Intel: shows thermal/power throttle reasons
+      battery = true;             # laptop, and battery_watt / battery_time
+      gpu_name = true;
+      vulkan_driver = true;
       gpu_stats = true;
       gpu_power = true;
+      gpu_temp = true;
       gpu_core_clock = true;
-      cpu_stats = true;
       cpu_power = true;
+      cpu_temp = true;
+      cpu_stats = true;
       cpu_mhz = true;
-      core_load = true;
       vram = true;
       frame_timing = true;
       fps_metrics = "avg,1%,0.1%";
       histogram = true;
+      #pci_dev = "0000:04:00.0"; # eGPU only
     };
   };
 
@@ -535,12 +549,13 @@ gtk = {
   enable = true;
   theme = {
     name = "Colloid-Dark-Catppuccin";
-    package = pkgs.colloid-gtk-theme.override {
-      themeVariants = [ "default" ];
-      colorVariants = [ "dark" ];
-      sizeVariants  = [ "standard" ];
-      tweaks        = [ "catppuccin" ];
-    };
+    #package = pkgs.colloid-gtk-theme.override {
+    #  themeVariants = [ "default" ];
+    #  colorVariants = [ "dark" ];
+    #  sizeVariants  = [ "standard" ];
+    #  tweaks        = [ "catppuccin" ];
+    #};
+    package = pkgs.adw-gtk3;
   };
   iconTheme = {
     name = "Papirus-Dark";
@@ -557,7 +572,7 @@ gtk = {
 
 qt = {
   enable = true;
-  platformTheme.name = "qt5ct";
+  platformTheme.name = "qtct"; # covers qt5ct and qt6ct
   style.name = "Fusion";
 };
 

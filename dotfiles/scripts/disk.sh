@@ -3,15 +3,22 @@
 read used total pct < <(df -BG --output=used,size,pcent / | tail -1 | tr -d 'G%')
 
 nvme='?'
-for h in /sys/class/hwmon/hwmon*; do
-  [[ "$(<$h/name)" == nvme ]] || continue
-  max=0
-  for f in $h/temp*_input; do
-    (( t = $(<$f)/1000, t > max )) && max=$t
+lines=()
+for h in /sys/class/hwmon/hwmon*(N); do
+  [[ -r $h/name && "$(<$h/name)" == nvme ]] || continue
+  for f in $h/temp*_input(N); do
+    lbl=${f%_input}_label
+    if [[ -r $lbl ]]; then name="$(<$lbl)"; else name="${${f:t}%_input}"; fi
+    t=$(( $(<$f) / 1000 ))
+    lines+=("${name}: ${t}°")
+    [[ $name == Composite ]] && nvme=$t
   done
-  nvme=$max
+  [[ $nvme == '?' && -r $h/temp1_input ]] && nvme=$(( $(<$h/temp1_input) / 1000 ))
   break
 done
 
-printf '{"text":"󰋊  %s%%  %s°","tooltip":"%sG / %sG used\\nNVMe %s°"}\n' \
-  "$pct" "$nvme" "$used" "$total" "$nvme"
+tip="${(F)lines}"
+tip="${tip//$'\n'/'\n'}"
+
+printf '{"text":"󰋊  %s%%  %s°","tooltip":"%sG / %sG used\\n%s"}\n' \
+  "$pct" "$nvme" "$used" "$total" "$tip"
