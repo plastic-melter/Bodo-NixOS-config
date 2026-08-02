@@ -78,7 +78,7 @@ boot = {
         menuentry "Poweroff" --class shutdown { halt }
       '';
     };
-    timeout = 2;
+    timeout = 3;
   };
   kernelModules = [ 
     "ntsync" # CoD WaW performance
@@ -92,7 +92,6 @@ boot = {
   ];
   kernelPackages = pkgs.linuxPackages_xanmod_latest; # gaming
   kernelParams = [
-    "quiet" # surpress kernel boot messages: still readable via dmesg/journalctl
     "acpi.dump_ecdt=1" # more EC logging
     "no_console_suspend" # keep console active during suspend for better logging
     "intel_iommu=on" # enable Intel's IOMMU hardware, required for device isolation
