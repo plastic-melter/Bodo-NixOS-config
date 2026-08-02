@@ -74,8 +74,8 @@ boot = {
       gfxmodeEfi = "2560x1600";
       theme = ./dotfiles/grub;
       extraConfig = ''
-        menuentry "Reboot" { reboot }
-        menuentry "Poweroff" { halt }
+        menuentry "Reboot" --class reboot { reboot }
+        menuentry "Poweroff" --class shutdown { halt }
       '';
     };
     timeout = 2;

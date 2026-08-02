@@ -113,7 +113,7 @@
   "custom/hwpower": {
     "format": "{}",
     "exec": "/etc/nixos/dotfiles/scripts/hwpower.sh",
-    "on-click": "/etc/nixos/dotfiles/scripts/power-toggle.sh",
+    "on-click-middle": "/etc/nixos/dotfiles/scripts/power-toggle.sh",
     "interval": 3
   },
   "custom/refreshrate": {

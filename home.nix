@@ -382,6 +382,7 @@ systemd.user = {
   };
 
   services = {
+
     awww = {
       Unit = {
         Description = "awww daemon";
@@ -389,8 +390,7 @@ systemd.user = {
         After = [ "graphical-session.target" ];
       };
       Service = {
-        Type = "forking";
-        ExecStart = "awww-daemon";
+        ExecStart = "${pkgs.awww}/bin/awww-daemon";
         Restart = "on-failure";
       };
       Install.WantedBy = [ "graphical-session.target" ];

@@ -10,15 +10,15 @@ terminal-height: "100%"
 terminal-border: "0"
 
 + boot_menu {
-  left = 660
+  left = 988
   top = 588
-  width = 1356
+  width = 700
   height = 489
   item_font = "Ubuntu Regular 36"
   item_color = "#cccccc"
-  selected_item_color = "#ffffff"
-  icon_width = 60
-  icon_height = 60
+  selected_item_color = "#eeeeff"
+  icon_width = 64
+  icon_height = 64
   item_icon_space = 34
   item_height = 83
   item_padding = 5

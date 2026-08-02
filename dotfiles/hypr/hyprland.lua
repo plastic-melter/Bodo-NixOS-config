@@ -290,14 +290,9 @@ hl.bind(mod .. " + T", hl.dsp.exec_cmd(scripts .. "/theme.sh -y"))
 -------------------------------
 
 hl.on("hyprland.start", function()
-  hl.exec_cmd("awww-daemon") -- Spawn the daemon, 'until' below avoids race condition with waypaper
-  hl.exec_cmd("sh -c 'until awww query >/dev/null 2>&1; do sleep 0.05; done; waypaper --restore'")
-  hl.exec_cmd("xrdb -load ~/.Xresources")
   hl.exec_cmd("hypridle")
-  hl.exec_cmd("fcitx5")
   hl.exec_cmd("wl-paste --type text --watch cliphist store")
   hl.exec_cmd("wl-paste --type image --watch cliphist store")
-  hl.exec_cmd(scripts .. "/homeclean.sh")
   hl.exec_cmd("gnome-keyring-daemon --start --components=secrets,ssh")
   hl.exec_cmd("blueman-applet")
   hl.exec_cmd("nm-applet")
