@@ -60,7 +60,9 @@ nixpkgs.config = {
 };
 
 boot = {
-  plymouth.enable = false; # disable ugly grey nixos bootsplash
+  plymouth.enable = false; # prefer systemd output
+  initrd.verbose = true; # show stage 1 progress
+  consoleLogLevel = 4; # 0 = emergency only, 4 = warnings and above, 7 = wall of spam
   loader = {
     efi.canTouchEfiVariables = true;
     grub = {
@@ -72,6 +74,7 @@ boot = {
       configurationLimit = 20;
       default = "saved"; # default to last-used boot entry
       gfxmodeEfi = "2560x1600";
+      splashImage = null;
       theme = ./dotfiles/grub;
       extraConfig = ''
         menuentry "Reboot" --class reboot { reboot }
@@ -92,15 +95,12 @@ boot = {
   ];
   kernelPackages = pkgs.linuxPackages_xanmod_latest; # gaming
   kernelParams = [
+    "boot.shell_on_fail" # rescue shell if stage-1 fails
     "acpi.dump_ecdt=1" # more EC logging
     "no_console_suspend" # keep console active during suspend for better logging
     "intel_iommu=on" # enable Intel's IOMMU hardware, required for device isolation
     "iommu=pt" # passthrough mode: devices not assigned to VMs use DMA directly (better performance)
-    #"amdgpu.ppfeaturemask=0xfffd7fff" # enables some GPU features for waybar
-    #"pcie_aspm=off" # eGPU troubleshoot: let BIOS determine ASPM
-    #"pcie_aspm.policy=performance" # force disable ASPM
-    #"pcie_port_pm=off" # eGPU troubleshot
-    "amdgpu.runpm=0" # eGPU troubleshoot
+    "amdgpu.runpm=0" # eGPU troubleshoot: disable power management (power saving)
     "resume_offset=22767" # resume from hibernate
   ];
   resumeDevice = "/dev/disk/by-uuid/dddf90ad-ef56-45bd-9fdb-f7d6f4393555"; # hibernate to swap file

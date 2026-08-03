@@ -464,8 +464,7 @@ systemd.user = {
       Unit = {
         Description = "Restore wallpaper";
         PartOf = [ "graphical-session.target" ];
-        Requires = [ "awww.service" ];
-        After = [ "awww.service" ];
+        After = [ "graphical-session.target" ];
       };
       Service = {
         Type = "oneshot";

@@ -25,13 +25,3 @@ terminal-border: "0"
   item_spacing = 15
   selected_item_pixmap_style = "select_*.png"
 }
-
-+ label {
-  left = 0
-  top = 520
-  align = "center"
-  id = "__timeout__"
-  text = "Booting in %d seconds..."
-  color = "#cccccc"
-  font = "Ubuntu Regular 28"
-}

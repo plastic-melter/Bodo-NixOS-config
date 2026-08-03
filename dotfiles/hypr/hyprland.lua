@@ -284,16 +284,3 @@ hl.bind(mod .. " + ALT + E", function()
 end)
 hl.bind(mod .. " + V", hl.dsp.exec_cmd("nwg-clipman"))
 hl.bind(mod .. " + T", hl.dsp.exec_cmd(scripts .. "/theme.sh -y"))
-
--------------------------------
--- Startup programs
--------------------------------
-
-hl.on("hyprland.start", function()
-  hl.exec_cmd("hypridle")
-  hl.exec_cmd("wl-paste --type text --watch cliphist store")
-  hl.exec_cmd("wl-paste --type image --watch cliphist store")
-  hl.exec_cmd("gnome-keyring-daemon --start --components=secrets,ssh")
-  hl.exec_cmd("blueman-applet")
-  hl.exec_cmd("nm-applet")
-end)
