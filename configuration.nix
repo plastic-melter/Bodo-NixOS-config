@@ -745,6 +745,7 @@ in (with pkgs; [
   dislocker # unlock Bitlocker encryption
   drm_info # dump info about drm devices, such as laptop panels
   file # determines file type/info
+  foot # backup terminal in case wezterm is borked
   git # distributed version control system
   htop # view resource usage
   id3v2 # view/edit mp3 metadata
