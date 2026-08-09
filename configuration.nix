@@ -141,6 +141,12 @@ systemd.tmpfiles.rules = [
 ];
 
 systemd.services = {
+  NetworkManager-wait-online.enable = false;
+  "systemd-networkd-wait-online".enable = false;
+  libvirtd = {
+    stopIfChanged = false;
+  };
+
   # Set SK-8855 sensitivity on startup and resume
   trackpoint-sensitivity = {
     description = "Set SK-8855 TrackPoint sensitivity";
@@ -150,22 +156,19 @@ systemd.services = {
       Type = "oneshot";
       ExecStart = pkgs.writeShellScript "tp-sens" ''
         for f in /sys/bus/hid/devices/*17EF:6009*/sensitivity; do
-          [ -e "$f" ] && echo 255 > "$f"
+          [ -e "$f" ] && echo 205 > "$f"
         done
       '';
     };
   };
-  NetworkManager-wait-online.enable = false;
-  "systemd-networkd-wait-online".enable = false;
-  libvirtd = {
-    stopIfChanged = false;
-  };
-  # Save the trouble of running 'virsh netstart default' each time:
+
+# Save the trouble of running 'virsh netstart default' each time:
   libvirtd.postStart = ''
     sleep 2
     virsh net-start default || true
     virsh net-autostart default || true
   '';
+
   # Read energy_uj as root and present a user-readable average over 2sec
   # This allows for estimating CPU PkgWatt in userspace w/o enabling Platypus vulnerability
   rapl-watts = {
@@ -185,6 +188,27 @@ systemd.services = {
       done
     '';
   };
+
+  battery-health = {
+    description = "Log battery health once per boot";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "time-sync.target" ];
+    wants = [ "time-sync.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "battery-health" ''
+        b=/sys/class/power_supply/BAT0
+        printf '%s\t%s\t%s\t%s\n' \
+          "$(date -Iseconds)" \
+          "$(cat $b/cycle_count)" \
+          "$(cat $b/energy_full)" \
+          "$(cat $b/energy_full_design)" \
+          >> /var/lib/battery-health/log.tsv
+      '';
+      StateDirectory = "battery-health";
+    };
+  };
+
 };
 
 # ============================================
@@ -463,6 +487,10 @@ services = {
 
     # STM32 flashing in DFU mode
     SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE="0666"
+
+    # SK-8855 sensitivity
+    SUBSYSTEM=="input", ATTRS{name}=="keyd virtual pointer", ENV{ID_INPUT_MOUSE}=="1", ENV{ID_INPUT_POINTINGSTICK}="1"
+
   '';
 
   # Printers/scanners: access to scanner
@@ -597,11 +625,10 @@ environment.sessionVariables = {
 };
 
 environment.etc."libinput/local-overrides.quirks".text = ''
-  [Lenovo SK-8855 TrackPoint]
+  [keyd virtual pointer]
   MatchBus=usb
-  MatchVendor=0x17EF
-  MatchProduct=0x6009
-  MatchUdevType=pointingstick
+  MatchVendor=0x0FAC
+  MatchProduct=0x1ADE
   AttrTrackpointMultiplier=2.5
 '';
 
@@ -724,6 +751,7 @@ in (with pkgs; [
   kdePackages.audex # CD ripper for videos
   keyd # key remapping daemon at evdev level
   killall # allows for killing processes by name
+  libinput # hyprland pulls libinput, but this gives CLI tools
   lsof # shows which processes have files/devices open
   moreutils # useful UNIX tools: ts, sponge, vidir, etc.
   neovim # vim with more goodness

@@ -68,7 +68,7 @@ df -h | grep -v 'tmpfs' | grep -v 'efi'
 # --- GIT SYNC (only after successful rebuild) ---------------------------------
 if ping -c 1 -W 2 github.com >/dev/null 2>&1; then
     echo -e "${PURPLE}Syncing /etc/nixos to GitHub...${NC}"
-    git commit -m "system update: $(date '+%Y-%m-%d %H:%M:%S')" 2>/dev/null || true
+    git commit -m "auto commit during system upgrade: $(date '+%Y-%m-%d %H:%M:%S')" 2>/dev/null || true
     git pull --rebase origin main 2>/dev/null || true
     
     if git push -u origin main 2>/dev/null; then

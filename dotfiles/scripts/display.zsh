@@ -1,21 +1,26 @@
 #!/usr/bin/env zsh
-# display.zsh [hz|60|120|165]
-
+# display.zsh [hz|60|165]
 MON=eDP-1
-RATES=(60 120 165)
-
-hz=$(hyprctl -j monitors | jq -r --arg m "$MON" \
-       '.[] | select(.name==$m) | .refreshRate|round')
+RATES=(165 60)
 
 apply() {
-  hyprctl keyword monitor "$MON,2560x1600@$1,0x0,1,vrr,2"
+  local mode=$(wlr-randr --json | jq -r --arg m "$MON" --argjson r "$1" '
+    .[] | select(.name==$m) | .modes
+    | map(select(.width==2560 and .height==1600))
+    | min_by(((.refresh - $r) | length))
+    | "\(.width)x\(.height)@\((.refresh*1000|round)/1000)"')
+  wlr-randr --output $MON --mode "$mode" || { notify-send "Display" "failed: $mode"; return 1; }
   notify-send -h string:x-canonical-private-synchronous:display "Display" "$1 Hz"
   pkill -RTMIN+10 waybar
 }
 
+hz=$(wlr-randr --json | jq -r --arg m "$MON" \
+       '.[]|select(.name==$m)|.modes[]|select(.current)|.refresh|round')
+
 case "$1" in
-  ""|hz) i=${RATES[(i)$hz]}; (( i > $#RATES )) && i=0
+  ""|hz) i=${RATES[(Ie)$hz]}
+         (( i == 0 )) && i=$#RATES
          apply ${RATES[$(( i % $#RATES + 1 ))]} ;;
-  60|120|165) apply $1 ;;
-  *) echo "usage: $0 [hz|60|120|165]" >&2; exit 1 ;;
+  60|165) apply $1 ;;
+  *) print -u2 "usage: $0 [hz|60|165]"; exit 1 ;;
 esac

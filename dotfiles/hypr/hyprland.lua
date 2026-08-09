@@ -13,8 +13,8 @@ hl.config({
     kb_layout     = "jp",
     kb_model      = "jp106",
     follow_mouse  = 1,
-    sensitivity   = 0,          -- keep global neutral
-    accel_profile = "adaptive", -- "adaptive" or "flat"
+    sensitivity   = 0, -- keep global neutral
+    accel_profile = "flat", -- "adaptive" or "flat"
     touchpad = {
       natural_scroll = true,
     },
@@ -26,13 +26,12 @@ hl.config({
 hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
 
 for _, name in ipairs({
-  "lite-on-technology-corp.-thinkpad-usb-keyboard-with-trackpoint-1",
-  "lite-on-technology-corp.-thinkpad-usb-keyboard-with-trackpoint-3",
+  "keyd-virtual-pointer",
 }) do
   hl.device({
     name          = name,
-    sensitivity   = 1.0, -- 1.0 = max
-    accel_profile = "adaptive",
+    sensitivity   = 0.0, -- 1.0 = max; tune keyd multiplier in conf.nix first
+    accel_profile = "flat",
   })
 end
 
