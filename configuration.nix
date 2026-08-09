@@ -468,6 +468,9 @@ services = {
     SUBSYSTEM=="hidraw", ATTRS{idVendor}=="045e", ATTRS{idProduct}=="02a1", MODE="0666", GROUP="input"
     SUBSYSTEM=="usb", ATTRS{idVendor}=="045e", ATTRS{idProduct}=="02a1", MODE="0666", GROUP="input"
 
+    # Omega TC-08 DAQ
+    ATTRS{idVendor}=="0ce9", MODE="0660", TAG+="uaccess"
+
     # GCC adapter
     SUBSYSTEM=="usb", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"
 
