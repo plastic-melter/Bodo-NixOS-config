@@ -95,6 +95,8 @@ home.file = {
   ".config/fcitx5/profile".source = ./dotfiles/fcitx5/profile; # link just profile, so the home dir is still writeable
   # fastfetch
   ".config/fastfetch".source = ./dotfiles/fastfetch;
+  # foot
+  ".config/foot".source = ./dotfiles/foot;
   # GTK
   ".config/gtk-4.0/assets".source = "${themeDir}/gtk-4.0/assets";
   ".config/gtk-4.0/gtk.css".text = builtins.readFile "${themeDir}/gtk-4.0/gtk.css" + "\n" + gtkNamedColors;
