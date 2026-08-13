@@ -419,7 +419,7 @@ services = {
   openssh = {
     enable = true; # enable SSH
     #settings.PasswordAuthentication = false; # key-only for security reasons, bleh
-    kbdInteractiveAuthentication = false; # closes the PAM side-door that can still accept passwords
+    settings.KbdInteractiveAuthentication = false; # closes the PAM side-door that can still accept passwords
   };
   blueman.enable = true; # convenient bluetooth GUI
   gvfs.enable = true; # required for Thunar to use .local/share/Trash

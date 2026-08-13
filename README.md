@@ -8,25 +8,12 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 ---
 
 ## X210Ai To-do List (hardware):
-- test X200 JP106 keyboard scancodes and Esc/A/Z issue
+- patch EC for jp106 scancodes
 - SK-8855 ThinkLight/power button wiring
-- photodiode test backlight PWM
-- ...lots and lots of battery testing...
-- troubleshoot eGPU PCIe dropout during VAE decode
-- troubleshoot 35W cooling capacity: should be closer to 60W?
-  - test on other X210Ai machines
+- troubleshoot eGPU PCIe dropouts during VAE decode
+- troubleshoot 40W CPU power limit (other X210Ais tested ~55W)
 - lid reinforcement + panel replacement
-- test PL adjustment and undervolting
-
-## To-do list (software)
-- de-Mozilla
-- make things look nicer (ongoing skill issue)
-
-## X210Ai EC/BIOS bugs/quirks as of July-ish 2026
-- PL values (probably) cannot be manually set in userspace
-- no custom fan curves, fan tacho not exposed
-- resuming from hibernate-to-disk might be iffy on Windows
-- disabling OC/CFG locks pins all cores at 400MHz (??) (skill issue?)
+- undervolting + PL adjustments
 
 ## Why NixOS?
 - **Declarative system configuration**: your entire system lives in version-controlled text files you can read, understand, and modify in one place (no more mystery edits buried deep in /etc, forgotten PPAs, config drift, or "I ran some command 3 years ago and now I can't remember what it was")

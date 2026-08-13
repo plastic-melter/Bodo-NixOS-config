@@ -140,12 +140,10 @@ hl.window_rule({ match = { title = "Lutris" }, float = true })
 
 -- special keybinds to launch in float
 hl.window_rule({ match = { class = "floating-wezterm" },       float = true, center = true })
-hl.window_rule({ match = { class = "floating-foot" },       float = true, center = true })
 hl.window_rule({ match = { class = "floating-wezterm-large" }, float = true, center = true })
 
 -- default floating sizes
 hl.window_rule({ match = { class = "floating-wezterm" },              size = { 1100, 620 } })
-hl.window_rule({ match = { class = "floating-foot" },              size = { 1100, 620 } })
 hl.window_rule({ match = { class = "floating-wezterm-large" },        size = { 1600, 620 } })
 hl.window_rule({ match = { class = "thunar" },                        size = { 1000, 900 } })
 hl.window_rule({ match = { class = "firefox" },                       size = { 1450, 1600 } })
@@ -177,10 +175,10 @@ hl.env("XCURSOR_THEME", "Adwaita")
 -------------------------------
 
 -- App launching
-hl.bind(mod .. " + Return",         hl.dsp.exec_cmd("foot"))
---hl.bind(mod .. " + SHIFT + Return", hl.dsp.exec_cmd("wezterm start --always-new-process --class floating-wezterm"))
---hl.bind(mod .. " + M",              hl.dsp.exec_cmd("wezterm start --always-new-process --class floating-wezterm-large -e rmpc"))
---hl.bind(mod .. " + SHIFT + M",      hl.dsp.exec_cmd("wezterm start --always-new-process --class floating-wezterm-large -e rmpc"))
+hl.bind(mod .. " + Return",         hl.dsp.exec_cmd("wezterm"))
+hl.bind(mod .. " + SHIFT + Return", hl.dsp.exec_cmd("wezterm start --always-new-process --class floating-wezterm"))
+hl.bind(mod .. " + M",              hl.dsp.exec_cmd("wezterm start --always-new-process --class floating-wezterm-large -e rmpc"))
+hl.bind(mod .. " + SHIFT + M",      hl.dsp.exec_cmd("wezterm start --always-new-process --class floating-wezterm-large -e rmpc"))
 hl.bind(mod .. " + Z",              hl.dsp.exec_cmd("wofi --show drun"))
 hl.bind(mod .. " + SHIFT + Z",      hl.dsp.exec_cmd("nwg-drawer -ovl"))
 hl.bind(mod .. " + R",              hl.dsp.exec_cmd("nwg-drawer -ovl"))

@@ -496,7 +496,7 @@ systemd.user = {
       };
       Service = {
         Type = "oneshot";
-        ExecStart = "${pkgs.xorg.xrdb}/bin/xrdb -load %h/.Xresources";
+        ExecStart = "${pkgs.xrdb}/bin/xrdb -load %h/.Xresources";
       };
       Install.WantedBy = [ "graphical-session.target" ];
     };
@@ -656,7 +656,7 @@ home.packages = with pkgs; [
   kdePackages.kdenlive # video editing suite
   kicad # open-source IDE for PCB design
   libreoffice-fresh # office app suite
-  moonlight-qt # desktop steaming / remote access
+  #moonlight-qt # desktop steaming / remote access BUILD BROKEN 2026-08-13
   mpc # CLI to control MPD
   mpv # simple video player
   obsidian # cross-platform notes program
@@ -752,6 +752,7 @@ home.packages = with pkgs; [
   mame # arcade emulator
   nsnake # terminal snake game
   protontricks # allows for Steam proton prefixes
+  protonup-qt # GUI for installing unstable Proton releases
   vitetris # terminal tetris
   wineWow64Packages.waylandFull # wine for wayland
   winetricks # install DLLs/etc into wine prefixes

@@ -6,6 +6,7 @@ if wezterm.config_builder then
 end
 
 config = {
+  front_end = "Software", --wgpu and ogl are both broken, 2026-08-13, unknown why
   automatically_reload_config = true,
   harfbuzz_features = { 'calt = 0', 'clig = 0', 'liga = 0' },
   enable_tab_bar = false,
