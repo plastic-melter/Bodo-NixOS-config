@@ -34,3 +34,6 @@ mv /home/joe/*.pdf /home/joe/Documents 2>/dev/null
 # Windows Touhou Cleanup
 rm /home/joe/th*cfg 2>/dev/null
 rm /home/joe/score*dat 2>/dev/null
+
+# Garbage collection
+'\rm ~/.local/share/Trash/files/yazi-cwd*' 

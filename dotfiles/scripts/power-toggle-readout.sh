@@ -7,7 +7,7 @@ mode=$(doas @apply@ "$@") || {
 }
 
 case "$mode" in
-  Battery)     w_gov=powersave   w_epp=balance_power         w_turbo=off ;;
+  Battery)     w_gov=powersave   w_epp='balance_power|power' w_turbo=off ;;
   Balanced)    w_gov=powersave   w_epp=balance_performance   w_turbo=on  ;;
   Performance) w_gov=performance w_epp='performance|default' w_turbo=on  ;;
 esac

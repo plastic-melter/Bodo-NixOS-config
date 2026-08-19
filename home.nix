@@ -96,7 +96,7 @@ home.file = {
   # fastfetch
   ".config/fastfetch".source = ./dotfiles/fastfetch;
   # foot
-  ".config/foot".source = ./dotfiles/foot;
+  ".config/foot/foot.ini".text = themed ./dotfiles/foot/foot.ini;
   # GTK
   ".config/gtk-4.0/assets".source = "${themeDir}/gtk-4.0/assets";
   ".config/gtk-4.0/gtk.css".text = builtins.readFile "${themeDir}/gtk-4.0/gtk.css" + "\n" + gtkNamedColors;
@@ -397,7 +397,7 @@ systemd.user = {
       };
       Install.WantedBy = [ "graphical-session.target" ];
     };
-  
+
     battery-notify = {
       Unit.Description = "Battery low notification";
       Service = {
@@ -416,7 +416,7 @@ systemd.user = {
         in "${script}";
       };
     };
-  
+
     fcitx5 = {
       Unit = {
         Description = "Fcitx5 input method";
@@ -429,7 +429,7 @@ systemd.user = {
       };
       Install.WantedBy = [ "graphical-session.target" ];
     };
-  
+
     homeclean = {
       Unit = {
         Description = "Home cleanup";
@@ -442,26 +442,13 @@ systemd.user = {
       };
       Install.WantedBy = [ "graphical-session.target" ];
     };
-  
-    nwg-dock = {
-      Unit = {
-        Description = "nwg-dock-hyprland";
-        PartOf = [ "graphical-session.target" ];
-        After = [ "graphical-session.target" ];
-      };
-      Service = {
-        ExecStart = "${pkgs.nwg-dock-hyprland}/bin/nwg-dock-hyprland -d -p bottom";
-        Restart = "on-failure";
-      };
-      Install.WantedBy = [ "graphical-session.target" ];
-    };
-  
+
     udiskie = {
       Unit.Description = "udiskie automounter";
       Service.ExecStart = "${pkgs.udiskie}/bin/udiskie --smart-tray";
       Install.WantedBy = [ "default.target" ];
     };
-  
+
     waypaper-restore = {
       Unit = {
         Description = "Restore wallpaper";
@@ -474,7 +461,7 @@ systemd.user = {
       };
       Install.WantedBy = [ "graphical-session.target" ];
     };
-  
+
     wl-gammarelay-rs = {
       Unit = {
         Description = "wl-gammarelay-rs gamma/temp/brightness daemon";
@@ -487,7 +474,7 @@ systemd.user = {
       };
       Install.WantedBy = [ "graphical-session.target" ];
     };
-  
+
     xrdb = {
       Unit = {
         Description = "Load Xresources";
@@ -673,10 +660,8 @@ home.packages = with pkgs; [
   tagainijisho # japanese dictionary
   thunar # GUI file manager
   vlc # video player
-  webcord # webkit app for discord
   wezterm # dope-ass terminal emulator
   yazi # TUI file manager
-  zoom-us # video chat software
 
   # UTILITIES
   bluetooth_battery # fetch info form BT devices
@@ -701,7 +686,6 @@ home.packages = with pkgs; [
   resvg # yazi: SVG image preview
   ripgrep # nvim: required for telescope live_grep
   simple-scan # for scanning from printer/scanner combo
-  synology-drive-client # desktop client for Synology NAS
   tumbler # image previews in file manager
   unrar # extract .rar files
   vips # fast image processing for large images
@@ -747,12 +731,12 @@ home.packages = with pkgs; [
 
   # GAMING
   appimage-run # just for Slippi
-  discord # sucks
   dolphin-emu # GameCube/Wii emulator
   mame # arcade emulator
   nsnake # terminal snake game
   protontricks # allows for Steam proton prefixes
   protonup-qt # GUI for installing unstable Proton releases
+  vesktop # vencord inside the discord web client
   vitetris # terminal tetris
   wineWow64Packages.waylandFull # wine for wayland
   winetricks # install DLLs/etc into wine prefixes

@@ -9,11 +9,27 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 
 ## X210Ai To-do List (hardware):
 - patch EC for jp106 scancodes
-- SK-8855 ThinkLight/power button wiring
-- troubleshoot eGPU PCIe dropouts during VAE decode
-- troubleshoot 40W CPU power limit (other X210Ais tested ~55W)
-- lid reinforcement + panel replacement
-- undervolting + PL adjustments
+- test out the recent [coreboot port](https://github.com/WheeledCord/coreboot-x210ai)
+- X220 keyboard improvements
+  - ThinkLight/power button wiring
+  - interposer/translator board to use native EC instead of USB
+  - better mechanical retention
+- lid mechanical reinforcement
+- undervolting + fine-tune PLs
+- custom battery (6/8/9-cell 103450)
+- thermal characterization and improvements
+  - NVMe heat spreader + insulation
+  - heat sink: grill thinning, insulation
+  - VRM limits?
+
+## Completed stuff
+- X220 keyboard retrofit
+  - palmrest modifications
+  - keyboard shimming
+  - SK-8855 board on internal USB port
+  - temporary power switch piggybacked off original keyboard cable
+- epoxy reinforce headphone/mic TRS + optical port
+- eGPU mods (passive M.2->OCuLink adapter, 3D printed HDD bay bezel adapter)
 
 ## Why NixOS?
 - **Declarative system configuration**: your entire system lives in version-controlled text files you can read, understand, and modify in one place (no more mystery edits buried deep in /etc, forgotten PPAs, config drift, or "I ran some command 3 years ago and now I can't remember what it was")
@@ -42,8 +58,7 @@ The original X200 laptop from 2008 is really well engineered, and laptop design 
     - Others: 13.3" 1920x1200, 13" 3000x2000, 12.6" 2880x1920, 12.5" 1920x1080, 12.1" 1440x900 and 1280x800
     - ...or literally any eDP or LVDS panel, just wire it up yourself
 - lots of ports
-- 60W cooling capacity in a 13" chassis
-- coreboot "soon"(TM) (maybe)
+- 50~60W cooling capacity in a 13" chassis
 
 
 ## What makes the X210Ai so unique?

@@ -54,9 +54,23 @@ nix = {
 };
 
 nixpkgs.config = {
-  allowUnfree = true;
   allowBroken = false;
   allowInsecure = false;
+  allowUnfree = false;
+  allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+    "brscan4"                 # Brother MFC-L2820DW scanner driver
+    "brscan4-etc-files"       # ^ dep
+    "brother-udev-rule-type1" # ^ dep
+    "grayjay"                 # multi-plaform video client from FULU
+    "grayjay-frontend"        # ^ dep
+    "grayjay-libcurlshim"     # ^ dep
+    "obsidian"                # note-taking thing: proprietary b/c optional paid online sync thing
+    "picoscope"               # Pico Technologies binary
+    "spotify"                 # obviously the electron client is unfree
+    "steam"                   # steam is very convenient, can find DRM-free versions of games later if needed
+    "steam-unwrapped"         # ^ dep
+    "unrar"                   # RAR is is a proprietary compression algo, thus unrar is proprietary
+  ];
 };
 
 boot = {
@@ -591,6 +605,7 @@ fonts = {
     carlito
     dejavu_fonts
     ipafont
+    nerd-fonts.jetbrains-mono
     kochi-substitute
     liberation_ttf
     nerd-fonts.fira-code
