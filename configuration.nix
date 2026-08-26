@@ -95,7 +95,7 @@ boot = {
         menuentry "Poweroff" --class shutdown { halt }
       '';
     };
-    timeout = 3;
+    timeout = 2;
   };
   kernelModules = [ 
     "ntsync" # CoD WaW performance
@@ -161,7 +161,7 @@ systemd.services = {
     stopIfChanged = false;
   };
 
-  # Set SK-8855 sensitivity on startup and resume
+  # Set SK-8855 sensitivity
   trackpoint-sensitivity = {
     description = "Set SK-8855 TrackPoint sensitivity";
     wantedBy = [ "multi-user.target" "post-resume.target" ];
@@ -170,7 +170,7 @@ systemd.services = {
       Type = "oneshot";
       ExecStart = pkgs.writeShellScript "tp-sens" ''
         for f in /sys/bus/hid/devices/*17EF:6009*/sensitivity; do
-          [ -e "$f" ] && echo 205 > "$f"
+          [ -e "$f" ] && echo 235 > "$f"
         done
       '';
     };
@@ -443,22 +443,33 @@ services = {
   tlp = {
     enable = true;
     settings = {
+      # Battery charge thresholds aren't supported on X210Ai... maybe in a future EC update...
       START_CHARGE_THRESH_BAT0 = "85";
       STOP_CHARGE_THRESH_BAT0 = "90";
-      RUNTIME_PM_ON_AC = "on"; # "on" = PCI(e) devices always on
-      RUNTIME_PM_ON_BAT = "auto"; # "auto" = let devices suspend to low-power states
-      # Governor: powersave still boosts; performance pins max P-states
-      CPU_SCALING_GOVERNOR_ON_AC  = "performance";
+      # PCIe runtime PM: "on" = always on, "auto" = let devices suspend to low-power states
+      RUNTIME_PM_ON_AC = "on";
+      RUNTIME_PM_ON_BAT = "auto";
+      # Governor:
+      #   "performance" = p-states pinned max, EPP pinned performance
+      #   "powersave" = full HWP range (can still boost to max under load)
+      CPU_SCALING_GOVERNOR_ON_AC  = "powersave";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-      # EPP (the main efficiency tweak on Meteor Lake)
-      CPU_ENERGY_PERF_POLICY_ON_AC  = "performance";
-      CPU_ENERGY_PERF_POLICY_ON_BAT = "power"; # "power" is more aggressive than "balance_power"
-      # Turbo: disable it on battery
+      # EPP: the main efficiency knob, controls frequency scaling behavior via 'cpufreq' sysfs interface
+      #   "power" = 255
+      #   "balance_power" = 192
+      #   "default" = mystery firmware pick... probably 128
+      #   "balance_power" = 128
+      #   "performance" = 0
+      CPU_ENERGY_PERF_POLICY_ON_AC  = "balance_performance";
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+      # Turbo:
+      #   1 (allowed) = 5.1/3.8/2.5 GHz (P/E/LPE cores)
+      #   0 (disable) = 2.3/1.8/1.0 GHz (P/E/LPE cores)
       CPU_BOOST_ON_AC  = 1;
       CPU_BOOST_ON_BAT = 0;
-      # ThinkPad platform_profile (ACPI)
+      # ThinkPad platform_profile (ACPI), doesn't actually work on X210Ai
       PLATFORM_PROFILE_ON_AC  = "performance";
-      PLATFORM_PROFILE_ON_BAT = "low-power"; # "low-power" is more aggressive than "balanced"
+      PLATFORM_PROFILE_ON_BAT = "low-power";
     };
   };
   thermald.enable = true; # Intel thermal daemon

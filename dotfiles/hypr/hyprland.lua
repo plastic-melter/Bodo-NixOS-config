@@ -14,9 +14,9 @@ hl.config({
     kb_model      = "jp106",
     follow_mouse  = 1,
     sensitivity   = 0, -- keep global neutral
-    accel_profile = "flat", -- "adaptive" or "flat"
+    accel_profile = "adaptive", -- "adaptive" or "flat"
     touchpad = {
-      natural_scroll = true,
+      natural_scroll = true
     },
     scroll_method = "on_button_down",
     scroll_button = 274,
@@ -30,7 +30,7 @@ for _, name in ipairs({
 }) do
   hl.device({
     name          = name,
-    sensitivity   = 0.0, -- 1.0 = max; tune keyd multiplier in conf.nix first
+    sensitivity   = 0.3, -- 1.0 = max; tune sensitivity in conf.nix first
     accel_profile = "flat",
   })
 end
@@ -290,3 +290,15 @@ hl.bind(mod .. " + ALT + E", function()
 end)
 hl.bind(mod .. " + V", hl.dsp.exec_cmd("nwg-clipman"))
 hl.bind(mod .. " + T", hl.dsp.exec_cmd(scripts .. "/theme.sh -y"))
+
+-- Special fly-out workspace
+
+hl.bind("SUPER + Zenkaku_Hankaku", hl.dsp.workspace.toggle_special(flyout))
+hl.curve("easeOutQuint", { type = "bezier", points = { {0.23, 1}, {0.32, 1} } })
+hl.animation({
+    leaf = "specialWorkspace",
+    enabled = true,
+    speed = 5,
+    bezier = "easeOutQuint",
+    style = "slidevert",
+})

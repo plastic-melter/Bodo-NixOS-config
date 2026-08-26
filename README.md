@@ -9,6 +9,8 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 
 ## X210Ai To-do List (hardware):
 - patch EC for jp106 scancodes
+- T420 touchpad transplant
+- phase-change TIM
 - test out the recent [coreboot port](https://github.com/WheeledCord/coreboot-x210ai)
 - X220 keyboard improvements
   - ThinkLight/power button wiring
@@ -20,7 +22,7 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 - thermal characterization and improvements
   - NVMe heat spreader + insulation
   - heat sink: grill thinning, insulation
-  - VRM limits?
+  - VRM cooling
 
 ## Completed stuff
 - X220 keyboard retrofit
