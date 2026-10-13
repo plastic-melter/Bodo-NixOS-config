@@ -8,21 +8,15 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
 ---
 
 ## X210Ai To-do List (hardware):
-- patch EC for jp106 scancodes
+- reverse engineer fan control (EC) and make it less stupid
 - T420 touchpad transplant
-- phase-change TIM
 - test out the recent [coreboot port](https://github.com/WheeledCord/coreboot-x210ai)
 - X220 keyboard improvements
   - ThinkLight/power button wiring
-  - interposer/translator board to use native EC instead of USB
+  - interposer/translator board to use native EC instead of USB?
   - better mechanical retention
-- lid mechanical reinforcement
 - undervolting + fine-tune PLs
-- custom battery (6/8/9-cell 103450)
-- thermal characterization and improvements
-  - NVMe heat spreader + insulation
-  - heat sink: grill thinning, insulation
-  - VRM cooling
+- lower chassis mods to minimize heat transfer from heat pipes
 
 ## Completed stuff
 - X220 keyboard retrofit
@@ -31,7 +25,9 @@ Backup and reproducible config for my personal [NixOS](https://nixos.org) system
   - SK-8855 board on internal USB port
   - temporary power switch piggybacked off original keyboard cable
 - epoxy reinforce headphone/mic TRS + optical port
-- eGPU mods (passive M.2->OCuLink adapter, 3D printed HDD bay bezel adapter)
+- eGPU: passive M.2->OCuLink adapter, 3DP HDD bay bezel adapter
+- thermals: exhaust baffle trimming, heat pipe + VRM insulation, PTM7950, RAM + NVMe heatsinks
+- lid reinforcement
 
 ## Why NixOS?
 - **Declarative system configuration**: your entire system lives in version-controlled text files you can read, understand, and modify in one place (no more mystery edits buried deep in /etc, forgotten PPAs, config drift, or "I ran some command 3 years ago and now I can't remember what it was")

@@ -30,7 +30,7 @@ for _, name in ipairs({
 }) do
   hl.device({
     name          = name,
-    sensitivity   = 0.3, -- 1.0 = max; tune sensitivity in conf.nix first
+    sensitivity   = 0.0, -- 1.0 = max; tune sensitivity in conf.nix first
     accel_profile = "flat",
   })
 end
@@ -67,7 +67,7 @@ hl.config({
     },
     -- shadow = { enabled = true, range = 4, render_power = 3, color = "rgba(1a1a1aee)" },
     active_opacity   = 1.0,
-    inactive_opacity = 0.85,
+    inactive_opacity = 0.92,
   },
 })
 
@@ -208,6 +208,25 @@ hl.bind(mod .. " + Print",             hl.dsp.exec_cmd("hyprshot -m region -t 20
 hl.bind(mod .. " + SHIFT + Print",     hl.dsp.exec_cmd("hyprshot -m window -t 2000"))
 hl.bind("XF86SelectiveScreenshot",     hl.dsp.exec_cmd("hyprshot -m window -t 2000"))
 
+-- Special fly-out workspace, 50% dimming
+local flyout = "flyout"
+hl.bind("SUPER + Zenkaku_Hankaku", hl.dsp.workspace.toggle_special(flyout))
+hl.bind("SUPER + SHIFT + Zenkaku_Hankaku",
+        hl.dsp.window.move({ workspace = "special:" .. flyout, follow = false }))
+hl.curve("easeOutQuint", { type = "bezier", points = { {0.23, 1}, {0.32, 1} } })
+hl.animation({
+  leaf = "specialWorkspace",
+  enabled = true,
+  speed = 5,
+  bezier = "easeOutQuint",
+  style = "slidevert",
+})
+hl.config({
+  decoration = {
+    dim_special = 0.5,
+  },
+})
+
 -- WM: switch workspaces
 hl.bind(mod .. " + A",            hl.dsp.focus({ workspace = "e-1" }))
 hl.bind(mod .. " + S",            hl.dsp.focus({ workspace = "e+1" }))
@@ -290,15 +309,3 @@ hl.bind(mod .. " + ALT + E", function()
 end)
 hl.bind(mod .. " + V", hl.dsp.exec_cmd("nwg-clipman"))
 hl.bind(mod .. " + T", hl.dsp.exec_cmd(scripts .. "/theme.sh -y"))
-
--- Special fly-out workspace
-
-hl.bind("SUPER + Zenkaku_Hankaku", hl.dsp.workspace.toggle_special(flyout))
-hl.curve("easeOutQuint", { type = "bezier", points = { {0.23, 1}, {0.32, 1} } })
-hl.animation({
-    leaf = "specialWorkspace",
-    enabled = true,
-    speed = 5,
-    bezier = "easeOutQuint",
-    style = "slidevert",
-})

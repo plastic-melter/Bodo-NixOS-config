@@ -93,6 +93,16 @@ boot = {
       extraConfig = ''
         menuentry "Reboot" --class reboot { reboot }
         menuentry "Poweroff" --class shutdown { halt }
+        menuentry "Windows 11" --class windows {
+           insmod part_gpt
+          insmod fat
+          insmod chain
+          set root=(hd0,gpt1)
+          if [ ! -e /EFI/Microsoft/Boot/bootmgfw.efi ]; then
+            search --no-floppy --fs-uuid --set=root E8AC-58C7 
+          fi
+          chainloader /EFI/Microsoft/Boot/bootmgfw.efi
+        }
       '';
     };
     timeout = 2;
@@ -100,7 +110,7 @@ boot = {
   kernelModules = [ 
     "ntsync" # CoD WaW performance
     "uinput" # B0XX native USB
-    "kvm-intel" # enables hardware-accelerated virtualization (VMX)
+    #"kvm-intel" # enables hardware-accelerated virtualization (VMX)
     "hid_nintendo" # Switch controller pairing
     "vfio" # core VFIO framework: lets userspace (QEMU) own PCI devices
     "vfio_iommu_type1" # IOMMU backend for VFIO, enforces memory isolation between VM and host
@@ -145,7 +155,13 @@ networking = {
   };
 };
 
-systemd.sleep.settings.Sleep.HibernateDelaySec = "2h";
+# Suspend-to-disk after 1h of sleep; rewrite trackpoint sensitivity after sleep
+systemd.sleep.settings.Sleep.HibernateDelaySec = "1h";
+powerManagement.resumeCommands = ''
+  for f in /sys/bus/hid/devices/*17EF:6009*/sensitivity; do
+    [ -e "$f" ] && echo 235 > "$f"
+  done
+'';
 
 # Make these files user-writeable so a waybar module can toggle them
 systemd.tmpfiles.rules = [
@@ -157,31 +173,31 @@ systemd.tmpfiles.rules = [
 systemd.services = {
   NetworkManager-wait-online.enable = false;
   "systemd-networkd-wait-online".enable = false;
-  libvirtd = {
-    stopIfChanged = false;
-  };
+  #libvirtd = {
+  #  stopIfChanged = false;
+  #};
 
   # Set SK-8855 sensitivity
-  trackpoint-sensitivity = {
-    description = "Set SK-8855 TrackPoint sensitivity";
-    wantedBy = [ "multi-user.target" "post-resume.target" ];
-    after = [ "post-resume.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = pkgs.writeShellScript "tp-sens" ''
-        for f in /sys/bus/hid/devices/*17EF:6009*/sensitivity; do
-          [ -e "$f" ] && echo 235 > "$f"
-        done
-      '';
-    };
-  };
+#  trackpoint-sensitivity = {
+#    description = "Set SK-8855 TrackPoint sensitivity";
+#    wantedBy = [ "multi-user.target" "post-resume.target" ];
+#    after = [ "post-resume.target" ];
+#    serviceConfig = {
+#      Type = "oneshot";
+#      ExecStart = pkgs.writeShellScript "tp-sens" ''
+#        for f in /sys/bus/hid/devices/*17EF:6009*/sensitivity; do
+#          [ -e "$f" ] && echo 235 > "$f"
+#        done
+#      '';
+#    };
+#  };
 
 # Save the trouble of running 'virsh netstart default' each time:
-  libvirtd.postStart = ''
-    sleep 2
-    virsh net-start default || true
-    virsh net-autostart default || true
-  '';
+  #libvirtd.postStart = ''
+  #  sleep 2
+  #  virsh net-start default || true
+  #  virsh net-autostart default || true
+  #'';
 
   # Read energy_uj as root and present a user-readable average over 2sec
   # This allows for estimating CPU PkgWatt in userspace w/o enabling Platypus vulnerability
@@ -271,18 +287,17 @@ hardware = {
     powerOnBoot = false;
   };
   enableRedistributableFirmware = true;
-  sane = {
-    enable = true; # for scanning from printer/scanner
-    brscan4 = {
-      enable = true; # for Brother MFC printer/scanner
-      netDevices = {
-        brother = {
-          ip = "192.168.1.39";
-          model = "MFC-L2820DW";
-        };
-      };
-    };
-  };
+#  sane = {
+#    enable = true;
+#    extraBackends = [ pkgs.sane-airscan ];
+#    disabledDefaultBackends = [ "escl" ];
+#    extraConfig.airscan = ''
+#      [devices]
+#      "Brother MFC" = http://192.168.1.16/eSCL, eSCL
+#      [options]
+#      discovery = disable
+#    '';
+#  };
 };
 
 # ============================================
@@ -424,7 +439,7 @@ services = {
   udisks2.enable = true; # auto-mount removeable drives
   fstrim.enable = true; # periodic SSD/NVMe trim for health
   fwupd.enable = true; # firmware updates via LVFS
-  journald.storage = "persistent"; # persistent journald for troubleshooting things that cause system crashes
+  journald.settings.Journal.Storage = "persistent"; # persistent journald for troubleshooting things that cause system crashes
   timesyncd.enable = true; # syncs clock to NTP servers over internet
   printing = {
     enable = true; # enable CUPS for using printers
@@ -520,30 +535,23 @@ services = {
     SUBSYSTEM=="input", ATTRS{name}=="keyd virtual pointer", ENV{ID_INPUT_MOUSE}=="1", ENV{ID_INPUT_POINTINGSTICK}="1"
 
   '';
-
-  # Printers/scanners: access to scanner
-  avahi = {
-    enable = true;
-    nssmdns4 = true;
-    openFirewall = false; # enable briefly only for printer discovery on LAN
-  };
 };
 
 # ============================================
 # VIRTUALIZATION
 # ============================================
 
-virtualisation.libvirtd = {
-  enable = true;
-  qemu = {
-    package = pkgs.qemu_kvm;
-    runAsRoot = true;
-    swtpm.enable = true; # TPM for Win11
-    verbatimConfig = ''
-      cgroup_controllers = [ "cpu", "memory", "blkio", "cpuset", "cpuacct" ]
-    '';
-  };
-};
+#virtualisation.libvirtd = {
+#  enable = true;
+#  qemu = {
+#    package = pkgs.qemu_kvm;
+#    runAsRoot = true;
+#    swtpm.enable = true; # TPM for Win11
+#    verbatimConfig = ''
+#      cgroup_controllers = [ "cpu", "memory", "blkio", "cpuset", "cpuacct" ]
+#    '';
+#  };
+#};
 
 # ============================================
 # SYSTEM-WIDE PROGRAM CONFIG
@@ -625,7 +633,7 @@ fonts = {
     powerline-symbols
     powerline-fonts
     source-code-pro
-    ttf_bitstream_vera
+    ttf-bitstream-vera
   ];
   fontconfig.defaultFonts = {
     monospace = [ "FiraCode Nerd Font Mono" "Symbols Nerd Font Mono" "DejaVu Sans Mono" "IPAGothic" ];
@@ -690,7 +698,7 @@ users = {
       "bodo"      # ...special group for special people
       "adbusers"  # access to android debug stuff
       "dialout"   # access to serial ports
-      "libvirtd"  # access to libvirt VM management
+      #"libvirtd"  # access to libvirt VM management
       "plugdev"   # access to USB devices such as rpi flashing
       "audio"     # access to audio devices
       "video"     # access to video devices
@@ -744,7 +752,7 @@ in (with pkgs; [
   intel-gpu-tools # check iGPU resource utilization
   radeontop # AMD GPU monitor
   sddm-astronaut-themed # sddm login screen theme
-  virt-manager # manage VMs
+  #virt-manager # manage VMs
 
   # HARDWARE + DRIVERS + EXTERNAL DEVICES
   acpid # watch ACPI events
@@ -757,6 +765,7 @@ in (with pkgs; [
   lm_sensors # tons of hardware sensors
   lshw # list hardware inventory
   msr-tools # read/write to/from the MSR
+  perf # check CPU c-states
   pulseaudio # gives pactl for steam
   pciutils # contains PCI tools like lspci
   udisks2 # for mounting disks from userland

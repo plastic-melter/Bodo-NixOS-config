@@ -634,6 +634,7 @@ home.packages = with pkgs; [
   arduino-cli # CLI arduino tools
   audacious # music player
   bolt-launcher # OSRS RuneLite launcher
+  chromium # backup browser for some things
   drawio # flowchart/diagram tool
   firefox # to be replaced soon
   foliate # epub reader
@@ -753,7 +754,7 @@ home.packages = with pkgs; [
   ]))
 
   # AI
-  python312Packages.huggingface-hub # interface w/ Hugging Face Hub (open-source ML)
+  #python312Packages.huggingface-hub # interface w/ Hugging Face Hub (open-source ML)
   llama-cpp # LLM inference
   llama-up # LLM convenience helper
 
